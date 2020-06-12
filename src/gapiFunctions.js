@@ -41,6 +41,7 @@ export function initClient() {
     //signoutButton.onclick = handleSignoutClick;
   }, function(error) {
     console.log("initClient error.")
+    console.log(JSON.stringify(error, null, 2))
     //appendPre(JSON.stringify(error, null, 2));
   });
 }
