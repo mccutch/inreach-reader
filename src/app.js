@@ -38,7 +38,7 @@ export class App extends React.Component{
   handleLogout(){
     clearToken({
       onSuccess:()=>{
-        console.log("Logout success.")
+        console.log("Logout success..")
         window.location.reload(false)
       }
     })
