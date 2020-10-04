@@ -20,32 +20,33 @@ class Login(APIView):
         except:
             profileData = {}
 
-
+        try:
+            all_messages = user.messages.all()
+            messageData = serializers.InReachMessageSerializer(all_messages, many=True, context={'request':request}).data
+        except:
+            messageData = {}
 
         content = {
             "user":serializers.UserSerializer(user, context={'request':request}).data,
             "profile":profileData,
+            "messages":messageData,
         }
         return Response(content)
 
-class NewInReachMessage(generics.ListCreateAPIView):
+
+
+class PostNewMessage(generics.CreateAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = serializers.NewInReachMessageSerializer
+    serializer_class = serializers.InReachMessageSerializer
+
+
+class UserMessages(generics.ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = serializers.InReachMessageSerializer
 
     def get_queryset(self):
-        return models.InReachMessage.objects.all()
-    
-    """def post(self, request, format=None):
-                    serializer = serializers.InReachMessageSerializer(data=request.data, context={'request':request})
-                    print("Received")
-                    print(serializer.initial_data)
-                    if serializer.is_valid():
-                        print("valid")
-                        print(serializer.data)
-            
-                    return Response(serializer.data)
-                    #return Response(status=status.HTTP_204_NO_CONTENT)"""
-
+        user = self.request.user
+        return user.messages.all()
 
 
 class UserProfile(APIView):

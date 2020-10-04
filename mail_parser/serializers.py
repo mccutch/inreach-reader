@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class NewInReachMessageSerializer(serializers.ModelSerializer):
+class InReachMessageSerializer(serializers.ModelSerializer):
     """user = serializers.SerializerMethodField()
             
                 def get_user(self, obj):
@@ -13,8 +13,8 @@ class NewInReachMessageSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="username", default=None)
     class Meta:
         model = models.InReachMessage
-        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user']
-
+        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date']
+        ordering = ["-date"]
     """def create(self, validated_data):
                     print(validated_data.username)
                     #user = User.objects.filter(username=validated_data.username)

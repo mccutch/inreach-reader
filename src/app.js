@@ -11,6 +11,7 @@ import {clearToken} from './myJWT.js';
 import {LoginForm, demoLogin} from './loginWrapper.js';
 import {RegistrationForm} from './registrationForm.js';
 import {apiFetch} from './helperFunctions.js';
+import {MessageList} from './messageDisplay.js';
 
 /*
 Login Process
@@ -46,6 +47,7 @@ export class App extends React.Component{
         this.setState({
           user:data.user,
           profile:data.profile,
+          messages:data.messages,
         }, this.handleLoginSuccess)
       }
     })
@@ -96,7 +98,10 @@ export class App extends React.Component{
         <Switch>
             <Route exact path={urls.HOME}>
               {this.state.loggedIn ?
-                <p>Hola {this.state.user.username}</p>
+                <div>
+                  <p>Hola {this.state.user.username}</p>
+                  <MessageList messages={this.state.messages} />
+                </div>
                 :
                 <p>HOla guest</p>
               }
