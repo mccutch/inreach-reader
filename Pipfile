@@ -16,6 +16,7 @@ google-api-python-client = "*"
 google-auth = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.7"
