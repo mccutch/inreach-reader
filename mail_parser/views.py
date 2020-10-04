@@ -10,11 +10,43 @@ from . import serializers
 from . import permissions
 
 # Create your views here.
-class InReachMessages(generics.ListCreateAPIView):
-    #queryset = models.EmissionInstance.objects.all()
+class Login(APIView):
+    permission_classes=(IsAuthenticated,)
+
+    def get(self, request, format=None):
+        user=request.user
+        try:
+            profileData = serializers.ProfileSerializer(user.profile, context={'request':request}).data
+        except:
+            profileData = {}
+
+
+
+        content = {
+            "user":serializers.UserSerializer(user, context={'request':request}).data,
+            "profile":profileData,
+        }
+        return Response(content)
+
+class NewInReachMessage(generics.ListCreateAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = serializers.InReachMessageSerializer
-    queryset = models.InReachMessage.objects.all()
+    serializer_class = serializers.NewInReachMessageSerializer
+
+    def get_queryset(self):
+        return models.InReachMessage.objects.all()
+    
+    """def post(self, request, format=None):
+                    serializer = serializers.InReachMessageSerializer(data=request.data, context={'request':request})
+                    print("Received")
+                    print(serializer.initial_data)
+                    if serializer.is_valid():
+                        print("valid")
+                        print(serializer.data)
+            
+                    return Response(serializer.data)
+                    #return Response(status=status.HTTP_204_NO_CONTENT)"""
+
+
 
 class UserProfile(APIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
@@ -26,7 +58,7 @@ class UserProfile(APIView):
             return Response(serializer.data)
         except:
             content = {
-                "Profile":"Not found"
+                "profile":"Not found"
             }
             return Response(content)
 
@@ -42,6 +74,13 @@ class UserProfile(APIView):
 
 class CurrentUser(APIView):
     permission_classes = (IsAuthenticated,)
+    #serializer_class = serializers.UserSerializer
+
+    def get(self, request, format=None):
+        return Response(serializers.UserSerializer(self.request.user, context={'request':request}).data)
+
+"""class CurrentUser(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         user=request.user
         email=user.email
@@ -55,7 +94,7 @@ class CurrentUser(APIView):
             'first_name': first,
             'last_name': last,
         }
-        return Response(content)
+        return Response(content)"""
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)

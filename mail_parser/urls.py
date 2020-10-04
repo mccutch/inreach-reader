@@ -20,13 +20,14 @@ urlpatterns = [
     path('token/', jwt_views.TokenObtainPairView.as_view(serializer_class=serializers.FlexibleJWTSerializer), name='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('api/inreach-messages/', views.InReachMessages.as_view(), name="inreach-messages"),
+    path('api/inreach-messages/', views.NewInReachMessage.as_view(), name="inreach-messages"),
 
     path('api/user/<int:pk>/', views.UserDetail.as_view(), name="user-detail"),
     path('api/profile/<int:pk>/', views.ProfileDetail.as_view(), name="profile-detail"),
 
     path('api/current-user/', views.CurrentUser.as_view(), name="current-user"),
     path('api/my-profile/', views.UserProfile.as_view(), name="my-profile"),
+    path('api/login/', views.Login.as_view(), name="login"),
 
     path('account/register/', views.UserCreate.as_view(), name="create-user"),
     path('account/update-password/', views.UpdatePassword.as_view(), name="update-password"),

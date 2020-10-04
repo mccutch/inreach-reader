@@ -6,15 +6,17 @@ export const GET_TOKEN = '/token/'
 export const REFRESH_TOKEN = '/token/refresh/'
 
 
-
+export const LOGIN = '/api/login'
 
 // DATABASE CREATE/GET
+
 export const CURRENT_USER = '/api/current-user'
 export const MY_PROFILE = '/api/my-profile/'
 
 // DATABASE OBJECTS
 export const USER = '/api/user'
 export const PROFILE = '/api/profile'
+
 
 
 // ACCOUNT/REGISTRATION - NOCACHE

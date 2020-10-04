@@ -3,11 +3,14 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class InReachMessage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages', null=True)
     sender = models.CharField(max_length=30, default="Unknown")
     date = models.DateTimeField(auto_now_add=True, null=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
     message = models.TextField(default="None")
+    mapshare = models.URLField(default="#")
+    original = models.TextField(default="None")
     
     def __str__(self):
         """String for representing the Model object."""

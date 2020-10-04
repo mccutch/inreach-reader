@@ -68,5 +68,5 @@ export function demoLogin({onSuccess, onFailure}){
     username:DEMO_USERNAME,
     password:DEMO_PW,
   }
-  getToken({data:data, onSuccess:()=>{console.log("FUCK"); onSuccess()}, onFailure:onFailure})
+  getToken({data:data, onSuccess:onSuccess, onFailure:onFailure})
 }
