@@ -100,7 +100,10 @@ export class App extends React.Component{
               {this.state.loggedIn ?
                 <div>
                   <p>Hola {this.state.user.username}</p>
-                  <MessageList messages={this.state.messages} />
+                  <MessageList 
+                    messages={this.state.messages} 
+                    app={{hideModal:this.hideModal, setModal:this.setModal}}
+                  />
                 </div>
                 :
                 <p>HOla guest</p>

@@ -14,7 +14,7 @@ export class MessageList extends React.Component{
     let messages=this.props.messages
     for(let i in messages){
       returnList.push(
-        <MessageDisplayView message={messages[i]} />
+        <MessageDisplayView message={messages[i]} app={this.props.app}/>
       )
     }
     return returnList

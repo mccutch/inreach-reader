@@ -3,7 +3,8 @@ import {Badge} from 'react-bootstrap';
 import * as urls from './urls.js';
 import {getAttribute} from './helperFunctions.js';
 import {getDate, getTime} from './dateFunctions.js'
-
+import {StandardModal} from './reactComponents.js';
+import {GoogleMap} from './googleMap.js';
 
 
 class ObjectDisplayView extends React.Component{
@@ -59,10 +60,37 @@ export class MessageDisplayView extends React.Component{
         secondaryRight={``}
         iconSrc={urls.HELICOPTER_ICON}
         onClick={this.props.onClick ? this.props.onClick :
-          ()=>{console.log("HEY!")}
+          ()=>{this.props.app.setModal(<MessageModalView message={this.props.message} app={this.props.app}/>)}
         }
       />
     )
   }
-
 }
+
+export class MessageModalView extends React.Component{
+
+
+  render(){
+    let message = this.props.message
+
+    let title = <div>{message.sender}</div>
+    let body = 
+      <div>
+        <p>Location: {message.lat},{message.lon}</p>
+        <p>{message.message}</p>
+        <GoogleMap lat={message.lat} lon={message.lon}/>
+      </div>
+
+    let footer = 
+      <div>
+        {message.mapshare ? <button className="btn btn-outline-primary"><a href={message.mapshare} target="_blank" >Garmin Mapshare</a></button> : ""}
+      </div>
+
+    return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal} />
+  }
+}
+
+
+
+
+
