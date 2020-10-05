@@ -12,6 +12,7 @@ import {LoginForm, demoLogin} from './loginWrapper.js';
 import {RegistrationForm} from './registrationForm.js';
 import {apiFetch} from './helperFunctions.js';
 import {MessageList} from './messageDisplay.js';
+import {TripPlanner} from './tripPlanner.js';
 
 /*
 Login Process
@@ -111,6 +112,9 @@ export class App extends React.Component{
             </Route>
             <Route path={urls.CONTACT}>
               <p>contact</p>
+            </Route>
+            <Route path={urls.PLANNER}>
+              <TripPlanner />
             </Route>
         </Switch>
       </Router>

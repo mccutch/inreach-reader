@@ -38,6 +38,9 @@ export class BootstrapNavBar extends React.Component{
     // Unauthenticated users
     let login = <Nav.Link key="login" name="login" className="text-light" onClick={this.handleClick}>Login</Nav.Link>
     let signUp = <Nav.Link key="signUp" name="register" className="text-light" onClick={this.handleClick}>Sign up</Nav.Link>
+    let planner = <Nav.Link>
+                    <CleanLink to={urls.PLANNER} className="text-light" activeClassName="active" onClick={this.handleClick}>Plan a Trip</CleanLink>
+                  </Nav.Link>
     
 
     let navLeft
@@ -45,6 +48,7 @@ export class BootstrapNavBar extends React.Component{
     if(this.props.loggedIn){
       navLeft = 
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          {planner}
           {contact}
         </ul>  
       navRight = 

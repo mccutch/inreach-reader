@@ -4,7 +4,7 @@ import * as urls from './urls.js';
 import {getAttribute} from './helperFunctions.js';
 import {getDate, getTime} from './dateFunctions.js'
 import {StandardModal} from './reactComponents.js';
-import {GoogleMap} from './googleMap.js';
+import {GoogleMapWrapper} from './googleMap.js';
 
 
 class ObjectDisplayView extends React.Component{
@@ -25,7 +25,7 @@ class ObjectDisplayView extends React.Component{
         <div className="row" style={{height:"2.5rem"}}>
           {icon}
           <div className="col-10">
-              <div className="row border">
+              <div className="row">
                 <div className="col text-truncate text-left"  style={{margin: "0rem 0rem 0rem -0.25rem"}}>
                   <strong>{this.props.primaryText}</strong>
                 </div>
@@ -33,7 +33,7 @@ class ObjectDisplayView extends React.Component{
                   <strong>{this.props.primaryRight}</strong>
                 </div>
               </div>
-              <div className="row border" style={{height:"1rem"}}>
+              <div className="row" style={{height:"1rem"}}>
                 <div className="col text-truncate text-left"  style={{margin: "-0.5rem 0rem 0rem -0.25rem"}}>
                   <small>{this.props.secondaryText}</small>
                 </div>
@@ -68,7 +68,10 @@ export class MessageDisplayView extends React.Component{
 }
 
 export class MessageModalView extends React.Component{
-
+  constructor(props){
+    super(props)
+    this.state = {showOriginal:false}
+  }
 
   render(){
     let message = this.props.message
@@ -78,8 +81,13 @@ export class MessageModalView extends React.Component{
       <div>
         <p><strong>{getDate(message.date)} {getTime(message.date)}</strong></p>
         <p>Location: {message.lat},{message.lon}</p>
-        <p>{message.message}</p>
-        <GoogleMap lat={message.lat} lon={message.lon}/>
+        <p>{this.state.showOriginal ? message.original : message.message}</p>
+
+        <button className="btn btn-outline-info btn-sm my-1" onClick={()=>this.setState({showOriginal:!this.state.showOriginal})}>
+          <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
+        </button>
+        <GoogleMapWrapper id={"messageMap"} points={[{lat:message.lat, lng:message.lon}]}/>
+
       </div>
 
     let footer = 

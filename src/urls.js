@@ -29,6 +29,7 @@ export const CHECK_UNIQUE = '/registration/check-unique/'
 
 export const HOME = '/'
 export const CONTACT = '/contact'
+export const PLANNER = '/planner'
 
 
 const ICON_LOC = '/static/svg/'
