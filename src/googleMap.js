@@ -44,7 +44,7 @@ export class GoogleMap extends React.Component{
       console.log("Initialising map...")
       let map = new gMaps.Map(document.getElementById("map"), {
           center: {lat:this.props.lat, lng:this.props.lon},
-          zoom: 8,
+          zoom: 12,
           controlSize: 20,
           draggable: true,
           mapTypeControl: true,
@@ -52,6 +52,7 @@ export class GoogleMap extends React.Component{
         });
       this.map = map
 
+      let marker = new gMaps.Marker({position: {lat:this.props.lat, lng:this.props.lon}, map: map})
       
       if(this.props.locationBias){
         this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)

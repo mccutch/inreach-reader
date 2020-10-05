@@ -73,7 +73,7 @@ export class BootstrapNavBar extends React.Component{
             //height="50"
             //className="d-inline-block align-middle"
           />{' '}
-          <CleanLink className="text-light" to="/">inReach Tracer</CleanLink>
+          <CleanLink className="text-light" to="/">Backcountry Trip Tracer</CleanLink>
         </a>
         <button 
           className="navbar-toggler" 

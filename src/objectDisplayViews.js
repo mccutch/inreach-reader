@@ -24,8 +24,8 @@ class ObjectDisplayView extends React.Component{
       <button className="btn btn-outline-primary btn-block my-1" onClick={this.props.onClick}>
         <div className="row" style={{height:"2.5rem"}}>
           {icon}
-          <div className="col">
-              <div className="row">
+          <div className="col-10">
+              <div className="row border">
                 <div className="col text-truncate text-left"  style={{margin: "0rem 0rem 0rem -0.25rem"}}>
                   <strong>{this.props.primaryText}</strong>
                 </div>
@@ -33,7 +33,7 @@ class ObjectDisplayView extends React.Component{
                   <strong>{this.props.primaryRight}</strong>
                 </div>
               </div>
-              <div className="row" style={{height:"1rem"}}>
+              <div className="row border" style={{height:"1rem"}}>
                 <div className="col text-truncate text-left"  style={{margin: "-0.5rem 0rem 0rem -0.25rem"}}>
                   <small>{this.props.secondaryText}</small>
                 </div>
@@ -55,7 +55,7 @@ export class MessageDisplayView extends React.Component{
     return (
       <ObjectDisplayView
         primaryText={`${getDate(message.date)}`}
-        secondaryText={`Loc: ${message.lat},${message.lon}`}
+        secondaryText={message.message}
         primaryRight={`${getTime(message.date)}`}
         secondaryRight={``}
         iconSrc={urls.HELICOPTER_ICON}
@@ -76,6 +76,7 @@ export class MessageModalView extends React.Component{
     let title = <div>{message.sender}</div>
     let body = 
       <div>
+        <p><strong>{getDate(message.date)} {getTime(message.date)}</strong></p>
         <p>Location: {message.lat},{message.lon}</p>
         <p>{message.message}</p>
         <GoogleMap lat={message.lat} lon={message.lon}/>
