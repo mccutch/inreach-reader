@@ -12,6 +12,7 @@ export const LOGIN = '/api/login'
 
 export const CURRENT_USER = '/api/current-user'
 export const MY_PROFILE = '/api/my-profile/'
+export const MY_TRIPS = '/api/my-trips/'
 
 // DATABASE OBJECTS
 export const USER = '/api/user'

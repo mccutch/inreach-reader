@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 
 export class PendingBtn extends React.Component{
   render(){
-    return <button name={this.props.name} onClick={this.props.onClick} className={`btn ${this.props.className} ${this.props.pending?"disabled":""}`} >{this.props.children}</button>
+    return <button name={this.props.name} onClick={this.props.onClick} className={`btn ${this.props.className} ${this.props.pending?"disabled":""} ${this.props.disabled?"disabled":""}`} >{this.props.children}</button>
   }
 }
 
