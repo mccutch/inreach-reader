@@ -2,7 +2,7 @@ import React from 'react';
 import {Badge} from 'react-bootstrap';
 import * as urls from './urls.js';
 import {getAttribute} from './helperFunctions.js';
-import {getDate, getTime} from './dateFunctions.js'
+import {displayDate, displayTime} from './dateFunctions.js'
 import {StandardModal} from './reactComponents.js';
 import {GoogleMapWrapper} from './googleMap.js';
 
@@ -54,9 +54,9 @@ export class MessageDisplayView extends React.Component{
 
     return (
       <ObjectDisplayView
-        primaryText={`${getDate(message.date)}`}
+        primaryText={`${displayDate(message.date)}`}
         secondaryText={message.message}
-        primaryRight={`${getTime(message.date)}`}
+        primaryRight={`${displayTime(message.date)}`}
         secondaryRight={``}
         iconSrc={urls.HELICOPTER_ICON}
         onClick={this.props.onClick ? this.props.onClick :
@@ -79,7 +79,7 @@ export class MessageModalView extends React.Component{
     let title = <div>{message.sender}</div>
     let body = 
       <div>
-        <p><strong>{getDate(message.date)} {getTime(message.date)}</strong></p>
+        <p><strong>{displayDate(message.date)} {displayTime(message.date)}</strong></p>
         <p>Location: {message.lat},{message.lon}</p>
         <p>{this.state.showOriginal ? message.original : message.message}</p>
 

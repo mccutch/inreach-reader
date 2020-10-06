@@ -86,6 +86,10 @@ export class App extends React.Component{
   }
 
   render(){
+    let appFunctions = {
+      hideModal:this.hideModal, 
+      setModal:this.setModal,
+    }
 
     return(
       <Router>
@@ -103,7 +107,7 @@ export class App extends React.Component{
                   <p>Hola {this.state.user.username}</p>
                   <MessageList 
                     messages={this.state.messages} 
-                    app={{hideModal:this.hideModal, setModal:this.setModal}}
+                    app={appFunctions}
                   />
                 </div>
                 :
@@ -114,7 +118,9 @@ export class App extends React.Component{
               <p>contact</p>
             </Route>
             <Route path={urls.PLANNER}>
-              <TripPlanner />
+              <TripPlanner
+                app={appFunctions}
+              />
             </Route>
         </Switch>
       </Router>
