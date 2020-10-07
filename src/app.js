@@ -13,7 +13,7 @@ import {RegistrationForm} from './registrationForm.js';
 import {apiFetch} from './helperFunctions.js';
 import {MessageList} from './messageDisplay.js';
 import {TripPlanner} from './tripPlanner.js';
-
+import {GoogleMapWrapper} from './googleMap.js';
 /*
 Login Process
 1. Get JWT access token

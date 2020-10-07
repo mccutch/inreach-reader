@@ -32,14 +32,18 @@ export function sortByKey({list, key, ascending=true}){
 
 
 export function importGoogleLibraries(callback){
-  if(!window.google){
-    console.log("Generating Google API script.")
-    var script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places,geometry&callback=${callback}`;
-    script.defer = true;
-    script.async = true;
-    document.head.appendChild(script);
-  }
+  if(window.google) return;
+  let existing = document.getElementById('googleMapImports')
+  if(existing) return;
+
+  console.log("Generating Google API script.")
+  var script = document.createElement('script');
+  script.id = 'googleMapImports';
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places,geometry&callback=${callback}`;
+  script.defer = true;
+  script.async = true;
+  document.head.appendChild(script);
+
 }
 
 

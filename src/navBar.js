@@ -1,6 +1,5 @@
 import React from 'react';
 import {Nav} from 'react-bootstrap';
-import {NavLink, Link} from 'react-router-dom';
 //import {} from './helperFunctions.js';
 import {CleanLink} from './reactComponents.js';
 import * as urls from './urls.js';

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import {GoogleMapWrapper} from './googleMap.js';
-import {today, timeNow, formatDate, formatTime, displayDate, displayTime, TimeInputButton} from './dateFunctions.js';
+import {today, TimeInputButton} from './dateFunctions.js';
 import {StandardModal, PendingBtn} from './reactComponents.js';
 import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
@@ -136,7 +136,7 @@ export class TripPlanner extends React.Component{
           <div className="row">
             <div className="col">
               Trip description
-              <textArea name="description" className="form-control my-2" placeholder="Trip description" rows="3" onChange={this.handleChange}/>
+              <textarea name="description" className="form-control my-2" placeholder="Trip description" rows="3" onChange={this.handleChange}/>
             </div>
           </div>
           <div className="row">
@@ -144,7 +144,7 @@ export class TripPlanner extends React.Component{
               {this.state.showOverdue &&
                 <div>
                   Overdue instructions
-                  <textArea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" onChange={this.handleChange}/>
+                  <textarea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" onChange={this.handleChange}/>
                 </div>
               }
             </div>
@@ -163,6 +163,8 @@ export class TripPlanner extends React.Component{
               <GoogleMapWrapper 
                 id = {"baseMap"}
                 editable={true}
+                mode="editPath"
+                searchBox={true}
               />
               : ""
             }

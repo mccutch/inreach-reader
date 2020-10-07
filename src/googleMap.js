@@ -20,6 +20,9 @@ export class GoogleMapWrapper extends React.Component{
 
     this.plotPaths=this.plotPaths.bind(this)
     this.plotPoints=this.plotPoints.bind(this)
+    this.addWaypoint=this.addWaypoint.bind(this)
+    this.handleClick=this.handleClick.bind(this)
+    this.useSearchInput=this.useSearchInput.bind(this)
   }
 
   componentDidMount(){
@@ -29,7 +32,7 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   initGoogleMap() {
-    console.log(`Initialising Google Maps with mode=${this.props.mode}.`)
+    console.log(`Initialising Google Maps.`)
 
     if(window.google){
       var gMaps = window.google.maps
@@ -47,6 +50,27 @@ export class GoogleMapWrapper extends React.Component{
       if(this.props.points){this.setMapBounds(this.props.points)}
       
       if(this.props.searchBox){
+        console.log("Initialising Autocomplete inputs.")
+        let searchBox = new gMaps.places.Autocomplete(document.getElementById("search"))
+        // Set the data fields to return when the user selects a place.
+        searchBox.setFields(['address_components', 'geometry', 'icon', 'name', 'place_id'])
+        // Take action when autocomplete suggestion is chosen, or raw text input is submitted
+        searchBox.addListener('place_changed', this.useSearchInput)
+        // Make components available to other functions in the class
+        this.searchBox = searchBox
+
+
+
+
+
+
+
+
+
+
+
+
+
         if(this.props.locationBias){
           this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
         } else {
@@ -56,6 +80,8 @@ export class GoogleMapWrapper extends React.Component{
           }
         }
       }
+
+      map.addListener("click", this.handleClick)
       
     } else {
       console.log("window.google not defined")
@@ -64,6 +90,44 @@ export class GoogleMapWrapper extends React.Component{
     this.setMapBounds()
     this.plotPaths()
     this.plotPoints()
+  }
+
+  handleClick(event){
+    if(this.temporaryMarker) this.temporaryMarker.setMap(null);
+    if(!this.props.editable) return;
+
+    let mode=this.props.mode
+    let pt=event.latLng.toJSON()
+
+    if(mode==="log"){
+      console.log(pt);
+    }else if(mode==="editPath"){
+      this.addWaypoint(pt)
+    }else{
+      console.log("No valid mode")
+    }
+  }
+
+  addWaypoint(pt){
+    console.log(pt)
+    console.log(pt)
+  }
+
+  useSearchInput(){
+    let place = this.searchBox.getPlace()
+    console.log(place)
+    if(!place.geometry){this.setState({errorMessage:`Unable to find ${place.name}.`}); return}
+    console.log(place.geometry.location)
+    console.log(place.geometry.location.toJSON())
+    this.map.setCenter(place.geometry.location)
+
+    let temporaryMarker = new window.google.maps.Marker({
+      position:place.geometry.location, map: this.map, title:place.name,
+    })
+    this.map.setZoom(13)
+    this.temporaryMarker = temporaryMarker
+
+    //this.setMapBounds([place.geometry.location.toJSON()])
   }
 
   setMapBounds(points){
@@ -117,6 +181,7 @@ export class GoogleMapWrapper extends React.Component{
     let circle = new gMaps.Circle(
       {center: geolocation, radius:30}
     )
+    this.searchBox.setBounds(circle.getBounds())
     //this.map.setCenter(geolocation)  
   }
 
@@ -147,6 +212,7 @@ export class GoogleMapWrapper extends React.Component{
   render(){
     return(
       <div>
+        {this.props.searchBox && <input type="text" id="search" placeholder="Search" className="form-control"/>}
         <div id={this.props.id} style={{height:"300px", width:"100"}}></div>
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>
@@ -154,223 +220,3 @@ export class GoogleMapWrapper extends React.Component{
   }
 }
 
-
-export class GooglePathMap extends React.Component{
-  constructor(props){
-    super(props)
-
-    this.state = {
-    }
-
-    this.initPathMap=this.initPathMap.bind(this)  
-    window.initPathMap=this.initPathMap  
-    importGoogleLibraries("initPathMap")
-    this.setLocationBias=this.setLocationBias.bind(this)
-    this.parseGeolocation=this.parseGeolocation.bind(this)
-    this.plotPath=this.plotPath.bind(this)
-    this.setMapBounds=this.setMapBounds.bind(this)
-  }
-
-  componentDidMount(){
-    if(window.google){
-      this.initPathMap()
-    }
-  }
-
-  initPathMap() {
-    console.log(`Initialising Google Maps with mode=${this.props.mode}.`)
-
-    if(window.google){
-      var gMaps = window.google.maps
-
-      console.log("Initialising map...")
-      let map = new gMaps.Map(document.getElementById(this.props.id), {
-          center: this.props.points[0],
-          zoom: 12,
-          controlSize: 20,
-          draggable: true,
-          mapTypeControl: true,
-          mapTypeId:"terrain",
-        });
-      this.map = map
-
-      if(this.props.points){this.setMapBounds(this.props.points)}
-      
-      if(this.props.locationBias){
-        this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
-      } else {
-        if(navigator.geolocation){
-          console.log("Geolocation available")
-          navigator.geolocation.getCurrentPosition(this.parseGeolocation)
-        }
-      }
-    } else {
-      console.log("window.google not defined")
-    }
-
-    this.plotPath()
-  }
-
-  setMapBounds(points){
-    if(points.length<=1){
-      return
-    }
-    var gMaps = window.google.maps
-    let bounds = new gMaps.LatLngBounds()
-    for(let i in points){
-      bounds.extend(points[i])
-    }
-    this.map.fitBounds(bounds)
-  }
-
-  parseGeolocation(position){
-    this.setLocationBias(position.coords.latitude, position.coords.longitude)
-    console.log(`Position accuracy: ${position.coords.accuracy}`)
-  }
-
-  setLocationBias(lat, lng){
-    // Set map center and autocomplete biasing based on user location
-    var gMaps = window.google.maps
-
-    let geolocation = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng)
-    }
-    console.log(geolocation)
-    let circle = new gMaps.Circle(
-      {center: geolocation, radius:30}
-    )
-    //this.map.setCenter(geolocation)  
-  }
-
-  plotPath(){
-    var gMaps = window.google.maps
-
-    new gMaps.Polyline({
-      path: this.props.points,
-      geodesic: true,
-      strokeColor: '#FF0000',
-      strokeOpacity: 1.0,
-      strokeWeight: 2,
-      map:this.map,
-      editable:this.props.editable,
-    });
-    //this.setMapBounds(this.props.points)
-  }
-
-  render(){
-    return(
-      <div>
-        <div id={this.props.id} style={{height:"300px", width:"100"}}></div>
-        {<p><strong>{this.state.errorMessage}</strong></p>}
-      </div>
-    )
-  }
-}
-
-
-export class GooglePointMap extends React.Component{
-  constructor(props){
-    super(props)
-
-    this.state = {
-    }
-
-    this.initPointMap=this.initPointMap.bind(this)  
-    window.initPointMap=this.initPointMap  
-    importGoogleLibraries("initPointMap")
-    this.setLocationBias=this.setLocationBias.bind(this)
-    this.parseGeolocation=this.parseGeolocation.bind(this)
-    this.plotPoints=this.plotPoints.bind(this)
-    this.setMapBounds=this.setMapBounds.bind(this)
-  }
-
-  componentDidMount(){
-    if(window.google){
-      this.initPointMap()
-    }
-  }
-
-  initPointMap() {
-    console.log(`Initialising Google Maps with mode=${this.props.mode}.`)
-
-    if(window.google){
-      var gMaps = window.google.maps
-
-      console.log("Initialising map...")
-      let map = new gMaps.Map(document.getElementById("map"), {
-          center: this.props.points[0],
-          zoom: 12,
-          controlSize: 20,
-          draggable: true,
-          mapTypeControl: true,
-          mapTypeId:"terrain",
-        });
-      this.map = map
-
-      if(this.props.points){this.setMapBounds(this.props.points)}
-      
-      if(this.props.locationBias){
-        this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
-      } else {
-        if(navigator.geolocation){
-          console.log("Geolocation available")
-          navigator.geolocation.getCurrentPosition(this.parseGeolocation)
-        }
-      }
-    } else {
-      console.log("window.google not defined")
-    }
-
-    this.plotPoints()
-  }
-
-  setMapBounds(points){
-    if(points.length<=1){
-      return
-    }
-    var gMaps = window.google.maps
-    let bounds = new gMaps.LatLngBounds()
-    for(let i in points){
-      bounds.extend(points[i])
-    }
-    this.map.fitBounds(bounds)
-  }
-
-  parseGeolocation(position){
-    this.setLocationBias(position.coords.latitude, position.coords.longitude)
-    console.log(`Position accuracy: ${position.coords.accuracy}`)
-  }
-
-  setLocationBias(lat, lng){
-    // Set map center and autocomplete biasing based on user location
-    var gMaps = window.google.maps
-
-    let geolocation = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng)
-    }
-    console.log(geolocation)
-    let circle = new gMaps.Circle(
-      {center: geolocation, radius:30}
-    )
-    //this.map.setCenter(geolocation)  
-  }
-
-  plotPoints(){
-    var gMaps = window.google.maps
-    for(let i in this.props.points){
-      new gMaps.Marker({position:this.props.points[i], map: this.map})
-    }
-    
-  }
-
-  render(){
-    return(
-      <div>
-        <div id="map" style={{height:"300px", width:"100"}}></div>
-        {<p><strong>{this.state.errorMessage}</strong></p>}
-      </div>
-    )
-  }
-}
