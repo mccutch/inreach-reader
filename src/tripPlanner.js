@@ -45,6 +45,8 @@ export class TripPlanner extends React.Component{
 
     if(!this.state.description){return this.returnError("Trip description required.")}
 
+    if(this.state.overdue&&!this.state.overdueInstructions){return this.returnError("Overdue instructions required.")}
+
     this.saveTrip()
   }
 
@@ -56,7 +58,10 @@ export class TripPlanner extends React.Component{
       description:this.state.description,
     }
 
-    if(this.state.overdue) tripData['overdue']=this.state.overdue.toISOString();
+    if(this.state.overdue){
+      tripData['overdue']=this.state.overdue.toISOString()
+      tripData['instructions']=this.state.overdueInstructions
+    }
 
     console.log(tripData)
 

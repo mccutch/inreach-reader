@@ -13,7 +13,7 @@ export const MAX_LEN_NAME = 30
 
 export const POSITION_DECIMALS = 10
 
-export const OVERDUE_INSTRUCTIONS = "What action is required by your Home Base if you are overdue? Prefill this field by saving a default to your profile."
+export const OVERDUE_INSTRUCTIONS = "Action required by your home base if you are overdue. Prefill this field by saving a default to your profile."
 
 
 

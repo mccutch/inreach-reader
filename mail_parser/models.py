@@ -23,6 +23,7 @@ class Trip(models.Model):
     returns = models.DateTimeField()
     overdue = models.DateTimeField(null=True)
     description = models.TextField(default="None")
+    instructions = models.TextField(default="None")
 
     def __str__(self):
         """String for representing the Model object."""

@@ -24,7 +24,7 @@ class TripSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = models.Trip
-        fields = ['user','name','departs','returns','overdue','description','id']
+        fields = ['user','name','departs','returns','overdue','description','instructions','id']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
