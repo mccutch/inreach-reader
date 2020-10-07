@@ -49,6 +49,7 @@ export class App extends React.Component{
           user:data.user,
           profile:data.profile,
           messages:data.messages,
+          trips:data.trips,
         }, this.handleLoginSuccess)
       }
     })

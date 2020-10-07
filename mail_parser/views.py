@@ -26,10 +26,17 @@ class Login(APIView):
         except:
             messageData = {}
 
+        try:
+            all_trips = user.trips.all()
+            tripData = serializers.TripSerializer(all_trips, many=True, context={'request':request}).data
+        except:
+            tripData = {}
+
         content = {
             "user":serializers.UserSerializer(user, context={'request':request}).data,
             "profile":profileData,
             "messages":messageData,
+            "trips":tripData,
         }
         return Response(content)
 

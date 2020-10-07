@@ -85,6 +85,7 @@ export class TripPlanner extends React.Component{
       departs:this.state.depart.toISOString(),
       returns:this.state.return.toISOString(),
       description:this.state.description,
+      points:JSON.stringify(this.state.points),
     }
 
     if(this.state.overdue){

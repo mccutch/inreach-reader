@@ -15,6 +15,15 @@ class InReachMessage(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.sender}, {self.date}'
+"""
+class Point(models.Model):
+    lat = models.FloatField()
+    lng = models.FloatField()
+    label = models.CharField(max_length=3)
+
+    def __str__(self):
+        return f'{self.label}'"""
+
 
 class Trip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trips')
@@ -24,6 +33,7 @@ class Trip(models.Model):
     overdue = models.DateTimeField(null=True)
     description = models.TextField(default="None")
     instructions = models.TextField(default="None")
+    points = models.TextField(default="")
 
     def __str__(self):
         """String for representing the Model object."""
