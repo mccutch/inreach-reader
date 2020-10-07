@@ -5,6 +5,7 @@ import {today, timeNow, formatDate, formatTime, displayDate, displayTime, TimeIn
 import {StandardModal, PendingBtn} from './reactComponents.js';
 import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
+import * as con from './constants.js';
 
 export class TripPlanner extends React.Component{
 
@@ -83,7 +84,7 @@ export class TripPlanner extends React.Component{
     if(this.state.redirect) return <Redirect to={this.state.redirect} />
     return(
       <div>
-        <div className="form bg-dark p-2">
+        <div className="form bg-dark text-light p-2">
           <div className="row">
             <div className="col-lg">
               <input name="name" className="form-control my-2" type="text" placeholder="Trip name" onChange={this.handleChange}/>
@@ -134,7 +135,18 @@ export class TripPlanner extends React.Component{
           </div>
           <div className="row">
             <div className="col">
+              Trip description
               <textArea name="description" className="form-control my-2" placeholder="Trip description" rows="3" onChange={this.handleChange}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              {this.state.showOverdue &&
+                <div>
+                  Overdue instructions
+                  <textArea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" onChange={this.handleChange}/>
+                </div>
+              }
             </div>
           </div>
           <div className="row">
@@ -155,7 +167,6 @@ export class TripPlanner extends React.Component{
               : ""
             }
           </div>
-
         </div>
       </div>
     )
