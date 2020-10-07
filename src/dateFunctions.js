@@ -25,6 +25,23 @@ export function displayDate(dt){
   return dt.toDateString()
 }
 
+function parseISODate(dtStr){
+  var D = dtStr.split(/\D+/);
+  return new Date(Date.UTC(D[0], --D[1], D[2], D[3], D[4], D[5], D[6]));
+}
+
+
+//
+export function displayISOTime(dtStr){
+  let dt = parseISODate(dtStr)
+  return displayTime(dt)
+}
+
+export function displayISODate(dtStr){
+  let dt = parseISODate(dtStr)
+  return displayDate(dt)
+}
+
 
 export function today({addDays=0, roundToMins=false, setHour=false}){
   let dateTime = new Date()

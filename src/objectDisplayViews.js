@@ -2,7 +2,7 @@ import React from 'react';
 import {Badge} from 'react-bootstrap';
 import * as urls from './urls.js';
 import {getAttribute} from './helperFunctions.js';
-import {displayDate, displayTime} from './dateFunctions.js'
+import {displayISODate, displayISOTime} from './dateFunctions.js'
 import {StandardModal} from './reactComponents.js';
 import {GoogleMapWrapper} from './googleMap.js';
 
@@ -54,9 +54,9 @@ export class MessageDisplayView extends React.Component{
 
     return (
       <ObjectDisplayView
-        primaryText={`${displayDate(message.date)}`}
+        primaryText={`${displayISODate(message.date)}`}
         secondaryText={message.message}
-        primaryRight={`${displayTime(message.date)}`}
+        primaryRight={`${displayISOTime(message.date)}`}
         secondaryRight={``}
         iconSrc={urls.HELICOPTER_ICON}
         onClick={this.props.onClick ? this.props.onClick :
@@ -76,10 +76,10 @@ export class MessageModalView extends React.Component{
   render(){
     let message = this.props.message
 
-    let title = <div>{message.sender}</div>
+    let title = <div>{message.sender ? message.sender : "Message"}</div>
     let body = 
       <div>
-        <p><strong>{displayDate(message.date)} {displayTime(message.date)}</strong></p>
+        <p><strong>{displayISODate(message.date)} - {displayISOTime(message.date)}</strong></p>
         <p>Location: {message.lat},{message.lon}</p>
         <p>{this.state.showOriginal ? message.original : message.message}</p>
 
@@ -87,7 +87,6 @@ export class MessageModalView extends React.Component{
           <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
         </button>
         <GoogleMapWrapper id={"messageMap"} points={[{lat:message.lat, lng:message.lon}]}/>
-
       </div>
 
     let footer = 

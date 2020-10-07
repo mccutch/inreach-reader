@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import {GoogleMapWrapper} from './googleMap.js';
 import {today, timeNow, formatDate, formatTime, displayDate, displayTime, TimeInputButton} from './dateFunctions.js';
 import {StandardModal, PendingBtn} from './reactComponents.js';
@@ -29,6 +30,7 @@ export class TripPlanner extends React.Component{
       errorMessage:message,
       pending:false,
     })
+    return false
   }
 
   handleChange(event){
@@ -38,9 +40,9 @@ export class TripPlanner extends React.Component{
   validateInputs(){
     this.setState({errorMessage:"", pending:true,})
 
-    if(!this.state.name) this.returnError("Trip name required.");
+    if(!this.state.name){return this.returnError("Trip name required.")}
 
-    if(!this.state.description) this.returnError("Trip description required.");
+    if(!this.state.description){return this.returnError("Trip description required.")}
 
     this.saveTrip()
   }
@@ -56,7 +58,6 @@ export class TripPlanner extends React.Component{
     if(this.state.overdue) tripData['overdue']=this.state.overdue.toISOString();
 
     console.log(tripData)
-    return
 
     apiFetch({
       url:urls.MY_TRIPS,
@@ -67,15 +68,19 @@ export class TripPlanner extends React.Component{
     })
   }
 
-  handleSuccess(){
-
+  handleSuccess(newTrip){
+    console.log("TRIP SAVED!")
+    console.log(newTrip)
+    this.setState({redirect:urls.HOME})
   }
 
-  handlePostFailure(){
-
+  handlePostFailure(error){
+    console.log(error)
+    this.returnError("Unable to save.")
   }
 
   render(){
+    if(this.state.redirect) return <Redirect to={this.state.redirect} />
     return(
       <div>
         <div className="form bg-dark p-2">
@@ -134,6 +139,7 @@ export class TripPlanner extends React.Component{
           </div>
           <div className="row">
             <div className="col">
+              <p className="text-light"><strong>{this.state.errorMessage}</strong></p>
               <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-success my-2" onClick={this.validateInputs}>Save trip</PendingBtn>
             </div>
           </div>
