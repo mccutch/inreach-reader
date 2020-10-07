@@ -2,7 +2,7 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import {GoogleMapWrapper} from './googleMap.js';
 import {today, TimeInputButton} from './dateFunctions.js';
-import {StandardModal, PendingBtn} from './reactComponents.js';
+import {StandardModal, PendingBtn, WarningModal} from './reactComponents.js';
 import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
 import * as con from './constants.js';
@@ -17,6 +17,8 @@ export class TripPlanner extends React.Component{
 
       depart:today({roundToMins:20}),
       return:today({addDays:2, setHour:19}),
+
+      points:[],
     }
     this.validateInputs=this.validateInputs.bind(this)
     this.returnError=this.returnError.bind(this)
@@ -40,14 +42,41 @@ export class TripPlanner extends React.Component{
 
   validateInputs(){
     this.setState({errorMessage:"", pending:true,})
+    
+    // ERRORS
+    if(!this.state.name) return this.returnError("Trip name required.");
 
-    if(!this.state.name){return this.returnError("Trip name required.")}
+    if(this.state.return < this.state.depart) return this.returnError("Return time must be later than departure.");
 
-    if(!this.state.description){return this.returnError("Trip description required.")}
+    if(this.state.overdue && (this.state.overdue < this.state.return)) return this.returnError("Overdue time must be later than return time.")
 
-    if(this.state.overdue&&!this.state.overdueInstructions){return this.returnError("Overdue instructions required.")}
+    // WARNINGS
+    let warnings = []
+    if(!this.state.description) warnings.push(
+      <p> - No trip description provided.</p>
+    );
+      
+    if(this.state.overdue&&(((this.state.overdue.getTime()-this.state.return.getTime())/(1000*60*60))<2)) warnings.push(
+      <p> - Overdue time is within 2hrs of return. Consider allowing more time before action is required.</p>
+    );
 
-    this.saveTrip()
+    if(this.state.overdue&&!this.state.overdueInstructions) warnings.push(
+      <p> - No overdue instructions provided.</p>
+    );
+
+    // If no warnings, continue. Else, show modal.
+    if(warnings.length===0){
+      this.saveTrip()
+    } else {
+      this.props.app.setModal(
+        <WarningModal
+          warnings={warnings}
+          continue={()=>{this.props.app.hideModal(); this.saveTrip()}}
+          hideModal={()=>{this.props.app.hideModal(); this.returnError("")}}
+        />
+      )
+    }
+    
   }
 
   saveTrip(){
@@ -159,21 +188,18 @@ export class TripPlanner extends React.Component{
               <p className="text-light"><strong>{this.state.errorMessage}</strong></p>
               <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-success my-2" onClick={this.validateInputs}>Save trip</PendingBtn>
             </div>
+            
           </div>
-        </div>
-
-        <div className="row">
-          <div className="col">
-            {this.state.showMap ? 
+          {this.state.showMap ? 
               <GoogleMapWrapper 
                 id = {"baseMap"}
                 editable={true}
-                mode="editPath"
+                initialMode="editPoints"
                 searchBox={true}
+                returnPoints={(pointList)=>this.setState({points:pointList})}
               />
               : ""
             }
-          </div>
         </div>
       </div>
     )

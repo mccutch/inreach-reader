@@ -1,3 +1,5 @@
 Mandatory overdue instructions
 
 Add road trip input? ie google directions
+
+Replace error trip description and instructions with a popup.

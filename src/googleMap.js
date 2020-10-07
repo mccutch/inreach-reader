@@ -3,11 +3,16 @@ import {StandardModal} from './reactComponents.js';
 import {DEFAULT_MAP_CENTER} from './constants.js';
 import {importGoogleLibraries} from './helperFunctions.js';
 
+const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 export class GoogleMapWrapper extends React.Component{
   constructor(props){
     super(props)
     this.state = {
+      mode:this.props.initialMode,
+      locked:false,
+      points:[],
+      labelIndex:0,
     }
 
     this.initGoogleMap=this.initGoogleMap.bind(this)  
@@ -20,9 +25,15 @@ export class GoogleMapWrapper extends React.Component{
 
     this.plotPaths=this.plotPaths.bind(this)
     this.plotPoints=this.plotPoints.bind(this)
-    this.addWaypoint=this.addWaypoint.bind(this)
+    
     this.handleClick=this.handleClick.bind(this)
     this.useSearchInput=this.useSearchInput.bind(this)
+    this.undo=this.undo.bind(this)
+    this.toggleMapLock=this.toggleMapLock.bind(this)
+
+    this.addWaypoint=this.addWaypoint.bind(this)
+
+    this.returnPoints=this.returnPoints.bind(this)
   }
 
   componentDidMount(){
@@ -60,17 +71,6 @@ export class GoogleMapWrapper extends React.Component{
         this.searchBox = searchBox
 
 
-
-
-
-
-
-
-
-
-
-
-
         if(this.props.locationBias){
           this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
         } else {
@@ -82,6 +82,7 @@ export class GoogleMapWrapper extends React.Component{
       }
 
       map.addListener("click", this.handleClick)
+      //map.addListener("dragend", this.handleDragEnd)
       
     } else {
       console.log("window.google not defined")
@@ -94,15 +95,17 @@ export class GoogleMapWrapper extends React.Component{
 
   handleClick(event){
     if(this.temporaryMarker) this.temporaryMarker.setMap(null);
-    if(!this.props.editable) return;
+    if(!this.props.editable || this.state.locked) return;
 
-    let mode=this.props.mode
+    let mode=this.state.mode
     let pt=event.latLng.toJSON()
 
     if(mode==="log"){
       console.log(pt);
     }else if(mode==="editPath"){
       this.addWaypoint(pt)
+    }else if(mode==="editPoints"){
+      this.addPoint(pt)
     }else{
       console.log("No valid mode")
     }
@@ -113,21 +116,53 @@ export class GoogleMapWrapper extends React.Component{
     console.log(pt)
   }
 
+  addPoint(pt){
+    let gMaps = window.google.maps
+    //A,B,C,...Z,A1,B1,...Z1,A2,B2,...
+    let label = `${markerLabels[this.state.labelIndex%markerLabels.length]}${this.state.labelIndex>=markerLabels.length?`${Math.floor(this.state.labelIndex/markerLabels.length)}`:""}`
+    
+    let newPt = new gMaps.Marker({
+      position:pt, 
+      map: this.map, 
+      draggable:true,
+      label:label,
+    })
+
+    newPt.addListener('dragend', this.returnPoints); 
+    this.state.points.push(newPt)
+    this.setState({labelIndex:this.state.labelIndex+1},this.returnPoints)
+  }
+
+  undo(){
+    if(this.state.locked) return;
+
+    if(this.state.mode==="editPoints"){
+      if(this.state.points.length===0) return;
+      let lastPoint = this.state.points[this.state.points.length-1]
+      lastPoint.setMap(null)
+      this.state.points.pop()
+      this.setState({labelIndex:this.state.labelIndex-1}, this.returnPoints)
+    }
+  }
+
+  returnPoints(){
+    let ptsList=[]
+    for(let i in this.state.points){
+      ptsList.push({position:this.state.points[i].getPosition().toJSON(), label:this.state.points[i].label})
+    }
+    this.props.returnPoints(ptsList)
+  }
+
   useSearchInput(){
     let place = this.searchBox.getPlace()
     console.log(place)
     if(!place.geometry){this.setState({errorMessage:`Unable to find ${place.name}.`}); return}
-    console.log(place.geometry.location)
-    console.log(place.geometry.location.toJSON())
     this.map.setCenter(place.geometry.location)
-
     let temporaryMarker = new window.google.maps.Marker({
       position:place.geometry.location, map: this.map, title:place.name,
     })
     this.map.setZoom(13)
     this.temporaryMarker = temporaryMarker
-
-    //this.setMapBounds([place.geometry.location.toJSON()])
   }
 
   setMapBounds(points){
@@ -209,10 +244,42 @@ export class GoogleMapWrapper extends React.Component{
     }
   }
 
+  toggleMapLock(){  
+    this.setState({locked:!this.state.locked},
+      ()=>{
+        for(let i in this.state.points){
+          this.state.points[i].setDraggable(!this.state.locked)
+        }
+      }
+    )
+  }
+
   render(){
     return(
       <div>
-        {this.props.searchBox && <input type="text" id="search" placeholder="Search" className="form-control"/>}
+        {this.props.editable && 
+          <div className="form-row p-2">
+            <div className="col-md">
+              <input type="search" id="search" placeholder="Search" className="form-control my-2"/>
+            </div>
+            <div className="col">
+              <div className="row">
+                {/*<div className="col">
+                                  <button className={`btn btn-${(this.state.mode==="editPath"&&!this.state.locked)?"":"outline-"}teal btn-block`} onClick={()=>this.setState({mode:"editPath"})}>Route</button>
+                                </div>*/}
+                <div className="col">
+                  <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}teal btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Add Points</button>
+                </div>
+                <div className="col">
+                  <button className={`btn btn-outline-teal btn-block`} onClick={this.undo}>Undo</button>
+                </div>
+                <div className="col">
+                  <button className={`btn btn-${this.state.locked?"":"outline-"}teal btn-block`} onClick={this.toggleMapLock}>{this.state.locked?"Unlock":"Lock"}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
         <div id={this.props.id} style={{height:"300px", width:"100"}}></div>
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>

@@ -3,6 +3,22 @@ import {Modal} from 'react-bootstrap';
 import {sortByKey} from './helperFunctions.js';
 import {Link} from 'react-router-dom';
 
+export class WarningModal extends React.Component{
+  render(){
+    let title = <div>Are you sure?</div>
+    let body = 
+      <div>
+        <p>The following warnings were found:</p>
+        {this.props.warnings}
+      </div>
+    let footer = 
+      <div>
+        <button className="btn btn-outline-danger m-2" onClick={this.props.hideModal}>Cancel</button>
+        <button className="btn btn-outline-success m-2" onClick={this.props.continue}>Continue</button>
+      </div>
+    return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.hideModal} headerClass="bg-warning text-dark"/>
+  }
+}
 
 export class PendingBtn extends React.Component{
   render(){
@@ -89,9 +105,11 @@ export class StandardModal extends React.Component{
         </Modal.Body>
     }
 
+    let headerClass = this.props.headerClass ? this.props.headerClass : "bg-teal text-light"
+
     return(
       <Modal show={true} onHide={this.props.hideModal}>
-        <Modal.Header className="bg-teal text-light" closeButton>
+        <Modal.Header className={headerClass} closeButton>
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
         {modalBody}

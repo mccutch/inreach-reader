@@ -3,7 +3,7 @@
 export const USER_CACHE = "dynamic-user"
 
 
-export const DEFAULT_MAP_CENTER = {lat: -34.397, lng: 150.644} //Western Syndey
+export const DEFAULT_MAP_CENTER = {lat: -36.89471583987405, lng: 147.13738916242673} //Mt Feathertop
 
 
 export const MAX_LEN_USERNAME = 30 //Defined in django docs?
