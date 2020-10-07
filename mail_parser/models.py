@@ -16,6 +16,18 @@ class InReachMessage(models.Model):
         """String for representing the Model object."""
         return f'{self.sender}, {self.date}'
 
+class Trip(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trips')
+    name = models.CharField(max_length=60, default="Unnamed Trip")
+    departs = models.DateTimeField()
+    returns = models.DateTimeField()
+    overdue = models.DateTimeField(null=True)
+    description = models.TextField(default="None")
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.name}: {self.departDate}'
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     location = models.CharField(max_length=60, blank=True)

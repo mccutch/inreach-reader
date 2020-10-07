@@ -35,10 +35,31 @@ class Login(APIView):
 
 
 
+
 class PostNewMessage(generics.CreateAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = serializers.InReachMessageSerializer
+    serializer_class = serializers.InReachMessageParser
 
+
+
+
+class UserTrips(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, format=None):
+        trips = request.user.trips.all()
+        serializer = serializers.TripSerializer(trips, many=True, context={'request':request})
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        data=request.data
+        data['user']=f'{request.user.id}'
+        print(data)
+        serializer = serializers.TripSerializer(data=data, context={'request':request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserMessages(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
@@ -47,7 +68,6 @@ class UserMessages(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return user.messages.all()
-
 
 class UserProfile(APIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
@@ -75,37 +95,41 @@ class UserProfile(APIView):
 
 class CurrentUser(APIView):
     permission_classes = (IsAuthenticated,)
-    #serializer_class = serializers.UserSerializer
 
     def get(self, request, format=None):
         return Response(serializers.UserSerializer(self.request.user, context={'request':request}).data)
 
-"""class CurrentUser(APIView):
-    permission_classes = (IsAuthenticated,)
-    def get(self, request):
-        user=request.user
-        email=user.email
-        first=user.first_name
-        last=user.last_name
 
-        content = {
-            'username': user.username, 
-            'id': user.pk,
-            'email': email,
-            'first_name': first,
-            'last_name': last,
-        }
-        return Response(content)"""
+
+
+
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = serializers.UserSerializer
+    queryset = User.objects.all()
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
     serializer_class = serializers.ProfileSerializer
     queryset = models.Profile.objects.all() 
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = serializers.UserSerializer
-    queryset = User.objects.all()
+class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, permissions.IsOwner)
+    serializer_class = serializers.InReachMessageSerializer
+    queryset = models.InReachMessage.objects.all() 
+
+class TripDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, permissions.IsOwner)
+    serializer_class = serializers.TripSerializer
+    queryset = models.Trip.objects.all() 
+
+
+
+
+
+
+
 
 class ValidateUsername(APIView):
     permission_classes = (AllowAny, )

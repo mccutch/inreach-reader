@@ -50,8 +50,8 @@ export class TripPlanner extends React.Component{
   saveTrip(){
     let tripData={
       name:this.state.name,
-      depart:this.state.depart.toISOString(),
-      return:this.state.return.toISOString(),
+      departs:this.state.depart.toISOString(),
+      returns:this.state.return.toISOString(),
       description:this.state.description,
     }
 

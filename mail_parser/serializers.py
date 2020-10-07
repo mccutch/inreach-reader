@@ -3,35 +3,28 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class InReachMessageSerializer(serializers.ModelSerializer):
-    """user = serializers.SerializerMethodField()
-            
-                def get_user(self, obj):
-                    user = User.objects.get(username="DemoUser")
-                    return user.id
-            """
+class InReachMessageParser(serializers.ModelSerializer):
+    # Used when parsing a new message, consuming username as a slug
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="username", default=None)
     class Meta:
         model = models.InReachMessage
-        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date']
+        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date','id']
         ordering = ["-date"]
-    """def create(self, validated_data):
-                    print(validated_data.username)
-                    #user = User.objects.filter(username=validated_data.username)
-                    ####   messageData['user']=user.id
-            
-                    ##newMessage.save()
-                    return models.InReachMessage(validated_data)"""
 
 
-"""class InReachMessageSerializer(serializers.Serializer):
-    sender = serializers.CharField()
-    lat = serializers.FloatField(default=0)
-    lon = serializers.FloatField(default=0)
-    message = serializers.CharField(default="None")
-    mapshare = serializers.URLField(default="#")
-    username = serializers.CharField()
-    original = serializers.CharField()"""
+
+class InReachMessageSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model = models.InReachMessage
+        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date','id']
+        ordering = ["-date"]
+
+class TripSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model = models.Trip
+        fields = ['user','name','departs','returns','overdue','description','id']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

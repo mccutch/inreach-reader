@@ -24,8 +24,12 @@ urlpatterns = [
 
     path('api/user/<int:pk>/', views.UserDetail.as_view(), name="user-detail"),
     path('api/profile/<int:pk>/', views.ProfileDetail.as_view(), name="profile-detail"),
+    path('api/message/<int:pk>/', views.MessageDetail.as_view(), name="message-detail"),
+    path('api/trip/<int:pk>/', views.TripDetail.as_view(), name="trip-detail"),
+    #path('api//<int:pk>/', views.Detail.as_view(), name="-detail"),
 
     path('api/my-messages/', views.UserMessages.as_view(), name="my-messages"),
+    path('api/my-trips/', views.UserTrips.as_view(), name="my-trips"),
 
     path('api/current-user/', views.CurrentUser.as_view(), name="current-user"),
     path('api/my-profile/', views.UserProfile.as_view(), name="my-profile"),
