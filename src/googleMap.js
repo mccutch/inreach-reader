@@ -173,7 +173,7 @@ export class GoogleMapWrapper extends React.Component{
       if(this.props.points){
         for(let i in this.props.points){
           console.log(this.props.points[i])
-          boundaryPoints.push(this.props.points[i]);
+          boundaryPoints.push(this.props.points[i].location);
         }
       }
       if(this.props.paths){
@@ -187,6 +187,7 @@ export class GoogleMapWrapper extends React.Component{
 
     console.log(boundaryPoints)
     if(boundaryPoints.length<=1){
+      console.log(boundaryPoints[0])
       this.map.setCenter(boundaryPoints[0]?boundaryPoints[0]:DEFAULT_MAP_CENTER)
       return
     }
@@ -240,7 +241,11 @@ export class GoogleMapWrapper extends React.Component{
     var gMaps = window.google.maps
 
     for(let i in this.props.points){
-      new gMaps.Marker({position:this.props.points[i], map: this.map})
+      new gMaps.Marker({
+        position:this.props.points[i].location, 
+        label:this.props.points[i].label, 
+        map: this.map
+      })
     }
   }
 

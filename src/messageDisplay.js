@@ -50,10 +50,10 @@ export class MessageModalView extends React.Component{
         <p>Location: {message.lat},{message.lon}</p>
         <p>{this.state.showOriginal ? message.original : message.message}</p>
 
-        <button className="btn btn-outline-info btn-sm my-1" onClick={()=>this.setState({showOriginal:!this.state.showOriginal})}>
-          <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
-        </button>
-        <GoogleMapWrapper id={"messageMap"} points={[{lat:message.lat, lng:message.lon}]}/>
+        {/*<button className="btn btn-outline-info btn-sm my-1" onClick={()=>this.setState({showOriginal:!this.state.showOriginal})}>
+                  <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
+                </button>*/}
+        <GoogleMapWrapper id={"messageMap"} points={[{label:null, location:{lat:message.lat, lng:message.lon}}]}/>
       </div>
 
     let footer = 

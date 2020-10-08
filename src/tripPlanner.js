@@ -14,7 +14,6 @@ export class TripPlanner extends React.Component{
     let existing = this.props.trip ? this.props.trip : null
 
     this.state={
-      showMap:existing&&JSON.parse(existing.points).length>0 ? true : false,
       showOverdue: existing&&existing.overdue ? true : false,
 
       name:existing ? existing.name : null,
@@ -23,8 +22,19 @@ export class TripPlanner extends React.Component{
       overdue:existing&&existing.overdue ? parseISODate(existing.overdue) : null,
       description:existing ? existing.description : null,
       overdueInstructions:existing&&existing.instructions ? existing.instructions : null,
-      points:existing ? JSON.parse(existing.points) : [],
+      //points:existing ? JSON.parse(existing.points) : [],
     }
+    try{
+      let points = JSON.parse(existing.points)
+      if(points.length>0){
+        this.state['points']=points
+        this.state['showMap']=true
+      }
+    }catch{
+      this.state['points']=[]
+      this.state['showMap']=false
+    }
+
     this.validateInputs=this.validateInputs.bind(this)
     this.returnError=this.returnError.bind(this)
     this.handleChange=this.handleChange.bind(this)
