@@ -12,7 +12,7 @@ export class TripPlanner extends React.Component{
   constructor(props){
     super(props)
     this.state={
-      showMap:true,
+      showMap:false,
       showOverdue:false,
 
       depart:today({roundToMins:20}),
@@ -182,6 +182,11 @@ export class TripPlanner extends React.Component{
                   <textarea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" onChange={this.handleChange}/>
                 </div>
               }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              {!this.state.showMap && <button className="btn text-left text-light btn-info btn-block my-2" onClick={()=>{this.setState({showMap:true})}}>+ Add a map</button>}
             </div>
           </div>
           <div className="row">

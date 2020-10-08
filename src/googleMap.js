@@ -255,6 +255,7 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   render(){
+    let btnColour = "warning"
     return(
       <div>
         {this.props.editable && 
@@ -268,13 +269,13 @@ export class GoogleMapWrapper extends React.Component{
                                   <button className={`btn btn-${(this.state.mode==="editPath"&&!this.state.locked)?"":"outline-"}teal btn-block`} onClick={()=>this.setState({mode:"editPath"})}>Route</button>
                                 </div>*/}
                 <div className="col">
-                  <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}teal btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Add Points</button>
+                  <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Add Points</button>
                 </div>
                 <div className="col">
-                  <button className={`btn btn-outline-teal btn-block`} onClick={this.undo}>Undo</button>
+                  <button className={`btn btn-outline-${btnColour} btn-block`} onClick={this.undo}>Undo</button>
                 </div>
                 <div className="col">
-                  <button className={`btn btn-${this.state.locked?"":"outline-"}teal btn-block`} onClick={this.toggleMapLock}>{this.state.locked?"Unlock":"Lock"}</button>
+                  <button className={`btn btn-${this.state.locked?"":"outline-"}${btnColour} btn-block`} onClick={this.toggleMapLock}>{this.state.locked?"Unlock":"Lock"}</button>
                 </div>
               </div>
             </div>
