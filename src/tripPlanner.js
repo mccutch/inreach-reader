@@ -250,6 +250,7 @@ export class TripPlanner extends React.Component{
               <GoogleMapWrapper 
                 id = {"baseMap"}
                 editable={true}
+                points={this.state.points}
                 initialMode="editPoints"
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}

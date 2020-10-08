@@ -10,7 +10,7 @@ export class GoogleMapWrapper extends React.Component{
     super(props)
     this.state = {
       mode:this.props.initialMode,
-      locked:false,
+      locked:this.props.points!==[]||this.props.paths!==[] ? true:false,
       points:[],
       labelIndex:0,
     }
@@ -58,7 +58,7 @@ export class GoogleMapWrapper extends React.Component{
         });
       this.map = map
 
-      if(this.props.points){this.setMapBounds(this.props.points)}
+      //if(this.props.points){this.setMapBounds(this.props.points)}
       
       if(this.props.searchBox){
         console.log("Initialising Autocomplete inputs.")
@@ -82,7 +82,6 @@ export class GoogleMapWrapper extends React.Component{
       }
 
       map.addListener("click", this.handleClick)
-      //map.addListener("dragend", this.handleDragEnd)
       
     } else {
       console.log("window.google not defined")
@@ -105,7 +104,9 @@ export class GoogleMapWrapper extends React.Component{
     }else if(mode==="editPath"){
       this.addWaypoint(pt)
     }else if(mode==="editPoints"){
-      this.addPoint(pt)
+      //A,B,C,...Z,A1,B1,...Z1,A2,B2,...
+      let label = `${markerLabels[this.state.labelIndex%markerLabels.length]}${this.state.labelIndex>=markerLabels.length?`${Math.floor(this.state.labelIndex/markerLabels.length)}`:""}`
+      this.addPoint({position:pt,label:label})
     }else{
       console.log("No valid mode")
     }
@@ -118,19 +119,18 @@ export class GoogleMapWrapper extends React.Component{
 
   addPoint(pt){
     let gMaps = window.google.maps
-    //A,B,C,...Z,A1,B1,...Z1,A2,B2,...
-    let label = `${markerLabels[this.state.labelIndex%markerLabels.length]}${this.state.labelIndex>=markerLabels.length?`${Math.floor(this.state.labelIndex/markerLabels.length)}`:""}`
-    
+    console.log(pt)
+   
     let newPt = new gMaps.Marker({
-      position:pt, 
-      map: this.map, 
-      draggable:true,
-      label:label,
+      position:pt.position, 
+      map:this.map, 
+      draggable:!this.state.locked,
+      label:pt.label,
     })
 
     newPt.addListener('dragend', this.returnPoints); 
     this.state.points.push(newPt)
-    this.setState({labelIndex:this.state.labelIndex+1},this.returnPoints)
+    this.setState({labelIndex:this.state.points.length},this.returnPoints)
   }
 
   undo(){
@@ -146,6 +146,7 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   returnPoints(){
+    if(!this.props.returnPoints) return;
     let ptsList=[]
     for(let i in this.state.points){
       ptsList.push({position:this.state.points[i].getPosition().toJSON(), label:this.state.points[i].label})
@@ -168,12 +169,14 @@ export class GoogleMapWrapper extends React.Component{
   setMapBounds(points){
     let boundaryPoints=[]
     if(points){
+      console.log(points)
       boundaryPoints=points
     } else{
       if(this.props.points){
+        console.log("Prop points found")
         for(let i in this.props.points){
           console.log(this.props.points[i])
-          boundaryPoints.push(this.props.points[i].location);
+          boundaryPoints.push(this.props.points[i].position);
         }
       }
       if(this.props.paths){
@@ -240,12 +243,10 @@ export class GoogleMapWrapper extends React.Component{
   plotPoints(){
     var gMaps = window.google.maps
 
-    for(let i in this.props.points){
-      new gMaps.Marker({
-        position:this.props.points[i].location, 
-        label:this.props.points[i].label, 
-        map: this.map
-      })
+    let clone = Object.assign({},this.props.points)
+    console.log(clone)
+    for(let i in clone){
+      this.addPoint(clone[i])
     }
   }
 
