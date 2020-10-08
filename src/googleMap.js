@@ -280,7 +280,7 @@ export class GoogleMapWrapper extends React.Component{
             </div>
           </div>
         }
-        <div id={this.props.id} style={{height:"300px", width:"100"}}></div>
+        <div id={this.props.id} style={{height:"100vh"}}></div>
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>
     )
