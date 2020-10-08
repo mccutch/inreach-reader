@@ -1,5 +1,8 @@
 import React from 'react';
-import {MessageDisplayView} from './objectDisplayViews.js';
+import {MessageDisplayButton} from './objectDisplayViews.js';
+import {displayISODate, displayISOTime} from './dateFunctions.js';
+import {GoogleMapWrapper} from './googleMap.js';
+import {StandardModal} from './reactComponents.js';
 
 export class MessageList extends React.Component{
 
@@ -14,7 +17,7 @@ export class MessageList extends React.Component{
     let messages=this.props.messages
     for(let i in messages){
       returnList.push(
-        <MessageDisplayView message={messages[i]} app={this.props.app}/>
+        <MessageDisplayButton message={messages[i]} app={this.props.app}/>
       )
     }
     return returnList
@@ -27,5 +30,37 @@ export class MessageList extends React.Component{
         {this.buildList()}
       </div>
     )
+  }
+}
+
+
+export class MessageModalView extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {showOriginal:false}
+  }
+
+  render(){
+    let message = this.props.message
+
+    let title = <div>{message.sender ? message.sender : "Message"}</div>
+    let body = 
+      <div>
+        <p><strong>{displayISODate(message.date)} - {displayISOTime(message.date)}</strong></p>
+        <p>Location: {message.lat},{message.lon}</p>
+        <p>{this.state.showOriginal ? message.original : message.message}</p>
+
+        <button className="btn btn-outline-info btn-sm my-1" onClick={()=>this.setState({showOriginal:!this.state.showOriginal})}>
+          <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
+        </button>
+        <GoogleMapWrapper id={"messageMap"} points={[{lat:message.lat, lng:message.lon}]}/>
+      </div>
+
+    let footer = 
+      <div>
+        {message.mapshare ? <button className="btn btn-outline-primary"><a href={message.mapshare} target="_blank" >Garmin Mapshare</a></button> : ""}
+      </div>
+
+    return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal} />
   }
 }

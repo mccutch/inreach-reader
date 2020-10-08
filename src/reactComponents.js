@@ -6,11 +6,14 @@ import {Link} from 'react-router-dom';
 export class WarningModal extends React.Component{
   render(){
     let title = <div>Are you sure?</div>
-    let body = 
+    let body = this.props.body ?
+      this.props.body
+      :
       <div>
         <p>The following warnings were found:</p>
         {this.props.warnings}
       </div>
+      
     let footer = 
       <div>
         <button className="btn btn-outline-danger m-2" onClick={this.props.hideModal}>Cancel</button>

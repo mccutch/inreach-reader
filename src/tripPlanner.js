@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import {GoogleMapWrapper} from './googleMap.js';
-import {today, TimeInputButton} from './dateFunctions.js';
+import {today, TimeInputButton, parseISODate} from './dateFunctions.js';
 import {StandardModal, PendingBtn, WarningModal} from './reactComponents.js';
 import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
@@ -11,14 +11,19 @@ export class TripPlanner extends React.Component{
 
   constructor(props){
     super(props)
+    let existing = this.props.trip ? this.props.trip : null
+
     this.state={
-      showMap:false,
-      showOverdue:false,
+      showMap:existing&&JSON.parse(existing.points).length>0 ? true : false,
+      showOverdue: existing&&existing.overdue ? true : false,
 
-      depart:today({roundToMins:20}),
-      return:today({addDays:2, setHour:19}),
-
-      points:[],
+      name:existing ? existing.name : null,
+      depart:existing ? parseISODate(existing.departs) : today({roundToMins:20}),
+      return:existing ? parseISODate(existing.returns) : today({addDays:2, setHour:19}),
+      overdue:existing&&existing.overdue ? parseISODate(existing.overdue) : null,
+      description:existing ? existing.description : null,
+      overdueInstructions:existing&&existing.instructions ? existing.instructions : null,
+      points:existing ? JSON.parse(existing.points) : [],
     }
     this.validateInputs=this.validateInputs.bind(this)
     this.returnError=this.returnError.bind(this)
@@ -26,6 +31,8 @@ export class TripPlanner extends React.Component{
     this.saveTrip=this.saveTrip.bind(this)
     this.handleSuccess=this.handleSuccess.bind(this)
     this.handlePostFailure=this.handlePostFailure.bind(this)
+    this.confirmDelete=this.confirmDelete.bind(this)
+    this.delete=this.delete.bind(this)
   }
 
   returnError(message){
@@ -38,6 +45,29 @@ export class TripPlanner extends React.Component{
 
   handleChange(event){
     this.setState({[event.target.name]:event.target.value})
+  }
+
+  confirmDelete(){
+    this.setState({pending:true})
+    this.props.app.setModal(
+      <WarningModal 
+        body={<div>Are you sure you want to delete this trip?</div>} 
+        continue={()=>{this.props.app.hideModal(); this.delete()}}
+        hideModal={()=>{this.props.app.hideModal(); this.returnError("")}}
+      />)
+  }
+
+  delete(){
+    console.log("DELETE")
+    apiFetch({
+      url:`${urls.TRIP}/${this.props.trip.id}/`,
+      method:"DELETE",
+      onSuccess:()=>{
+        this.props.app.refresh()
+        this.setState({redirect:urls.HOME})
+      },
+      onFailure:this.handlePostFailure,
+    })
   }
 
   validateInputs(){
@@ -80,6 +110,8 @@ export class TripPlanner extends React.Component{
   }
 
   saveTrip(){
+    let newTrip = this.props.trip ? false:true
+
     let tripData={
       name:this.state.name,
       departs:this.state.depart.toISOString(),
@@ -96,8 +128,8 @@ export class TripPlanner extends React.Component{
     console.log(tripData)
 
     apiFetch({
-      url:urls.MY_TRIPS,
-      method:"POST",
+      url:newTrip ? urls.MY_TRIPS : `${urls.TRIP}/${this.props.trip.id}/`,
+      method:newTrip ? "POST" : "PATCH",
       data:tripData,
       onSuccess:this.handleSuccess,
       onFailure:this.handlePostFailure,
@@ -107,12 +139,13 @@ export class TripPlanner extends React.Component{
   handleSuccess(newTrip){
     console.log("TRIP SAVED!")
     console.log(newTrip)
+    this.props.app.refresh()
     this.setState({redirect:urls.HOME})
   }
 
   handlePostFailure(error){
     console.log(error)
-    this.returnError("Unable to save.")
+    this.returnError(`Unable to save${this.props.trip ? " changes":""}.`)
   }
 
   render(){
@@ -122,7 +155,7 @@ export class TripPlanner extends React.Component{
         <div className="form bg-dark text-light p-2">
           <div className="row">
             <div className="col-lg">
-              <input name="name" className="form-control my-2" type="text" placeholder="Trip name" onChange={this.handleChange}/>
+              <input name="name" className="form-control my-2" type="text" placeholder="Trip name" defaultValue={this.state.name} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="row">
@@ -171,7 +204,7 @@ export class TripPlanner extends React.Component{
           <div className="row">
             <div className="col">
               Trip description
-              <textarea name="description" className="form-control my-2" placeholder="Trip description" rows="3" onChange={this.handleChange}/>
+              <textarea name="description" className="form-control my-2" placeholder="Trip description" rows="3" defaultValue={this.state.description} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="row">
@@ -179,7 +212,7 @@ export class TripPlanner extends React.Component{
               {this.state.showOverdue &&
                 <div>
                   Overdue instructions
-                  <textarea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" onChange={this.handleChange}/>
+                  <textarea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" defaultValue={this.state.overdueInstructions} onChange={this.handleChange}/>
                 </div>
               }
             </div>
@@ -192,7 +225,14 @@ export class TripPlanner extends React.Component{
           <div className="row">
             <div className="col">
               <p className="text-light"><strong>{this.state.errorMessage}</strong></p>
-              <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-success my-2" onClick={this.validateInputs}>Save trip</PendingBtn>
+              {this.props.trip &&
+                <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-danger m-2" onClick={this.confirmDelete}>
+                  Delete
+                </PendingBtn>
+              }
+              <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-success m-2" onClick={this.validateInputs}>
+                {this.props.trip ? "Save changes" : "Save trip"}
+              </PendingBtn>
             </div>
             
           </div>

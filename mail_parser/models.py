@@ -11,6 +11,9 @@ class InReachMessage(models.Model):
     message = models.TextField(default="None")
     mapshare = models.URLField(default="#")
     original = models.TextField(default="None")
+
+    class Meta:
+        ordering = ["-date"]
     
     def __str__(self):
         """String for representing the Model object."""
@@ -34,6 +37,9 @@ class Trip(models.Model):
     description = models.TextField(default="None")
     instructions = models.TextField(default="None")
     points = models.TextField(default="")
+
+    class Meta:
+        ordering = ["-departs"]
 
     def __str__(self):
         """String for representing the Model object."""

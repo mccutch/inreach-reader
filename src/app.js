@@ -10,8 +10,9 @@ import * as urls from './urls.js';
 import {clearToken} from './myJWT.js';
 import {LoginForm, demoLogin} from './loginWrapper.js';
 import {RegistrationForm} from './registrationForm.js';
-import {apiFetch} from './helperFunctions.js';
+import {apiFetch, getObject} from './helperFunctions.js';
 import {MessageList} from './messageDisplay.js';
+import {TripList} from './tripDisplay.js'
 import {TripPlanner} from './tripPlanner.js';
 import {GoogleMapWrapper} from './googleMap.js';
 /*
@@ -27,6 +28,7 @@ export class App extends React.Component{
     this.state={
       loggedIn:false,
       modal:null,
+      editTrip:null,
     }
     this.setModal=this.setModal.bind(this)
     this.hideModal=this.hideModal.bind(this)
@@ -34,6 +36,7 @@ export class App extends React.Component{
     this.handleLogout=this.handleLogout.bind(this)
     this.handleNavClick=this.handleNavClick.bind(this)
     this.fetchUserProfile=this.fetchUserProfile.bind(this)
+    this.editTrip=this.editTrip.bind(this)
   }
 
   componentDidMount(){
@@ -86,8 +89,15 @@ export class App extends React.Component{
     }
   }
 
+  editTrip(trip){
+    this.setState({
+      editTrip:trip,
+    })
+  }
+
   render(){
     let appFunctions = {
+      refresh:this.fetchUserProfile,
       hideModal:this.hideModal, 
       setModal:this.setModal,
     }
@@ -95,9 +105,8 @@ export class App extends React.Component{
     return(
       <Router>
         <BootstrapNavBar
+          app={appFunctions}
           loggedIn={this.state.loggedIn}
-          setModal={this.setModal}
-          hideModal={this.hideModal}
           onClick={this.handleNavClick}
         />
         {this.state.modal}
@@ -106,6 +115,11 @@ export class App extends React.Component{
               {this.state.loggedIn ?
                 <div>
                   <p>Hola {this.state.user.username}</p>
+                  <TripList
+                    trips={this.state.trips}
+                    app={appFunctions}
+                    onClick={this.editTrip}
+                  />
                   <MessageList 
                     messages={this.state.messages} 
                     app={appFunctions}
@@ -120,6 +134,7 @@ export class App extends React.Component{
             </Route>
             <Route path={urls.PLANNER}>
               <TripPlanner
+                trip={this.state.editTrip}
                 app={appFunctions}
               />
             </Route>

@@ -25,7 +25,7 @@ export function displayDate(dt){
   return dt.toDateString()
 }
 
-function parseISODate(dtStr){
+export function parseISODate(dtStr){
   var D = dtStr.split(/\D+/);
   return new Date(Date.UTC(D[0], --D[1], D[2], D[3], D[4], D[5], D[6]));
 }

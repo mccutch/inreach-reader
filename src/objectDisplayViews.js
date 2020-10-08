@@ -2,12 +2,13 @@ import React from 'react';
 import {Badge} from 'react-bootstrap';
 import * as urls from './urls.js';
 import {getAttribute} from './helperFunctions.js';
-import {displayISODate, displayISOTime} from './dateFunctions.js'
-import {StandardModal} from './reactComponents.js';
-import {GoogleMapWrapper} from './googleMap.js';
+import {displayISODate, displayISOTime} from './dateFunctions.js';
 
 
-class ObjectDisplayView extends React.Component{
+import {MessageModalView} from './messageDisplay.js';
+
+
+class ObjectDisplayButton extends React.Component{
 
   render(){
     let icon = 
@@ -48,12 +49,12 @@ class ObjectDisplayView extends React.Component{
   }
 }
 
-export class MessageDisplayView extends React.Component{
+export class MessageDisplayButton extends React.Component{
   render(){
     let message = this.props.message
 
     return (
-      <ObjectDisplayView
+      <ObjectDisplayButton
         primaryText={`${displayISODate(message.date)}`}
         secondaryText={message.message}
         primaryRight={`${displayISOTime(message.date)}`}
@@ -67,36 +68,23 @@ export class MessageDisplayView extends React.Component{
   }
 }
 
-export class MessageModalView extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {showOriginal:false}
-  }
-
+export class TripDisplayButton extends React.Component{
   render(){
-    let message = this.props.message
+    let trip = this.props.trip
 
-    let title = <div>{message.sender ? message.sender : "Message"}</div>
-    let body = 
-      <div>
-        <p><strong>{displayISODate(message.date)} - {displayISOTime(message.date)}</strong></p>
-        <p>Location: {message.lat},{message.lon}</p>
-        <p>{this.state.showOriginal ? message.original : message.message}</p>
-
-        <button className="btn btn-outline-info btn-sm my-1" onClick={()=>this.setState({showOriginal:!this.state.showOriginal})}>
-          <em>{this.state.showOriginal ? "Hide" : "Show original message"}</em>
-        </button>
-        <GoogleMapWrapper id={"messageMap"} points={[{lat:message.lat, lng:message.lon}]}/>
-      </div>
-
-    let footer = 
-      <div>
-        {message.mapshare ? <button className="btn btn-outline-primary"><a href={message.mapshare} target="_blank" >Garmin Mapshare</a></button> : ""}
-      </div>
-
-    return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal} />
+    return (
+      <ObjectDisplayButton
+        primaryText={`${trip.name}`}
+        secondaryText={`${displayISODate(trip.departs)}-${displayISODate(trip.returns)}`}
+        primaryRight={``}
+        secondaryRight={``}
+        iconSrc={urls.MOTORBIKE_ICON}
+        onClick={this.props.onClick ? this.props.onClick : null}
+      />
+    )
   }
 }
+
 
 
 

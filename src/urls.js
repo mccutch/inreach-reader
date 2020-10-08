@@ -17,6 +17,7 @@ export const MY_TRIPS = '/api/my-trips/'
 // DATABASE OBJECTS
 export const USER = '/api/user'
 export const PROFILE = '/api/profile'
+export const TRIP = './api/trip'
 
 
 

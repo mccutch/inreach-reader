@@ -14,6 +14,7 @@ export class BootstrapNavBar extends React.Component{
   }
 
   handleClick(event){
+    this.props.app.refresh()
     this.setState({collapsed:true})
     console.log(event.target.name)
     this.props.onClick(event.target.name)
@@ -76,7 +77,7 @@ export class BootstrapNavBar extends React.Component{
             //height="50"
             //className="d-inline-block align-middle"
           />{' '}
-          <CleanLink className="text-light" to="/">Backcountry Trip Tracer</CleanLink>
+          <CleanLink className="text-light" to="/" onClick={this.handleClick}>Backcountry Trip Tracer</CleanLink>
         </a>
         <button 
           className="navbar-toggler" 
