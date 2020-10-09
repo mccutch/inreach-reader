@@ -1,7 +1,7 @@
 import React from 'react';
-import {StandardModal} from './reactComponents.js';
+import {StandardModal, ObjectSelectionList} from './reactComponents.js';
 import {DEFAULT_MAP_CENTER} from './constants.js';
-import {importGoogleLibraries} from './helperFunctions.js';
+import {importGoogleLibraries, getObject} from './helperFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -10,9 +10,11 @@ export class GoogleMapWrapper extends React.Component{
     super(props)
     this.state = {
       mode:this.props.initialMode,
-      locked:this.props.points!==[]||this.props.paths!==[] ? true:false,
+      locked:(this.props.points&&this.props.points.length>0)||(this.props.paths&&this.props.paths.length>0),
       points:[],
+      paths:[],
       labelIndex:0,
+      activePath:null,
     }
 
     this.initGoogleMap=this.initGoogleMap.bind(this)  
@@ -31,9 +33,15 @@ export class GoogleMapWrapper extends React.Component{
     this.undo=this.undo.bind(this)
     this.toggleMapLock=this.toggleMapLock.bind(this)
 
-    this.addWaypoint=this.addWaypoint.bind(this)
+    this.addToPath=this.addToPath.bind(this)
+
+    this.addPoint=this.addPoint.bind(this)
+    this.addPath=this.addPath.bind(this)
 
     this.returnPoints=this.returnPoints.bind(this)
+    this.returnPath=this.returnPath.bind(this)
+
+    this.changeActivePath=this.changeActivePath.bind(this)
   }
 
   componentDidMount(){
@@ -97,41 +105,22 @@ export class GoogleMapWrapper extends React.Component{
     if(!this.props.editable || this.state.locked) return;
 
     let mode=this.state.mode
-    let pt=event.latLng.toJSON()
+    let latLng=event.latLng
 
     if(mode==="log"){
-      console.log(pt);
+      console.log(latLng.toJSON());
     }else if(mode==="editPath"){
-      this.addWaypoint(pt)
+      this.addToPath(latLng)
     }else if(mode==="editPoints"){
       //A,B,C,...Z,A1,B1,...Z1,A2,B2,...
       let label = `${markerLabels[this.state.labelIndex%markerLabels.length]}${this.state.labelIndex>=markerLabels.length?`${Math.floor(this.state.labelIndex/markerLabels.length)}`:""}`
-      this.addPoint({position:pt,label:label})
+      this.addPoint({position:latLng.toJSON(),label:label})
     }else{
       console.log("No valid mode")
     }
   }
 
-  addWaypoint(pt){
-    console.log(pt)
-    console.log(pt)
-  }
 
-  addPoint(pt){
-    let gMaps = window.google.maps
-    console.log(pt)
-   
-    let newPt = new gMaps.Marker({
-      position:pt.position, 
-      map:this.map, 
-      draggable:!this.state.locked,
-      label:pt.label,
-    })
-
-    newPt.addListener('dragend', this.returnPoints); 
-    this.state.points.push(newPt)
-    this.setState({labelIndex:this.state.points.length},this.returnPoints)
-  }
 
   undo(){
     if(this.state.locked) return;
@@ -142,6 +131,13 @@ export class GoogleMapWrapper extends React.Component{
       lastPoint.setMap(null)
       this.state.points.pop()
       this.setState({labelIndex:this.state.labelIndex-1}, this.returnPoints)
+    }
+    if(this.state.mode==="editPath"){
+      if(this.state.paths.length===0) return;
+      let gPath = this.state.activePath.gPath
+      if(gPath.getPath().getLength()>0){
+        gPath.getPath().pop()
+      }
     }
   }
 
@@ -181,8 +177,9 @@ export class GoogleMapWrapper extends React.Component{
       }
       if(this.props.paths){
         for(let i in this.props.paths){
-          for(let j in this.props.paths[i]){
-            boundaryPoints.push(this.props.paths[i][j])
+          let path = this.props.paths[i].path
+          for(let j in path){
+            boundaryPoints.push(path[j])
           }
         }
       }  
@@ -228,16 +225,30 @@ export class GoogleMapWrapper extends React.Component{
     var gMaps = window.google.maps
 
     for(let i in this.props.paths){
-      new gMaps.Polyline({
-        path: this.props.paths[i],
+      this.addPath(this.props.paths[i])
+    }
+  }
+
+  addPath({path, name}){
+    console.log(path)
+    console.log(name)
+    let gMaps = window.google.maps
+    let gPath = new gMaps.Polyline({
+        path: path,
         geodesic: true,
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
         strokeWeight: 2,
         map:this.map,
-        editable:this.props.editable,
+        editable:!this.state.locked,
       });
-    }
+    gPath.addListener('dragend', this.returnPath);
+    gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
+    gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
+    gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
+    let newPath = {name:name, gPath:gPath}
+    this.state.paths.push(newPath)
+    this.setState({activePath:newPath})
   }
 
   plotPoints(){
@@ -250,14 +261,74 @@ export class GoogleMapWrapper extends React.Component{
     }
   }
 
+  addToPath(latLng){
+    console.log([latLng.toJSON()])
+    let activePath = this.state.activePath
+    //let activePath = this.state.paths.length>0 ? getObject({objectList:this.state.paths, key:"name", keyValue:this.state.activePathName}) : null
+    if(activePath){
+      let gPath = activePath.gPath //polyline object
+      let path = gPath.getPath().push(latLng)
+    }else{
+      console.log("new path")
+      let newName = `Route ${this.state.paths.length+1}`
+      this.addPath({path:[latLng],name:newName})
+    }
+    this.returnPath(activePath)
+  }
+
+  returnPath(){
+    console.log("returnPath")
+    let pathList = this.state.paths
+
+    let allPaths = []
+    for(let i in pathList){
+      let gPath = pathList[i].gPath
+      let array = gPath.getPath().getArray()
+
+      let jsonList = []
+      for(let j in array){
+        jsonList.push(array[j].toJSON())
+      }
+      allPaths.push({path:jsonList, name:pathList[i].name})
+    }
+    this.props.returnPaths(allPaths)
+  }
+
+  addPoint(pt){
+    let gMaps = window.google.maps
+    console.log(pt)
+   
+    let newPt = new gMaps.Marker({
+      position:pt.position, 
+      map:this.map, 
+      draggable:!this.state.locked,
+      label:pt.label,
+    })
+
+    newPt.addListener('dragend', this.returnPoints); 
+    this.state.points.push(newPt)
+    this.setState({labelIndex:this.state.points.length},this.returnPoints)
+  }
+
   toggleMapLock(){  
     this.setState({locked:!this.state.locked},
       ()=>{
         for(let i in this.state.points){
           this.state.points[i].setDraggable(!this.state.locked)
         }
+        for(let i in this.state.paths){
+          this.state.paths[i].gPath.setEditable(!this.state.locked)
+        }
       }
     )
+  }
+
+  changeActivePath(name){
+    for(let i in this.state.paths){
+      if(this.state.paths[i].name===name){
+        this.setState({activePath:this.state.paths[i]})
+      }
+    }
   }
 
   render(){
@@ -271,9 +342,9 @@ export class GoogleMapWrapper extends React.Component{
             </div>
             <div className="col">
               <div className="row">
-                {/*<div className="col">
-                                  <button className={`btn btn-${(this.state.mode==="editPath"&&!this.state.locked)?"":"outline-"}teal btn-block`} onClick={()=>this.setState({mode:"editPath"})}>Route</button>
-                                </div>*/}
+                <div className="col">
+                  <button className={`btn btn-${(this.state.mode==="editPath"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPath",activePath:this.state.paths[0]})}>Route</button>
+                </div>
                 <div className="col">
                   <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Add Points</button>
                 </div>
@@ -284,6 +355,15 @@ export class GoogleMapWrapper extends React.Component{
                   <button className={`btn btn-${this.state.locked?"":"outline-"}${btnColour} btn-block`} onClick={this.toggleMapLock}>{this.state.locked?"Unlock":"Lock"}</button>
                 </div>
               </div>
+              {/*<div className="row">
+                {this.state.mode==="editPath" &&
+                  <div>
+                    <button className="btn btn-warning" onClick={()=>this.setState({activePath:null})}>New path</button>}
+                    <ObjectSelectionList list={this.state.paths} value="name" label="name" onChange={(e)=>this.changeActivePath(e.target.value)} />
+                  </div>
+                }
+              </div>
+            */}
             </div>
           </div>
         }

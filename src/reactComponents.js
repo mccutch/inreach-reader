@@ -13,7 +13,7 @@ export class WarningModal extends React.Component{
         <p>The following warnings were found:</p>
         {this.props.warnings}
       </div>
-      
+
     let footer = 
       <div>
         <button className="btn btn-outline-danger m-2" onClick={this.props.hideModal}>Cancel</button>
@@ -214,10 +214,13 @@ export class TabbedDisplay extends React.Component{
 
 export class ObjectSelectionList extends React.Component{
   render(){
+      //props: list, key, label, value, id, name, onChange, defaultValue
+
+
       let list = this.props.list;
       let listOptions = [];
       for(let i=0; i<list.length; i++){
-        let key = (this.props.keyValue ? list[i][this.props.keyValue] : i)
+        let key = (this.props.key ? list[i][this.props.key] : i)
 
         listOptions.push(
           <option 

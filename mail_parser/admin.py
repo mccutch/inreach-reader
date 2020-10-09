@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import InReachMessage, Profile
+from .models import InReachMessage, Profile, Trip
 
 # Register your models here.
 
@@ -11,3 +11,7 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(InReachMessage)
 class InReachMessageAdmin(admin.ModelAdmin):
     list_display = ('sender', 'date', 'lat', 'lon', 'message')
+
+@admin.register(Trip)
+class TripAdmin(admin.ModelAdmin):
+    list_display = ('name','departs','points','paths')

@@ -15,15 +15,19 @@ export class TripPlanner extends React.Component{
 
     this.state={
       showOverdue: existing&&existing.overdue ? true : false,
+      showMap:false,
 
       name:existing ? existing.name : null,
       depart:existing ? parseISODate(existing.departs) : today({roundToMins:20}),
       return:existing ? parseISODate(existing.returns) : today({addDays:2, setHour:19}),
       overdue:existing&&existing.overdue ? parseISODate(existing.overdue) : null,
-      description:existing ? existing.description : null,
+      description:existing ? existing.description : "",
       overdueInstructions:existing&&existing.instructions ? existing.instructions : null,
-      //points:existing ? JSON.parse(existing.points) : [],
+      paths:existing ? JSON.parse(existing.paths) : [],
+      points:existing ? JSON.parse(existing.points) : [],
     }
+
+    /*
     try{
       let points = JSON.parse(existing.points)
       if(points.length>0){
@@ -34,6 +38,7 @@ export class TripPlanner extends React.Component{
       this.state['points']=[]
       this.state['showMap']=false
     }
+    */
 
     this.validateInputs=this.validateInputs.bind(this)
     this.returnError=this.returnError.bind(this)
@@ -43,6 +48,10 @@ export class TripPlanner extends React.Component{
     this.handlePostFailure=this.handlePostFailure.bind(this)
     this.confirmDelete=this.confirmDelete.bind(this)
     this.delete=this.delete.bind(this)
+  }
+
+  componentDidMount(){
+    this.setState({showMap:(this.state.points.length>0||this.state.paths.length>0)})
   }
 
   returnError(message){
@@ -81,6 +90,8 @@ export class TripPlanner extends React.Component{
   }
 
   validateInputs(){
+    console.log(JSON.stringify(this.state.paths))
+
     this.setState({errorMessage:"", pending:true,})
     
     // ERRORS
@@ -128,7 +139,9 @@ export class TripPlanner extends React.Component{
       returns:this.state.return.toISOString(),
       description:this.state.description,
       points:JSON.stringify(this.state.points),
+      paths:JSON.stringify(this.state.paths),
     }
+
 
     if(this.state.overdue){
       tripData['overdue']=this.state.overdue.toISOString()
@@ -251,9 +264,11 @@ export class TripPlanner extends React.Component{
                 id = {"baseMap"}
                 editable={true}
                 points={this.state.points}
-                initialMode="editPoints"
+                paths={this.state.paths}
+                initialMode="editPath"
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}
+                returnPaths={(allPaths)=>this.setState({paths:allPaths})}
               />
               : ""
             }

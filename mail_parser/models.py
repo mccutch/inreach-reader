@@ -34,16 +34,17 @@ class Trip(models.Model):
     departs = models.DateTimeField()
     returns = models.DateTimeField()
     overdue = models.DateTimeField(null=True)
-    description = models.TextField(default="None")
-    instructions = models.TextField(default="None")
-    points = models.TextField(default="")
+    description = models.TextField(default="", blank=True)
+    instructions = models.TextField(default="", blank=True)
+    points = models.TextField(default="[]")
+    paths = models.TextField(default="[]")
 
     class Meta:
         ordering = ["-departs"]
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.name}: {self.departDate}'
+        return f'{self.name}: {self.departs}'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
