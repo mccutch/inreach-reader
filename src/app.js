@@ -1,5 +1,5 @@
 import React from 'react';
-import {BootstrapNavBar} from './navBar.js';
+import {NavbarUser} from './navBar.js';
 import {
   HashRouter as Router,
   Switch,
@@ -78,6 +78,7 @@ export class App extends React.Component{
   }
 
   handleNavClick(nav){
+    this.fetchUserProfile()
     if(nav==="login"){
       this.setModal(<LoginForm onSuccess={this.fetchUserProfile} hideModal={this.hideModal}/>)
     }else if(nav==="logout"){
@@ -104,8 +105,7 @@ export class App extends React.Component{
 
     return(
       <Router>
-        <BootstrapNavBar
-          app={appFunctions}
+        <NavbarUser
           loggedIn={this.state.loggedIn}
           onClick={this.handleNavClick}
         />

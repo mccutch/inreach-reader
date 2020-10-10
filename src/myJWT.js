@@ -22,14 +22,16 @@ export function getToken({data, onSuccess, onFailure}){
 }
 
 export function clearToken({onSuccess, }){
+  console.log("Logging out")
   localStorage.setItem('access', '')
   localStorage.setItem('refresh', '')
-  caches.delete(USER_CACHE).then(function(found){
+  /*caches.delete(USER_CACHE).then(function(found){
     console.log(`Cache deleted, found :${found}`)
     if(onSuccess){
       onSuccess()
     }
-  })
+  })*/
+  if(onSuccess) onSuccess();
 }
 
 export function refreshToken({onSuccess, onFailure}){

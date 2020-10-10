@@ -6,7 +6,8 @@ import * as urls from './urls.js';
 
 
 
-export class BootstrapNavBar extends React.Component{
+export class NavbarUser extends React.Component{
+
   constructor(props){
     super(props)
     this.state={collapsed:true}
@@ -14,23 +15,17 @@ export class BootstrapNavBar extends React.Component{
   }
 
   handleClick(event){
-    this.props.app.refresh()
     this.setState({collapsed:true})
-    console.log(event.target.name)
     this.props.onClick(event.target.name)
   }
 
   render(){
-
-
     // All users
-    //let about = <NavLink to="/about" activeClassName="active">About</NavLink>/*<Nav.Link key="about" name="about" onClick={this.handleClick}>About</Nav.Link>*/
     let contact = <Nav.Link>
                     <CleanLink to={urls.CONTACT} className="text-light" activeClassName="active" onClick={this.handleClick}>Contact</CleanLink>
                   </Nav.Link>
 
     let demoUser = <Nav.Link key="demoUser" name="demoUser" className="text-light" onClick={this.handleClick}>Demo User</Nav.Link>
-
 
     let logout = <Nav.Link key="logout" name="logout"  className="text-light" onClick={this.handleClick}>Logout</Nav.Link>
 
@@ -68,32 +63,51 @@ export class BootstrapNavBar extends React.Component{
     let navColour = (this.props.serverError ? "secondary":"banner")
 
     return(
-      <nav className={`navbar navbar-expand-lg navbar-dark bg-${navColour}`}>
+      <BootstrapNavBar
+        title={"Trip Tracer Dashboard"}
+        icon={urls.BEAR_ICON}
+        onClick={this.props.onClick}
+        navLeft={navLeft}
+        navRight={navRight}
+        navColour={navColour}
+        style={'navbar-dark'}
+        homeUrl={urls.HOME}
+        collapsed={this.state.collapsed}
+        toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
+      />
+    )
+  }
+}
+
+export class BootstrapNavBar extends React.Component{
+
+  render(){
+
+    return(
+      <nav className={`navbar navbar-expand-lg ${this.props.style} bg-${this.props.navColour}`}>
         <a className="navbar-brand">
           <img
             alt=""
-            src={urls.BEAR_ICON}
+            src={this.props.icon}
             width="40"
-            //height="50"
-            //className="d-inline-block align-middle"
           />{' '}
-          <CleanLink className="text-light" to="/" onClick={this.handleClick}>Backcountry Trip Tracer</CleanLink>
+          <CleanLink className="text-light" to={this.props.homeUrl} onClick={this.handleClick}>{this.props.title}</CleanLink>
         </a>
         <button 
           className="navbar-toggler" 
           type="button" 
-          dataToggle="collapse" 
-          dataTarget="#navbarTogglerDemo02" 
-          ariaControls="navbarTogglerDemo02" 
-          ariaExpanded="false" 
+          //dataToggle="collapse" 
+          //dataTarget="#navbarTogglerDemo02" 
+          //ariaControls="navbarTogglerDemo02" 
+          //ariaExpanded="false" 
           ariaLabel="Toggle navigation"
-          onClick={()=>{this.setState({collapsed:!this.state.collapsed})}}
+          onClick={this.props.toggle}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className={`navbar-collapse ${this.state.collapsed?'collapse':""}`} id="navbarTogglerDemo02">
-          {navLeft}
-          {navRight}
+        <div className={`navbar-collapse ${this.props.collapsed?'collapse':""}`}>
+          {this.props.navLeft}
+          {this.props.navRight}
         </div>
       </nav>
     )
