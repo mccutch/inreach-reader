@@ -14,10 +14,10 @@ export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'
 export const MY_TRIPS = '/api/my-trips/'
 
-// DATABASE OBJECTS
-export const USER = '/api/user/'
-export const PROFILE = '/api/profile/'
-export const TRIP = './api/trip/'
+// DATABASE OBJECTS - No trailing slash
+export const USER = '/api/user'//pk
+export const PROFILE = '/api/profile'//pk
+export const TRIP = './api/trip'//pk
 
 
 
