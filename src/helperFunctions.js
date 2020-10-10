@@ -139,7 +139,7 @@ export function testServer({onSuccess, onFailure}){
 }*/
 
 
-export function apiFetch({method, data, url, onSuccess, onFailure, noAuth}){
+export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, shouldRetry=true}){
   // SET HEADERS - No authorisation required for some APIs
   let headers 
   if(noAuth){
@@ -194,7 +194,7 @@ export function apiFetch({method, data, url, onSuccess, onFailure, noAuth}){
     if(onSuccess){onSuccess(json)}
   }).catch(error => {
     console.log(error.message)
-    if(error.message==='401' && url!=urls.REFRESH_TOKEN){
+    if(error.message==='401' && url!=urls.REFRESH_TOKEN && shouldRetry){
       refreshToken({
         onSuccess:()=>{
           apiFetch({
@@ -204,6 +204,7 @@ export function apiFetch({method, data, url, onSuccess, onFailure, noAuth}){
             onSuccess:onSuccess,
             onFailure:onFailure,
             noAuth:noAuth,
+            shouldRetry:false,
           })
         },
         onFailure:onFailure,
