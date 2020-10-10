@@ -1,23 +1,23 @@
 
-
+//// IMPORTANT!!!! Forgetting the trailing slash on API endpoint urls can give an authentication error, only on Safari??
 
 // JWT FUNCTIONS
 export const GET_TOKEN = '/token/'
 export const REFRESH_TOKEN = '/token/refresh/'
 
 
-export const LOGIN = '/api/login'
+export const LOGIN = '/api/login/'
 
 // DATABASE CREATE/GET
 
-export const CURRENT_USER = '/api/current-user'
+export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'
 export const MY_TRIPS = '/api/my-trips/'
 
 // DATABASE OBJECTS
-export const USER = '/api/user'
-export const PROFILE = '/api/profile'
-export const TRIP = './api/trip'
+export const USER = '/api/user/'
+export const PROFILE = '/api/profile/'
+export const TRIP = './api/trip/'
 
 
 
