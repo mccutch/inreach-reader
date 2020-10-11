@@ -22,6 +22,8 @@ export function checkUniqueUser({username, email, onSuccess, onFailure}){
   return null
 }
 
+
+
 export function checkPasswordStrength(password){
   //const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?!@#$%^&*])(?=.{8,})") 
   const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})")

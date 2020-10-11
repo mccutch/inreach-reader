@@ -9,7 +9,6 @@ export const REFRESH_TOKEN = '/token/refresh/'
 export const LOGIN = '/api/login/'
 
 // DATABASE CREATE/GET
-
 export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'
 export const MY_TRIPS = '/api/my-trips/'
@@ -20,6 +19,9 @@ export const PROFILE = '/api/profile'//pk
 export const TRIP = './api/trip'//pk
 
 
+// VIEWER APP
+export const VIEW_USER = 'api/view'//username
+
 
 // ACCOUNT/REGISTRATION - NOCACHE
 export const REGISTER = '/account/register/'
@@ -29,9 +31,12 @@ export const CHECK_USERNAME = '/registration/check-username/'
 export const CHECK_EMAIL = '/registration/check-email/'
 export const CHECK_UNIQUE = '/registration/check-unique/'
 
+
+// REACT-ROUTER
 export const HOME = '/'
 export const CONTACT = '/contact'
 export const PLANNER = '/planner'
+export const VIEWER = '/view'
 
 
 const ICON_LOC = '/static/svg/'

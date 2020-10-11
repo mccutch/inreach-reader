@@ -12,9 +12,10 @@ from . import serializers
 
 
 urlpatterns = [
-    # STATIC ASSETS
-    #path('', views.index, name='index'),
-    path('', TemplateView.as_view(template_name="index.html"), name='index'),   
+    path('', TemplateView.as_view(template_name="index.html"), name='index'),
+
+
+    path('api/view/<slug:username>/', views.ViewUser.as_view(), name='view-user'),
 
     path('api-auth/', include('rest_framework.urls')),
     path('token/', jwt_views.TokenObtainPairView.as_view(serializer_class=serializers.FlexibleJWTSerializer), name='token_obtain_pair'),

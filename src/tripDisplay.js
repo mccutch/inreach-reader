@@ -16,6 +16,9 @@ export class TripList extends React.Component{
     let trips=this.props.trips
     for(let i in trips){
       returnList.push(
+        this.props.viewOnly ?
+        <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick ? ()=>this.props.onClick(trips[i]) : null}/>
+        :
         <CleanLink to={urls.PLANNER}>
           <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick ? ()=>this.props.onClick(trips[i]) : null}/>
         </CleanLink>

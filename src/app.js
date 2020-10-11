@@ -15,6 +15,7 @@ import {MessageList} from './messageDisplay.js';
 import {TripList} from './tripDisplay.js'
 import {TripPlanner} from './tripPlanner.js';
 import {GoogleMapWrapper} from './googleMap.js';
+import {TripViewer, UserViewer} from './tripViewer.js';
 /*
 Login Process
 1. Get JWT access token
@@ -105,6 +106,8 @@ export class App extends React.Component{
 
     return(
       <Router>
+      
+             
         <NavbarUser
           loggedIn={this.state.loggedIn}
           onClick={this.handleNavClick}
@@ -137,6 +140,10 @@ export class App extends React.Component{
                 trip={this.state.editTrip}
                 app={appFunctions}
               />
+            </Route>
+            
+            <Route path="*">
+              <p>Sorry, not found</p>
             </Route>
         </Switch>
       </Router>

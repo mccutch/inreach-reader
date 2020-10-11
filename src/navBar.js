@@ -6,6 +6,79 @@ import * as urls from './urls.js';
 
 
 
+export class ViewerNavbar extends React.Component{
+
+  constructor(props){
+    super(props)
+    this.state={collapsed:true}
+    this.handleClick=this.handleClick.bind(this)
+  }
+
+  handleClick(event){
+    this.setState({collapsed:true})
+    this.props.onClick(event.target.name)
+  }
+
+  render(){
+    // All users
+    let contact = <Nav.Link>
+                    <CleanLink to={urls.CONTACT} className="text-light" activeClassName="active" onClick={this.handleClick}>Contact</CleanLink>
+                  </Nav.Link>
+
+    //let demoUser = <Nav.Link key="demoUser" name="demoUser" className="text-light" onClick={this.handleClick}>Demo User</Nav.Link>
+
+    let logout = <Nav.Link key="logout" name="logout"  className="text-light" onClick={this.handleClick}>Logout</Nav.Link>
+
+  
+    // Unauthenticated users
+    //let login = <Nav.Link key="login" name="login" className="text-light" onClick={this.handleClick}>Login</Nav.Link>
+    //let signUp = <Nav.Link key="signUp" name="register" className="text-light" onClick={this.handleClick}>Sign up</Nav.Link>
+    /*let planner = <Nav.Link>
+                    <CleanLink to={urls.PLANNER} className="text-light" activeClassName="active" onClick={this.handleClick}>Plan a Trip</CleanLink>
+                  </Nav.Link>
+    */
+
+    let navLeft
+    let navRight
+    if(this.props.loggedIn){
+      navLeft = 
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          {contact}
+        </ul>  
+      navRight = 
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          {logout}
+        </ul>
+    } else {
+      navLeft = 
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          {contact}
+        </ul>
+    }
+
+    let navColour = (this.props.serverError ? "secondary":"teal")
+
+    return(
+      <BootstrapNavBar
+        title={`Trip Tracer - ${this.props.username}`}
+        icon={urls.GREEN_TEA_ICON}
+        onClick={this.props.onClick}
+        navLeft={navLeft}
+        navRight={navRight}
+        navColour={navColour}
+        style={'navbar-dark'}
+        homeUrl={urls.HOME}
+        collapsed={this.state.collapsed}
+        toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
+      />
+    )
+  }
+}
+
+
+
+
+
 export class NavbarUser extends React.Component{
 
   constructor(props){

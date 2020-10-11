@@ -40,7 +40,36 @@ class Login(APIView):
         }
         return Response(content)
 
+class ViewUser(APIView):
+    permission_classes=(AllowAny,)
 
+    def get(self, request, username, format=None):
+
+        try:
+            user = User.objects.get(username=username)
+            userData = serializers.UserSerializer(user, context={'request':request}).data,
+        except:
+            return Response({})
+
+        try:
+            all_messages = user.messages.all()
+            messageData = serializers.InReachMessageSerializer(all_messages, many=True, context={'request':request}).data
+        except:
+            messageData = {}
+
+        try:
+            all_trips = user.trips.all()
+            tripData = serializers.TripSerializer(all_trips, many=True, context={'request':request}).data
+        except:
+            tripData = {}
+
+        content = {
+            "user":userData,
+            "trips":tripData,
+            "messages":messageData,
+        }
+
+        return Response(content)
 
 
 class PostNewMessage(generics.CreateAPIView):
