@@ -139,16 +139,16 @@ export function testServer({onSuccess, onFailure}){
 }*/
 
 
-export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, shouldRetry=true}){
+export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, contentType='application/json', shouldRetry=true}){
   // SET HEADERS - No authorisation required for some APIs
   let headers 
   if(noAuth){
     headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType,
     }
   } else {
     headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType,
       Authorization: "Bearer "+localStorage.getItem('access'),
     }
   }

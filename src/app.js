@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavbarUser} from './navBar.js';
+import {DashboardNavbar} from './navBar.js';
 import {
   HashRouter as Router,
   Switch,
@@ -15,7 +15,6 @@ import {MessageList} from './messageDisplay.js';
 import {TripList} from './tripDisplay.js'
 import {TripPlanner} from './tripPlanner.js';
 import {GoogleMapWrapper} from './googleMap.js';
-import {TripViewer, UserViewer} from './tripViewer.js';
 /*
 Login Process
 1. Get JWT access token
@@ -23,7 +22,7 @@ Login Process
 3. Set this.state.loggedIn
 */
 
-export class App extends React.Component{
+export class DashboardApp extends React.Component{
   constructor(props){
     super(props)
     this.state={
@@ -105,16 +104,14 @@ export class App extends React.Component{
     }
 
     return(
-      <Router>
-      
-             
-        <NavbarUser
+      <Router>     
+        <DashboardNavbar
           loggedIn={this.state.loggedIn}
           onClick={this.handleNavClick}
         />
         {this.state.modal}
         <Switch>
-            <Route exact path={urls.HOME}>
+            <Route exact path={urls.DASHBOARD}>
               {this.state.loggedIn ?
                 <div>
                   <p>Hola {this.state.user.username}</p>

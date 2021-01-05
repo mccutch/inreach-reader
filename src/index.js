@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './custom.scss';
 import * as serviceWorker from './serviceWorker';
-import {App} from './app.js';
+import {DashboardApp} from './app.js';
 import * as urls from './urls.js';
 import {ViewerApp} from './viewerApp.js';
+import{BaseApp} from './baseApp.js';
 import {
   HashRouter as Router,
   Switch,
@@ -15,13 +16,19 @@ import {
 ReactDOM.render(
   <Router>
     <Switch>
-        <Route 
-          path={`${urls.VIEWER}/:username`}
-          component={ViewerApp}
-        />
-        <Route path="*">
-          <App/>
+    
+        <Route path={urls.VIEWER}>
+         <ViewerApp/>
         </Route>
+
+        <Route path={urls.DASHBOARD}>
+          <DashboardApp/>
+        </Route>
+
+        <Route path="*">
+          <BaseApp />
+        </Route>
+
     </Switch>
   </Router>
   ,

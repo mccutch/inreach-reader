@@ -2,86 +2,86 @@ import React from 'react'
 import {ViewerNavbar} from './navBar.js'
 import * as urls from './urls.js'
 import {apiFetch} from './helperFunctions.js'
-import {MessageList} from './messageDisplay.js';
-import {TripList} from './tripDisplay.js'
+import {UserViewer} from './viewerDisplays.js'
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import {SandBox} from './sandbox.js'
+
+export class UserSearch extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={}
+    this.findUser=this.findUser.bind(this)
+  }
+
+  findUser(){
+    this.setState({errorMessage:""})
+    apiFetch({
+      url:`${urls.VIEW_USER}/${this.state.search}/`,
+      method:'GET',
+      noAuth:true,
+      onSuccess:(json)=>{
+        console.log(json)
+        console.log(json.user[0].username)
+        this.setState({redirect:`${urls.VIEWER}/${json.user[0].username}`})
+      },
+      onFailure:(message)=>{
+        console.log(message)
+        this.setState({errorMessage:"Username not found. Username is case sensitive."})
+      }
+    })
+  }
+
+  render(){
+    if(this.state.redirect) return <Redirect to={this.state.redirect}/>
+
+    return(
+      <div>
+        <p>{this.state.errorMessage}</p>
+        <input className="form-control" id='search' onChange={(e)=>this.setState({search:e.target.value})} />
+        <button className="btn btn-success" onClick={this.findUser} >Search</button>
+      </div>
+    )
+  }
+}
 
 export class ViewerApp extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      username:this.props.match.params.username,
       modal:null,
     }
-    this.fetchUserData=this.fetchUserData.bind(this)
-    this.setModal=this.setModal.bind(this)
-    this.hideModal=this.hideModal.bind(this)
   }
 
-  setModal(modal){this.setState({modal:modal})}
-
-  hideModal(){this.setModal(null)}
-
-  componentDidMount(){
-    this.fetchUserData()
-  }
-
-  componentDidUpdate(prevProps){
-    if(this.props.match.params.username !== prevProps.match.params.username){
-      this.setState({
-        username:this.props.match.params.username,
-      },this.fetchUserData)
-      
-    }
-  }
-
-  fetchUserData(){
-    apiFetch({
-      url:`${urls.VIEW_USER}/${this.state.username}/`,
-      method:'GET',
-      noAuth:true,
-      onSuccess:(json)=>{
-        this.setState({
-          display:true,
-          userData:json.user[0],
-          trips:json.trips,
-          messages:json.messages,
-        })
-      },
-      onFailure:(err)=>{
-        console.log(err)
-      },
-    })
-  }
-
-
+  
   render(){
+    
     let appFunctions = {
-      refresh:this.fetchUserData,
-      hideModal:this.hideModal, 
-      setModal:this.setModal,
+      hideModal:()=>this.setState({modal:null}), 
+      setModal:(modal)=>this.setState({modal:modal}),
     }
+
     return(
-      <div>
+      <Router>
         {this.state.modal}
-        <ViewerNavbar username={this.state.user ? this.state.user : ""}/>
-        <p>This is the viewer app</p>
-        <p>Searching for: {this.state.username}</p>
-        <p>{this.state.userData ? JSON.stringify(this.state.userData) : ''}</p>
-        {this.state.display?
-          <div>
-            <TripList 
-              viewOnly={true}
-              trips={this.state.trips}
-              app={appFunctions}
-            />
-            <MessageList 
-              messages={this.state.messages}
-              app={appFunctions}
-            />
-          </div>
-          :""
-        }
-      </div>
+        <ViewerNavbar
+          userFound={this.state.userFound}
+        />
+        <Switch>
+          <Route 
+            path={`${urls.VIEWER}/:username`}
+            component={UserViewer}
+          />
+          <Route exact path={`${urls.VIEWER}`} >
+            <UserSearch />
+            <SandBox/>
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 }

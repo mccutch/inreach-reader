@@ -6,6 +6,63 @@ import * as urls from './urls.js';
 
 
 
+
+export class BaseNavbar extends React.Component{
+
+  constructor(props){
+    super(props)
+    this.state={collapsed:true}
+    this.handleClick=this.handleClick.bind(this)
+  }
+
+  handleClick(event){
+    this.setState({collapsed:true})
+    if(this.props.onClick){this.props.onClick(event.target.name)}
+  }
+
+  render(){
+    // All users
+    let contact = <Nav.Link>
+                    <CleanLink to={urls.CONTACT} className="text-light" activeClassName="active" onClick={this.handleClick}>Contact</CleanLink>
+                  </Nav.Link>
+
+    let viewer = <Nav.Link>
+                    <CleanLink to={urls.VIEWER} className="text-light" activeClassName="active" onClick={this.handleClick}>View</CleanLink>
+                  </Nav.Link>
+
+    let dashboard = <Nav.Link>
+                    <CleanLink to={urls.DASHBOARD} className="text-light" activeClassName="active" onClick={this.handleClick}>Dashboard</CleanLink>
+                  </Nav.Link>
+
+
+    let navLeft = 
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          {viewer}
+          {dashboard}
+          {contact}
+        </ul>  
+
+    let navColour = (this.props.serverError ? "secondary":"warning")
+
+    return(
+      <BootstrapNavBar
+        title={`Trip Tracer`}
+        icon={urls.GREEN_TEA_ICON}
+        onClick={this.props.onClick}
+        navLeft={navLeft}
+        navRight={null}
+        navColour={navColour}
+        style={'navbar-light'}
+        homeUrl={urls.HOME}
+        collapsed={this.state.collapsed}
+        toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
+      />
+    )
+  }
+}
+
+
+
 export class ViewerNavbar extends React.Component{
 
   constructor(props){
@@ -25,18 +82,7 @@ export class ViewerNavbar extends React.Component{
                     <CleanLink to={urls.CONTACT} className="text-light" activeClassName="active" onClick={this.handleClick}>Contact</CleanLink>
                   </Nav.Link>
 
-    //let demoUser = <Nav.Link key="demoUser" name="demoUser" className="text-light" onClick={this.handleClick}>Demo User</Nav.Link>
-
     let logout = <Nav.Link key="logout" name="logout"  className="text-light" onClick={this.handleClick}>Logout</Nav.Link>
-
-  
-    // Unauthenticated users
-    //let login = <Nav.Link key="login" name="login" className="text-light" onClick={this.handleClick}>Login</Nav.Link>
-    //let signUp = <Nav.Link key="signUp" name="register" className="text-light" onClick={this.handleClick}>Sign up</Nav.Link>
-    /*let planner = <Nav.Link>
-                    <CleanLink to={urls.PLANNER} className="text-light" activeClassName="active" onClick={this.handleClick}>Plan a Trip</CleanLink>
-                  </Nav.Link>
-    */
 
     let navLeft
     let navRight
@@ -60,14 +106,14 @@ export class ViewerNavbar extends React.Component{
 
     return(
       <BootstrapNavBar
-        title={`Trip Tracer - ${this.props.username}`}
+        title={`Trip Tracer${this.props.username&&` - ${this.props.username}`}`}
         icon={urls.GREEN_TEA_ICON}
         onClick={this.props.onClick}
         navLeft={navLeft}
         navRight={navRight}
         navColour={navColour}
         style={'navbar-dark'}
-        homeUrl={urls.HOME}
+        homeUrl={urls.VIEWER}
         collapsed={this.state.collapsed}
         toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
       />
@@ -79,7 +125,7 @@ export class ViewerNavbar extends React.Component{
 
 
 
-export class NavbarUser extends React.Component{
+export class DashboardNavbar extends React.Component{
 
   constructor(props){
     super(props)
@@ -144,7 +190,7 @@ export class NavbarUser extends React.Component{
         navRight={navRight}
         navColour={navColour}
         style={'navbar-dark'}
-        homeUrl={urls.HOME}
+        homeUrl={urls.DASHBOARD}
         collapsed={this.state.collapsed}
         toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
       />

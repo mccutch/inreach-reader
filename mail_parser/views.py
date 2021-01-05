@@ -49,7 +49,7 @@ class ViewUser(APIView):
             user = User.objects.get(username=username)
             userData = serializers.UserSerializer(user, context={'request':request}).data,
         except:
-            return Response({})
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
             all_messages = user.messages.all()
