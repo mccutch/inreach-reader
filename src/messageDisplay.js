@@ -1,5 +1,5 @@
 import React from 'react';
-import {MessageDisplayButton} from './objectDisplayViews.js';
+import {MessageDisplayButton} from './objectSummaryViews.js';
 import {displayISODate, displayISOTime} from './dateFunctions.js';
 import {GoogleMapWrapper} from './googleMap.js';
 import {StandardModal} from './reactComponents.js';

@@ -7,6 +7,58 @@ import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
 import * as con from './constants.js';
 
+export class TripEdit extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={
+    }
+    this.handleError=this.handleError.bind(this)
+  }
+
+  componentDidMount(){
+    //Check that tripId is valid to edit
+    console.log(this.props.tripId)
+    apiFetch({
+      url:`${urls.TRIP}/${this.props.tripId}/`,
+      method:"GET",
+      onSuccess:(trip)=>{
+        console.log(trip)
+        if(trip.user===this.props.user.user.id){
+          this.setState({trip:trip})
+        }else{
+          this.handleError("You are not authorised to edit this trip.")
+        }
+      },
+      onFailure:(error)=>{
+        console.log(error)
+        this.handleError("Unable to find trip.")
+      },
+    })
+  }
+
+  handleError(message){
+    let title=<div>Error</div>
+    let body=<p>{message}</p>
+    this.props.app.setModal(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
+    this.setState({redirect:urls.PLANNER})
+  }
+
+  render(){
+    if(this.state.redirect) return <Redirect to={this.state.redirect}/>;
+
+    return(
+      <div>
+      {this.state.trip ?
+        <TripPlanner trip={this.state.trip} app={this.props.app} user={this.props.user} />
+        :
+        <h1>Loading...</h1>
+      }
+      </div>
+    )
+
+  }
+}
+
 export class TripPlanner extends React.Component{
 
   constructor(props){

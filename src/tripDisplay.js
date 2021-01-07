@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom';
 import {CleanLink} from './reactComponents.js';
-import {TripDisplayButton} from './objectDisplayViews.js';
+import {TripDisplayButton} from './objectSummaryViews.js';
 import * as urls from './urls.js';
 
 export class TripList extends React.Component{
@@ -16,14 +16,7 @@ export class TripList extends React.Component{
     let trips=this.props.trips
     for(let i in trips){
       returnList.push(
-        this.props.viewOnly ?
-        <CleanLink to={`${urls.VIEWER}/${this.props.username}/${trips[i].id}`}>
-          <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick ? ()=>this.props.onClick(trips[i]) : null}/>
-        </CleanLink>
-        :
-        <CleanLink to={urls.PLANNER}>
-          <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick ? ()=>this.props.onClick(trips[i]) : null}/>
-        </CleanLink>
+        <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick}/>
       )
     }
     return returnList

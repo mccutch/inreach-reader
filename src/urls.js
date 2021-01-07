@@ -35,9 +35,9 @@ export const CHECK_UNIQUE = '/registration/check-unique/'
 // REACT-ROUTER
 export const HOME = '/'
 export const CONTACT = '/contact'
-export const DASHBOARD = '/dashboard'
-export const PLANNER = `${DASHBOARD}/planner`
+export const PLANNER = `/planner`
 export const VIEWER = '/view'
+export const VIEW_TRIP = '/trip'
 
 
 const ICON_LOC = '/static/svg/'

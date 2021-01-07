@@ -12,6 +12,45 @@ import {
 import * as urls from './urls.js'
 import {apiFetch} from './helperFunctions.js'
 
+export class UserSearch extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={}
+    this.findUser=this.findUser.bind(this)
+  }
+
+  findUser(){
+    this.setState({errorMessage:""})
+    apiFetch({
+      url:`${urls.VIEW_USER}/${this.state.search}/`,
+      method:'GET',
+      noAuth:true,
+      onSuccess:(json)=>{
+        console.log(json)
+        console.log(json.user[0].username)
+        this.setState({redirect:`${urls.VIEWER}/${json.user[0].username}`})
+      },
+      onFailure:(message)=>{
+        console.log(message)
+        this.setState({errorMessage:"Username not found. Username is case sensitive."})
+      }
+    })
+  }
+
+  render(){
+    if(this.state.redirect) return <Redirect to={this.state.redirect}/>
+
+    return(
+      <div>
+        <p>{this.state.errorMessage}</p>
+        <input className="form-control" id='search' onChange={(e)=>this.setState({search:e.target.value})} />
+        <button className="btn btn-success" onClick={this.findUser} >Search</button>
+      </div>
+    )
+  }
+}
+
+
 export class UserViewer extends React.Component{
   constructor(props){
     super(props)
@@ -59,92 +98,23 @@ export class UserViewer extends React.Component{
 
   render(){
     return(
-      <Router>
-        <Switch>
-          <Route path={`${urls.VIEWER}/:username/:tripId`}>
-            <TripViewer trip={this.state.viewTrip}/>
-          </Route>
-          <Route path="*">
-            {this.state.user&&
-              <div>
-                <TripList 
-                  viewOnly={true}
-                  trips={this.state.trips}
-                  app={this.props.app}
-                  username={this.state.user.username}
-                  onClick={(trip)=>{
-                    this.setState({viewTrip:trip})
-                  }}
-                />
-                <MessageList 
-                  messages={this.state.messages}
-                  app={this.props.app}
-                />
-              </div>
-            }
-            
-            
-          </Route>
-        </Switch>
-      </Router>
-    )
-  }
-}
-
-
-export class TripViewer extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      showOverdue: this.props.trip.overdue ? true : false,
-      showMap:false,
-      showInstructions: this.props.trip.instructions ? true : false,
-    }
-    
-  }
-
-  componentDidMount(){
-    let points = JSON.parse(this.props.trip.points)
-    let paths = JSON.parse(this.props.trip.paths)
-    this.setState({showMap:(points.length>0||paths.length>0)})
-  }
-
-
-  render(){
-    let trip = this.props.trip  
-    let departs = parseISODate(trip.departs)
-    let returnTime = parseISODate(trip.returns)
-    let overdue = trip.overdue ? parseISODate(trip.overdue) : null
-    let overdueInstructions = trip.instructions ? trip.instructions : null
-    let paths = JSON.parse(trip.paths)
-    let points = JSON.parse(trip.points)
-    
-
-    return(
       <div>
-        <div className="row">
-          <h4>{trip.name}</h4>
-          <br/>
-          <p>Departs: {displayDate(departs)}</p>
-          <br/>
-          <p>Returns: {displayDate(returnTime)}</p>
-          <br/>
-          <p>Overdue time: {trip.overdue && displayDate(overdue)}</p>
-          <br/>
-          <p>Instructions if overdue: {trip.instructions ? trip.instructions : "Not given."}</p>
-          <br/>
-          <p>Trip description: {trip.description}</p>
-          <br/>
-          {this.state.showMap &&
-            <GoogleMapWrapper 
-              id = {"baseMap"}
-              editable={false}
-              points={points}
-              paths={paths}
-            />
-          }
-        </div>
-      </div>
+        <TripList 
+          viewOnly={true}
+          trips={this.state.trips}
+          app={this.props.app}
+          username={this.state.user.username}
+          onClick={(trip)=>{
+            this.setState({viewTrip:trip})
+          }}
+        />
+        <MessageList 
+          messages={this.state.messages}
+          app={this.props.app}
+        />
+      </div> 
     )
   }
 }
+
+
