@@ -15,7 +15,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="index.html"), name='index'),
 
 
-    path('api/view/<slug:username>/', views.ViewUser.as_view(), name='view-user'),
+    path('api/view-user/<slug:username>/', views.ViewUser.as_view(), name='view-user'),
+    path('api/view-trip/<slug:uuid>/', views.TripReadOnly.as_view(), name='view-trip'),
 
     path('api-auth/', include('rest_framework.urls')),
     path('token/', jwt_views.TokenObtainPairView.as_view(serializer_class=serializers.FlexibleJWTSerializer), name='token_obtain_pair'),
@@ -28,6 +29,8 @@ urlpatterns = [
     path('api/message/<int:pk>/', views.MessageDetail.as_view(), name="message-detail"),
     path('api/trip/<int:pk>/', views.TripDetail.as_view(), name="trip-detail"),
     #path('api//<int:pk>/', views.Detail.as_view(), name="-detail"),
+
+
 
     path('api/my-messages/', views.UserMessages.as_view(), name="my-messages"),
     path('api/my-trips/', views.UserTrips.as_view(), name="my-trips"),

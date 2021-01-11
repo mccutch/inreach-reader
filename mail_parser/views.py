@@ -71,6 +71,26 @@ class ViewUser(APIView):
 
         return Response(content)
 
+class TripReadOnly(APIView):
+    permission_classes = (AllowAny,)
+    
+    def get(self, request, uuid, format=None):
+        try:
+            trip = models.Trip.objects.get(uuid=uuid)
+            user = trip.user            
+            tripData = serializers.TripSerializer(trip, context={'request':request}).data
+            userData = serializers.UserSerializer(user, context={'request':request}).data
+
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        content = {
+            "user":userData,
+            "trip":tripData,
+            #"messages":messageData, ### Later include any messages received within timeframe
+        }
+
+        return Response(content)
 
 class PostNewMessage(generics.CreateAPIView):
     permission_classes = (AllowAny, )
@@ -159,6 +179,7 @@ class TripDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
     serializer_class = serializers.TripSerializer
     queryset = models.Trip.objects.all() 
+
 
 
 

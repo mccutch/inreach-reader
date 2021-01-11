@@ -20,7 +20,8 @@ export const TRIP = './api/trip'//pk
 
 
 // VIEWER APP
-export const VIEW_USER = 'api/view'//username
+export const VIEW_USER = 'api/view-user'//username
+export const TRIP_READ_ONLY = 'api/view-trip'//trip_uuid
 
 
 // ACCOUNT/REGISTRATION - NOCACHE

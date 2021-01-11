@@ -71,7 +71,7 @@ export class AppRouter extends React.Component{
     console.log("Login success")
     this.setState({loggedIn:true})
     this.hideModal()
-    this.setState({redirect:urls.HOME})
+    //this.setState({redirect:urls.HOME})
   }
 
   handleLogout(){
@@ -148,8 +148,8 @@ export class AppRouter extends React.Component{
             />
 
             <Route 
-              path={`${urls.TRIP}/:tripId`}
-              component={TripViewer}
+              path={`${urls.VIEW_TRIP}/:UUID`}
+              render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
             />
 
             <Route path={urls.HOME}>
