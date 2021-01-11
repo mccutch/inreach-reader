@@ -40,6 +40,7 @@ export class TripEdit extends React.Component{
     let title=<div>Error</div>
     let body=<p>{message}</p>
     this.props.app.setModal(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
+    console.log("Redirect to blank planner")
     this.setState({redirect:urls.PLANNER})
   }
 
@@ -135,6 +136,7 @@ export class TripPlanner extends React.Component{
       method:"DELETE",
       onSuccess:()=>{
         this.props.app.refresh()
+        console.log("Redirect to home")
         this.setState({redirect:urls.HOME})
       },
       onFailure:this.handlePostFailure,
@@ -215,6 +217,7 @@ export class TripPlanner extends React.Component{
     console.log("TRIP SAVED!")
     console.log(newTrip)
     this.props.app.refresh()
+    console.log("Redirect to home")
     this.setState({redirect:urls.HOME})
   }
 

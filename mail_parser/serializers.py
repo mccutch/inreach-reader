@@ -24,7 +24,7 @@ class TripSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = models.Trip
-        fields = ['user','name','departs','returns','overdue','description','instructions','points','paths','id']
+        fields = ['user','name','departs','returns','overdue','description','instructions','points','paths','id','uuid']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,7 +62,8 @@ class ChangePasswordSerializer(serializers.Serializer):
         return value
 
 class FlexibleJWTSerializer(TokenObtainPairSerializer):
-    #Credit lardorm: https://stackoverflow.com/questions/34332074/django-rest-jwt-login-using-username-or-email
+    # Credit lardorm: https://stackoverflow.com/questions/34332074/django-rest-jwt-login-using-username-or-email
+    # Accepts either username or email address
     def validate(self, attrs):
         credentials = {
             'username': '',

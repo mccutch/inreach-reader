@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 # Create your models here.
 class InReachMessage(models.Model):
@@ -38,6 +39,7 @@ class Trip(models.Model):
     instructions = models.TextField(default="", blank=True)
     points = models.TextField(default="[]")
     paths = models.TextField(default="[]")
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     class Meta:
         ordering = ["-departs"]

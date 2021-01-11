@@ -56,7 +56,9 @@ export class AppRouter extends React.Component{
           profile:data.profile,
           messages:data.messages,
           trips:data.trips,
-        }, this.handleLoginSuccess)
+        }, ()=>{
+          if(!this.state.loggedIn) this.handleLoginSuccess();
+        })
       }
     })
   }
