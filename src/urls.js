@@ -38,7 +38,7 @@ export const HOME = '/'
 export const CONTACT = '/contact'
 export const PLANNER = `/planner`
 export const VIEWER = '/view'
-export const VIEW_TRIP = '/trip'
+export const VIEW_TRIP = '/trip'//trip_uuid
 
 
 const ICON_LOC = '/static/svg/'

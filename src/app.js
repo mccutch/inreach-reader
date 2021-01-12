@@ -122,6 +122,11 @@ export class AppRouter extends React.Component{
       trips:this.state.trips,
     }
 
+    let viewerFunctions = {
+      phrase:this.state.viewerPassPhrase?this.state.viewerPassPhrase:"",
+      setPhrase:(phrase, onSuccess)=>this.setState({viewerPassPhrase:phrase}, onSuccess),
+    }
+
     if(this.state.redirect){
       let to = this.state.redirect
       this.setState({redirect:null})
@@ -140,7 +145,7 @@ export class AppRouter extends React.Component{
 
             <Route 
               path={`${urls.VIEWER}/:username`}
-              component={UserViewer}
+              render={(router) => <UserViewer userParam={router.match.params.username} app={appFunctions} viewer={viewerFunctions}/>}
             />
 
             <Route 

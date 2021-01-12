@@ -17,12 +17,27 @@ import {StandardModal} from './reactComponents.js'
 export class ViewerAuthenticator extends React.Component{
   constructor(props){
     super(props)
+    this.state={}
   }
 
   render(){
-    let title = <div>Authenticate Viewer</div>
-    let body = <button onClick={()=>this.props.approveForUser(8)}>Authenticate for DemoUser</button>
-
+    let title = <div>{this.props.username} - Restricted view</div>
+    let body = 
+    <form>
+      <p><strong>{this.props.errorMessage}</strong></p>
+      <input id="phrase" type="text" className='form-control my-2'/>
+      <button 
+        className='btn btn-outline-primary my-2'
+        onClick={(e)=>{
+          e.preventDefault()
+          let phrase = document.getElementById('phrase').value
+          console.log(phrase)       
+          this.props.viewer.setPhrase(phrase, this.props.onSuccess)
+          this.props.app.hideModal()
+        }}
+      >Submit</button>
+    </form>
+    
     return(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
   }
 }
@@ -70,34 +85,26 @@ export class UserViewer extends React.Component{
   constructor(props){
     super(props)
     this.state={
-      userParam:this.props.match.params.username,
     }
+    this.fetchUserData=this.fetchUserData.bind(this)
+    this.displayError=this.displayError.bind(this)
   }
 
   componentDidMount(){
     this.fetchUserData()
   }
 
-  componentDidUpdate(prevProps){
-    if(this.props.match.params.username !== prevProps.match.params.username){
-      this.setState({
-        userParam:this.props.match.params.username,
-      },this.fetchUserData)
-      
-    }
+  authenticateViewer(message){
+    this.props.app.setModal(<ViewerAuthenticator app={this.props.app} viewer={this.props.viewer} username={this.props.userParam} onSuccess={this.fetchUserData} errorMessage={message}/>)
   }
 
   fetchUserData(){
-    if(!this.state.userParam){
-      console.log("No user param")
-      return;
-    }
     this.setState({notFound:false})
     apiFetch({
-      url:`${urls.USER_READ_ONLY}/${this.state.userParam}/`,
+      url:`${urls.USER_READ_ONLY}/${this.props.userParam}/`,
       method:'POST',
       noAuth:true,
-      data:{pass_phrase:"Let me in."},
+      data:{pass_phrase:this.props.viewer.phrase},
       onSuccess:(json)=>{
         this.setState({
           user:json.user[0],
@@ -107,14 +114,29 @@ export class UserViewer extends React.Component{
       },
       onFailure:(err)=>{
         console.log(err)
-        console.log("Send back to search")
+        if(err==='404'){
+          this.props.app.setModal(<StandardModal title={<div>Error</div>} body={<p>{`Unable to find user account ${this.props.userParam}.`}</p>} hideModal={this.props.app.hideModal}/>)
+          console.log("No user account found. Send back to search.")
+          this.setState({redirect:urls.VIEWER})
+        }else if(err==='403'){
+          console.log("Bad pass phrase. Reauthentication required.")
+          this.props.viewer.setPhrase(null)
+          this.authenticateViewer("Incorrect. Please try again.")
+        }else if(err==='406'){
+          console.log("Pass phrase required.")
+          this.authenticateViewer("Please enter pass phrase to view user profile.")
+        }     
       },
     })
   }
 
+  displayError(message){
+    
+  }
+
   render(){
 
-
+    if(this.state.redirect) return <Redirect push={true} to={this.state.redirect}/>
 
     return(
       <div>
