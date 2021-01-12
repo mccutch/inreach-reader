@@ -59,6 +59,11 @@ export class AppRouter extends React.Component{
         }, ()=>{
           if(!this.state.loggedIn) this.handleLoginSuccess();
         })
+      },
+      onFailure:(error)=>{
+        if(error==="500"){
+          this.setState({serverError:true})
+        }
       }
     })
   }
@@ -84,6 +89,10 @@ export class AppRouter extends React.Component{
     })
   }
 
+  authenticateViewer(){
+
+  }
+
   handleNavClick(nav){
     this.fetchUserProfile()
     if(nav==="login"){
@@ -103,6 +112,7 @@ export class AppRouter extends React.Component{
       hideModal:this.hideModal, 
       setModal:this.setModal,
       loggedIn:this.state.loggedIn,
+      serverError:this.state.serverError,
     }
 
     let userData = {
@@ -153,7 +163,7 @@ export class AppRouter extends React.Component{
               render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
             />
 
-            <Route path={urls.HOME}>
+            <Route exact path={urls.HOME}>
               <div>
               {this.state.loggedIn ?
                 <Dashboard app={appFunctions} user={userData} />
@@ -164,7 +174,7 @@ export class AppRouter extends React.Component{
             </Route>
 
             <Route path="*">
-              <Redirect to={urls.HOME}/>
+              <div><h4>404 Not found</h4></div>
             </Route>
         </Switch>
       </Router>

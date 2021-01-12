@@ -43,13 +43,27 @@ class Login(APIView):
 class ViewUser(APIView):
     permission_classes=(AllowAny,)
 
-    def get(self, request, username, format=None):
+    def post(self, request, username, format=None):
 
         try:
             user = User.objects.get(username=username)
             userData = serializers.UserSerializer(user, context={'request':request}).data,
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Check pass phrase (if it exists in user profile)
+        if user.profile.pass_phrase:
+            serializer = serializers.PassPhraseSerializer(data=request.data, context={'request':request})
+            if serializer.is_valid():
+                if serializer.data['pass_phrase']!=user.profile.pass_phrase:
+                    print(f"Pass phrase doesn't match: {user.profile.pass_phrase}")
+                    return Response({'Unauthorised':'Contact owner for correct pass phrase'}, status=status.HTTP_401_UNAUTHORIZED)
+                else :
+                    print("Pass phrase correct, permission granted.")
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print("No pass phrase has been set. Permission granted.")
 
         try:
             all_messages = user.messages.all()

@@ -11,6 +11,21 @@ import {
 } from "react-router-dom";
 import * as urls from './urls.js'
 import {apiFetch} from './helperFunctions.js'
+import {StandardModal} from './reactComponents.js'
+
+
+export class ViewerAuthenticator extends React.Component{
+  constructor(props){
+    super(props)
+  }
+
+  render(){
+    let title = <div>Authenticate Viewer</div>
+    let body = <button onClick={()=>this.props.approveForUser(8)}>Authenticate for DemoUser</button>
+
+    return(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
+  }
+}
 
 export class UserSearch extends React.Component{
   constructor(props){
@@ -22,7 +37,7 @@ export class UserSearch extends React.Component{
   findUser(){
     this.setState({errorMessage:""})
     apiFetch({
-      url:`${urls.VIEW_USER}/${this.state.search}/`,
+      url:`${urls.USER_READ_ONLY}/${this.state.search}/`,
       method:'GET',
       noAuth:true,
       onSuccess:(json)=>{
@@ -79,9 +94,10 @@ export class UserViewer extends React.Component{
     }
     this.setState({notFound:false})
     apiFetch({
-      url:`${urls.VIEW_USER}/${this.state.userParam}/`,
-      method:'GET',
+      url:`${urls.USER_READ_ONLY}/${this.state.userParam}/`,
+      method:'POST',
       noAuth:true,
+      data:{pass_phrase:"Let me in."},
       onSuccess:(json)=>{
         this.setState({
           user:json.user[0],
@@ -97,16 +113,16 @@ export class UserViewer extends React.Component{
   }
 
   render(){
+
+
+
     return(
       <div>
         <TripList 
           viewOnly={true}
           trips={this.state.trips}
           app={this.props.app}
-          username={this.state.user.username}
-          onClick={(trip)=>{
-            this.setState({viewTrip:trip})
-          }}
+          onClick={(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})}
         />
         <MessageList 
           messages={this.state.messages}

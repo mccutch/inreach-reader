@@ -53,6 +53,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=60, blank=True)
     loc_lat = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
     loc_lng = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
+    pass_phrase = models.CharField(max_length=60, blank=True)
     
     def __str__(self):
         """String for representing the Model object."""

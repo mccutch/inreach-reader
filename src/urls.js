@@ -19,8 +19,8 @@ export const PROFILE = '/api/profile'//pk
 export const TRIP = './api/trip'//pk
 
 
-// VIEWER APP
-export const VIEW_USER = 'api/view-user'//username
+// READ-ONLY DATA
+export const USER_READ_ONLY = 'api/view-user'//username
 export const TRIP_READ_ONLY = 'api/view-trip'//trip_uuid
 
 

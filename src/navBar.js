@@ -75,7 +75,7 @@ export class GenericNavbar extends React.Component{
         </ul>
     }
 
-    let navColour=(this.props.serverError ? ERROR_COLOUR:(this.props.app.loggedIn ? LOGIN_COLOUR:PUBLIC_COLOUR))
+    let navColour=(this.props.app.serverError ? ERROR_COLOUR:(this.props.app.loggedIn ? LOGIN_COLOUR:PUBLIC_COLOUR))
 
     return(
       <BootstrapNavBar

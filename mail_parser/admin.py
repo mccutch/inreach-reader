@@ -6,7 +6,7 @@ from .models import InReachMessage, Profile, Trip
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'location', 'loc_lat', 'loc_lng')
+    list_display = ('user', 'location', 'loc_lat', 'loc_lng', 'pass_phrase')
 
 @admin.register(InReachMessage)
 class InReachMessageAdmin(admin.ModelAdmin):
