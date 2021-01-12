@@ -35,8 +35,6 @@ export class TripViewer extends React.Component{
         this.setState({
           user:data.user, 
           trip:data.trip,
-          //showOverdue: data.trip.overdue ? true : false,
-          //showInstructions: data.trip.instructions ? true : false,
           showMap:(points.length>0||paths.length>0),
         })
       },
@@ -57,7 +55,7 @@ export class TripViewer extends React.Component{
 
 
   render(){
-    if(this.state.redirect) return(<Redirect to={this.state.redirect}/>)
+    if(this.state.redirect) return(<Redirect push={true} to={this.state.redirect}/>)
 
     if(!this.state.trip) return(<p>Loading...</p>)
    
@@ -89,7 +87,7 @@ export class TripViewer extends React.Component{
           <br/>
           {this.state.showMap &&
             <GoogleMapWrapper 
-              id = {"readMap"}
+              id = {"readOnlyMap"}
               editable={false}
               points={points}
               paths={paths}

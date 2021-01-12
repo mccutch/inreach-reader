@@ -4,6 +4,10 @@ import {Nav} from 'react-bootstrap';
 import {CleanLink} from './reactComponents.js';
 import * as urls from './urls.js';
 
+const LOGIN_COLOUR = "teal"
+const PUBLIC_COLOUR = "info"
+const ERROR_COLOUR = "secondary"
+
 export class GenericNavbar extends React.Component{
   constructor(props){
     super(props)
@@ -18,6 +22,10 @@ export class GenericNavbar extends React.Component{
 
   render(){
     // All users
+    let home =  <Nav.Link>
+                  <CleanLink to={urls.HOME} className="text-light" activeClassName="active" onClick={this.handleClick}>Home</CleanLink>
+                </Nav.Link>
+
     let contact = <Nav.Link>
                     <CleanLink to={urls.CONTACT} className="text-light" activeClassName="active" onClick={this.handleClick}>Contact</CleanLink>
                   </Nav.Link>
@@ -46,6 +54,7 @@ export class GenericNavbar extends React.Component{
     if(this.props.app.loggedIn){
       navLeft = 
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          {home}
           {planner}
           {contact}
         </ul> 
@@ -57,6 +66,7 @@ export class GenericNavbar extends React.Component{
     }else{
       navLeft = 
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+          {home}
           {viewer}
           {demoUser}
           {login}
@@ -65,7 +75,7 @@ export class GenericNavbar extends React.Component{
         </ul>
     }
 
-    let navColour = (this.props.serverError ? "secondary":"teal")
+    let navColour=(this.props.serverError ? ERROR_COLOUR:(this.props.app.loggedIn ? LOGIN_COLOUR:PUBLIC_COLOUR))
 
     return(
       <BootstrapNavBar

@@ -227,7 +227,7 @@ export class TripPlanner extends React.Component{
   }
 
   render(){
-    if(this.state.redirect) return <Redirect to={this.state.redirect} />
+    if(this.state.redirect) return <Redirect push={true} to={this.state.redirect} />
     return(
       <div>
         <div className="form bg-dark text-light p-2">

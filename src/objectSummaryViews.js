@@ -79,7 +79,11 @@ export class TripDisplayButton extends React.Component{
         primaryRight={``}
         secondaryRight={``}
         iconSrc={urls.MOTORBIKE_ICON}
-        onClick={this.props.onClick ? this.props.onClick : null}
+        onClick={this.props.onClick ? 
+                  ()=>this.props.onClick(this.props.trip)
+                  : 
+                  null
+                }
       />
     )
   }

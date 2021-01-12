@@ -78,7 +78,8 @@ export class AppRouter extends React.Component{
     clearToken({
       onSuccess:()=>{
         console.log("Logout success..")
-        window.location.reload(false)
+        
+        this.setState({redirect:urls.HOME},()=>window.location.reload(false))
       }
     })
   }
@@ -114,7 +115,7 @@ export class AppRouter extends React.Component{
     if(this.state.redirect){
       let to = this.state.redirect
       this.setState({redirect:null})
-      return <Redirect to={to}/>
+      return <Redirect push={true} to={to}/>
     }
 
     return(
