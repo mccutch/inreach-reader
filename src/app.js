@@ -20,6 +20,7 @@ import {Dashboard} from './dashboard.js';
 import {LandingView} from './landing.js';
 import {ContactView} from './contact.js';
 import {TripEdit, TripPlanner} from './tripPlanner.js';
+import {Profile} from './profile.js';
 /*
 Login Process
 1. Get JWT access token
@@ -160,12 +161,17 @@ export class AppRouter extends React.Component{
 
             <Route 
               path={urls.PLANNER}
-              render={() => <TripPlanner app={appFunctions} />}
+              render={() => <TripPlanner app={appFunctions} user={userData} />}
             />
 
             <Route 
               path={`${urls.VIEW_TRIP}/:UUID`}
               render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
+            />
+
+            <Route 
+              path={urls.EDIT_PROFILE}
+              render={() => <Profile app={appFunctions} user={userData}/>}
             />
 
             <Route exact path={urls.HOME}>

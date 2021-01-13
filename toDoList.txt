@@ -1,6 +1,41 @@
 
+V1----------------------------------
+Viewer layout
 
-Add road trip input? ie google directions
+Dashboard layout
 
+Profile setup
+ - Emergency contact details
+ - Default overdue instructions
+
+
+
+
+
+V2----------------------------------
+Options for restricting data on profile view
+
+Show messages within trip window
+ - Add to map
 
 Match lowercase username
+
+Login only provides summary data
+
+Password reset emails
+
+Email trip plan to emergency contact
+ - mark when opened
+ - resend when edited
+
+
+
+
+V3----------------------------------
+Add road trip input? ie google directions
+Add comments to trips
+
+
+Names ideas-------------------------------
+- leave a note on the fridge...?
+- home soon

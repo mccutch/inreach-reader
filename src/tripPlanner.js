@@ -228,6 +228,9 @@ export class TripPlanner extends React.Component{
 
   render(){
     if(this.state.redirect) return <Redirect push={true} to={this.state.redirect} />
+
+    let mapCenter = this.props.user.profile.loc_lat ? {lat:parseFloat(this.props.user.profile.loc_lat), lng: parseFloat(this.props.user.profile.loc_lng)} : null
+
     return(
       <div>
         <div className="form bg-dark text-light p-2">
@@ -318,6 +321,7 @@ export class TripPlanner extends React.Component{
               <GoogleMapWrapper 
                 id = {"baseMap"}
                 editable={true}
+                locationBias={mapCenter}
                 points={this.state.points}
                 paths={this.state.paths}
                 initialMode="editPath"

@@ -8,12 +8,12 @@ export const REFRESH_TOKEN = '/token/refresh/'
 
 export const LOGIN = '/api/login/'
 
-// DATABASE CREATE/GET
+// DATABASE OBJECTS - CREATE/GET
 export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'
 export const MY_TRIPS = '/api/my-trips/'
 
-// DATABASE OBJECTS - No trailing slash
+// DATABASE OBJECTS - RETRIEVE/UPDATE/DESTROY (No trailing slash!)
 export const USER = '/api/user'//pk
 export const PROFILE = '/api/profile'//pk
 export const TRIP = './api/trip'//pk
@@ -37,6 +37,7 @@ export const CHECK_UNIQUE = '/registration/check-unique/'
 export const HOME = '/'
 export const CONTACT = '/contact'
 export const PLANNER = `/planner`
+export const EDIT_PROFILE = '/profile'
 export const VIEWER = '/view'
 export const VIEW_TRIP = '/trip'//trip_uuid
 

@@ -79,7 +79,7 @@ export class GenericNavbar extends React.Component{
 
     return(
       <BootstrapNavBar
-        title={`Trip Tracer`}
+        title={`HomeSoon`}
         icon={urls.GREEN_TEA_ICON}
         onClick={this.props.onClick}
         navLeft={navLeft}

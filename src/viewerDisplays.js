@@ -49,16 +49,14 @@ export class UserSearch extends React.Component{
     this.findUser=this.findUser.bind(this)
   }
 
-  findUser(){
+  findUser(searchTerm){
     this.setState({errorMessage:""})
     apiFetch({
-      url:`${urls.USER_READ_ONLY}/${this.state.search}/`,
+      url:`${urls.USER_READ_ONLY}/${searchTerm}/`,
       method:'GET',
       noAuth:true,
-      onSuccess:(json)=>{
-        console.log(json)
-        console.log(json.user[0].username)
-        this.setState({redirect:`${urls.VIEWER}/${json.user[0].username}`})
+      onSuccess:()=>{
+        this.setState({redirect:`${urls.VIEWER}/${searchTerm}`})
       },
       onFailure:(message)=>{
         console.log(message)
@@ -71,11 +69,11 @@ export class UserSearch extends React.Component{
     if(this.state.redirect) return <Redirect push={true} to={this.state.redirect}/>
 
     return(
-      <div>
+      <form>
         <p>{this.state.errorMessage}</p>
-        <input className="form-control" id='search' onChange={(e)=>this.setState({search:e.target.value})} />
-        <button className="btn btn-success" onClick={this.findUser} >Search</button>
-      </div>
+        <input className="form-control" id='search' />
+        <button className="btn btn-success" onClick={(e)=>{e.preventDefault(); this.findUser(document.getElementById('search').value)}} >Search</button>
+      </form>
     )
   }
 }
@@ -87,7 +85,6 @@ export class UserViewer extends React.Component{
     this.state={
     }
     this.fetchUserData=this.fetchUserData.bind(this)
-    this.displayError=this.displayError.bind(this)
   }
 
   componentDidMount(){
@@ -128,10 +125,6 @@ export class UserViewer extends React.Component{
         }     
       },
     })
-  }
-
-  displayError(message){
-    
   }
 
   render(){

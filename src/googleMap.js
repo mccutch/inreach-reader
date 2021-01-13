@@ -168,7 +168,7 @@ export class GoogleMapWrapper extends React.Component{
       console.log(points)
       boundaryPoints=points
     } else{
-      if(this.props.points){
+      if(this.props.points && this.props.points.length>0){
         console.log("Prop points found")
         for(let i in this.props.points){
           console.log(this.props.points[i])
@@ -185,10 +185,11 @@ export class GoogleMapWrapper extends React.Component{
       }  
     }
 
+
     console.log(boundaryPoints)
     if(boundaryPoints.length<=1){
       console.log(boundaryPoints[0])
-      this.map.setCenter(boundaryPoints[0]?boundaryPoints[0]:DEFAULT_MAP_CENTER)
+      this.map.setCenter(boundaryPoints[0] ? boundaryPoints[0]:(this.props.locationBias ? this.props.locationBias:DEFAULT_MAP_CENTER))
       return
     }
 
