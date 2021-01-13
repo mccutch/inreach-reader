@@ -6,6 +6,7 @@ import {StandardModal, PendingBtn, WarningModal} from './reactComponents.js';
 import {apiFetch} from './helperFunctions.js';
 import * as urls from './urls.js';
 import * as con from './constants.js';
+import {LoadingScreen} from './loading.js'
 
 export class TripEdit extends React.Component{
   constructor(props){
@@ -228,6 +229,14 @@ export class TripPlanner extends React.Component{
 
   render(){
     if(this.state.redirect) return <Redirect push={true} to={this.state.redirect} />
+    
+    if(!this.props.app.loggedIn){
+      return (this.props.app.loginPending ?
+        <LoadingScreen />
+        :
+        <Redirect push={true} to={urls.HOME} />
+      ) 
+    }
 
     let mapCenter = this.props.user.profile.loc_lat ? {lat:parseFloat(this.props.user.profile.loc_lat), lng: parseFloat(this.props.user.profile.loc_lng)} : null
 

@@ -30,7 +30,7 @@ export class Dashboard extends React.Component{
     return(
       <div>
         <div className="row">
-          <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.EDIT_PROFILE}`})}>Profile settings</button>
+          <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PROFILE_SETTINGS}`})}>Profile settings</button>
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PLANNER}`})}>+ Plan a trip</button>
         </div>
         <div className="row">

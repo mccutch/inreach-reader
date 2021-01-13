@@ -46,6 +46,10 @@ export class GenericNavbar extends React.Component{
                     <CleanLink to={urls.PLANNER} className="text-light" activeClassName="active" onClick={this.handleClick}>Plan a Trip</CleanLink>
                   </Nav.Link>
 
+    let profile = <Nav.Link>
+                    <CleanLink to={urls.PROFILE_SETTINGS} className="text-light" activeClassName="active" onClick={this.handleClick}>Settings</CleanLink>
+                  </Nav.Link>
+
     let logout = <Nav.Link key="logout" name="logout"  className="text-light" onClick={this.handleClick}>Logout</Nav.Link>
 
 
@@ -56,6 +60,7 @@ export class GenericNavbar extends React.Component{
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
           {home}
           {planner}
+          {profile}
           {contact}
         </ul> 
       navRight = 

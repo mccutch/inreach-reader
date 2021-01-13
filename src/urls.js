@@ -37,7 +37,7 @@ export const CHECK_UNIQUE = '/registration/check-unique/'
 export const HOME = '/'
 export const CONTACT = '/contact'
 export const PLANNER = `/planner`
-export const EDIT_PROFILE = '/profile'
+export const PROFILE_SETTINGS = '/profile'
 export const VIEWER = '/view'
 export const VIEW_TRIP = '/trip'//trip_uuid
 

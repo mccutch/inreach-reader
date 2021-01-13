@@ -34,6 +34,7 @@ export class AppRouter extends React.Component{
     super(props)
     this.state={
       loggedIn:false,
+      loginPending:true,
     }
     this.setModal=this.setModal.bind(this)
     this.hideModal=this.hideModal.bind(this)
@@ -48,6 +49,7 @@ export class AppRouter extends React.Component{
   }
 
   fetchUserProfile(){
+    this.setState({loginPending:true})
     apiFetch({
       url:urls.LOGIN,
       method:'GET',
@@ -58,10 +60,12 @@ export class AppRouter extends React.Component{
           messages:data.messages,
           trips:data.trips,
         }, ()=>{
+          this.setState({loginPending:false})
           if(!this.state.loggedIn) this.handleLoginSuccess();
         })
       },
       onFailure:(error)=>{
+        this.setState({loginPending:false})
         if(error==="500"){
           this.setState({serverError:true})
         }
@@ -113,6 +117,7 @@ export class AppRouter extends React.Component{
       hideModal:this.hideModal, 
       setModal:this.setModal,
       loggedIn:this.state.loggedIn,
+      loginPending:this.state.loginPending,
       serverError:this.state.serverError,
     }
 
@@ -138,56 +143,58 @@ export class AppRouter extends React.Component{
       <Router>     
         {this.state.modal}
         <GenericNavbar app={appFunctions} onClick={this.handleNavClick}/>
-        <Switch>
-            <Route path={urls.CONTACT}>
-              <ContactView />
-            </Route>
+        <div className="container">
+          <Switch>
+              <Route path={urls.CONTACT}>
+                <ContactView />
+              </Route>
 
 
-            <Route 
-              path={`${urls.VIEWER}/:username`}
-              render={(router) => <UserViewer userParam={router.match.params.username} app={appFunctions} viewer={viewerFunctions}/>}
-            />
+              <Route 
+                path={`${urls.VIEWER}/:username`}
+                render={(router) => <UserViewer userParam={router.match.params.username} app={appFunctions} viewer={viewerFunctions}/>}
+              />
 
-            <Route 
-              path={urls.VIEWER}
-              component={UserSearch}
-            />
+              <Route 
+                path={urls.VIEWER}
+                component={UserSearch}
+              />
 
-            <Route 
-              path={`${urls.PLANNER}/:tripId`}
-              render={(router) => <TripEdit tripId={router.match.params.tripId} app={appFunctions} user={userData}/>}
-            />
+              <Route 
+                path={`${urls.PLANNER}/:tripId`}
+                render={(router) => <TripEdit tripId={router.match.params.tripId} app={appFunctions} user={userData}/>}
+              />
 
-            <Route 
-              path={urls.PLANNER}
-              render={() => <TripPlanner app={appFunctions} user={userData} />}
-            />
+              <Route 
+                path={urls.PLANNER}
+                render={() => <TripPlanner app={appFunctions} user={userData} />}
+              />
 
-            <Route 
-              path={`${urls.VIEW_TRIP}/:UUID`}
-              render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
-            />
+              <Route 
+                path={`${urls.VIEW_TRIP}/:UUID`}
+                render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
+              />
 
-            <Route 
-              path={urls.EDIT_PROFILE}
-              render={() => <Profile app={appFunctions} user={userData}/>}
-            />
+              <Route 
+                path={urls.PROFILE_SETTINGS}
+                render={() => <Profile app={appFunctions} user={userData}/>}
+              />
 
-            <Route exact path={urls.HOME}>
-              <div>
-              {this.state.loggedIn ?
-                <Dashboard app={appFunctions} user={userData} />
-                :
-                <LandingView />
-              }
-              </div>
-            </Route>
+              <Route exact path={urls.HOME}>
+                <div>
+                {this.state.loggedIn ?
+                  <Dashboard app={appFunctions} user={userData} />
+                  :
+                  <LandingView />
+                }
+                </div>
+              </Route>
 
-            <Route path="*">
-              <div><h4>404 Not found</h4></div>
-            </Route>
-        </Switch>
+              <Route path="*">
+                <div><h4>404 Not found</h4></div>
+              </Route>
+          </Switch>
+        </div>
       </Router>
       )
   }
