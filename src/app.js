@@ -14,7 +14,7 @@ import {RegistrationForm} from './registrationForm.js';
 import {apiFetch} from './helperFunctions.js';
 
 import {GenericNavbar} from './navBar.js';
-import {UserViewer, UserSearch} from './viewerDisplays.js';
+import {UserViewer, UserSearch} from './viewer.js';
 import {TripViewer} from './tripView.js';
 import {Dashboard} from './dashboard.js';
 import {LandingView} from './landing.js';

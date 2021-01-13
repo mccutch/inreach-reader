@@ -1,37 +1,8 @@
 import React from 'react';
-import {MessageDisplayButton} from './objectSummaryViews.js';
+
 import {displayISODate, displayISOTime} from './dateFunctions.js';
 import {GoogleMapWrapper} from './googleMap.js';
 import {StandardModal} from './reactComponents.js';
-
-export class MessageList extends React.Component{
-
-  constructor(props){
-    super(props)
-    this.state={}
-    this.buildList=this.buildList.bind(this)
-  }
-
-  buildList(){
-    let returnList=[]
-    let messages=this.props.messages
-    for(let i in messages){
-      returnList.push(
-        <MessageDisplayButton message={messages[i]} app={this.props.app}/>
-      )
-    }
-    return returnList
-  }
-
-  render(){
-
-    return(
-      <div>
-        {this.buildList()}
-      </div>
-    )
-  }
-}
 
 
 export class MessageModalView extends React.Component{

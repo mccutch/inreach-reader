@@ -1,7 +1,7 @@
 import React from 'react';
 import * as urls from './urls.js';
 import {displayISODate, displayISOTime} from './dateFunctions.js';
-import {MessageModalView} from './messageDisplay.js';
+import {MessageModalView} from './messageView.js';
 
 
 class ObjectDisplayButton extends React.Component{

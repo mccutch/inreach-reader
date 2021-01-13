@@ -105,7 +105,6 @@ export class GenericNavbar extends React.Component{
 export class BootstrapNavBar extends React.Component{
 
   render(){
-
     return(
       <nav className={`navbar navbar-expand-lg ${this.props.styleString} bg-${this.props.navColour}`}>
         <button className="navbar-brand btn bg-transparent">
