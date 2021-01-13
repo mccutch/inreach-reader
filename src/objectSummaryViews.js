@@ -1,10 +1,6 @@
 import React from 'react';
-import {Badge} from 'react-bootstrap';
 import * as urls from './urls.js';
-import {getAttribute} from './helperFunctions.js';
 import {displayISODate, displayISOTime} from './dateFunctions.js';
-
-
 import {MessageModalView} from './messageDisplay.js';
 
 

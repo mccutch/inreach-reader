@@ -1,6 +1,5 @@
 import React from 'react';
 import {Modal} from 'react-bootstrap';
-import {sortByKey} from './helperFunctions.js';
 import {Link} from 'react-router-dom';
 
 export class WarningModal extends React.Component{
@@ -177,9 +176,9 @@ export class TabbedDisplay extends React.Component{
     console.log(tabIndex)
     console.log(label)
     return(
-      <strong><a name={tabIndex} className={`nav-link ${this.state.activeTab===tabIndex?"active bg-light border-dark":""}`} onClick={this.handleClick}>
+      <strong><button name={tabIndex} className={`nav-link ${this.state.activeTab===tabIndex?"active bg-light border-dark":""}`} onClick={this.handleClick}>
         {label}
-      </a></strong>
+      </button></strong>
     )
   }
 

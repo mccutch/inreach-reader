@@ -1,8 +1,6 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import {CleanLink} from './reactComponents.js';
 import {TripDisplayButton} from './objectSummaryViews.js';
-import * as urls from './urls.js';
+
 
 export class TripList extends React.Component{
 

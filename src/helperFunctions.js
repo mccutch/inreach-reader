@@ -72,7 +72,7 @@ export function getObject({objectList, key, keyValue}){
   if(!keyValue) return null
   for(let i in objectList){
     if(!objectList[i][key]){return null}
-    if(objectList[i][key]==keyValue){
+    if(objectList[i][key]===keyValue){
       return objectList[i]
     }
   }
@@ -98,6 +98,7 @@ export function getAttribute({objectList, key, keyValue, attribute}){
   return null
 }
 
+/*
 function deleteFromCache(cacheName, resource){
   caches.open(cacheName).then(function(cache) {
     cache.delete(resource).then(function(response) {
@@ -106,7 +107,7 @@ function deleteFromCache(cacheName, resource){
     });
   })
 }
-
+*/
 /*
 export function fetchFromCache({url, onSuccess}){
   if(!window.caches){
@@ -153,10 +154,6 @@ export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, conte
     }
   }
 
-  if(!method){
-    let method='GET'
-  }
-
   // SET BODY - No body required for GET
   let fetchData
   if(data){
@@ -194,7 +191,7 @@ export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, conte
     if(onSuccess){onSuccess(json)}
   }).catch(error => {
     console.log(error.message)
-    if(error.message==='401' && url!=urls.REFRESH_TOKEN && shouldRetry){
+    if(error.message==='401' && url!==urls.REFRESH_TOKEN && shouldRetry){
       refreshToken({
         onSuccess:()=>{
           apiFetch({

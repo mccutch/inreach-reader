@@ -1,6 +1,4 @@
 import React from 'react'
-import {MessageList} from './messageDisplay.js'
-import {TripList} from './tripDisplay.js'
 import {GoogleMapWrapper} from './googleMap.js'
 import {parseISODate, displayDate} from './dateFunctions.js'
 import {Redirect} from "react-router-dom";
@@ -63,7 +61,6 @@ export class TripViewer extends React.Component{
     let departs = parseISODate(trip.departs)
     let returnTime = parseISODate(trip.returns)
     let overdue = trip.overdue ? parseISODate(trip.overdue) : null
-    let overdueInstructions = trip.instructions ? trip.instructions : null
     let paths = JSON.parse(trip.paths)
     let points = JSON.parse(trip.points)
     
@@ -81,7 +78,7 @@ export class TripViewer extends React.Component{
           <br/>
           <p>Overdue time: {trip.overdue && displayDate(overdue)}</p>
           <br/>
-          <p>Instructions if overdue: {trip.instructions ? trip.instructions : "Not given."}</p>
+          <p>Instructions if overdue: {trip.instructions ? trip.instructions : "Not provided."}</p>
           <br/>
           <p>Trip description: {trip.description}</p>
           <br/>

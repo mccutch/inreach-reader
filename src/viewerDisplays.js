@@ -1,14 +1,7 @@
 import React from 'react'
 import {MessageList} from './messageDisplay.js'
 import {TripList} from './tripDisplay.js'
-import {GoogleMapWrapper} from './googleMap.js'
-import {parseISODate, displayDate} from './dateFunctions.js'
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import * as urls from './urls.js'
 import {apiFetch} from './helperFunctions.js'
 import {StandardModal} from './reactComponents.js'

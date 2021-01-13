@@ -1,5 +1,5 @@
 //Implementation using simplejwt on Django server
-import {USER_CACHE} from './constants.js';
+//import {USER_CACHE} from './constants.js';
 import {apiFetch} from './helperFunctions.js';
 import * as api from './urls.js';
 

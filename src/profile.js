@@ -1,8 +1,7 @@
 import React from 'react'
 import {Redirect} from "react-router-dom";
 
-import {FormRow} from './reactComponents.js'
-import { GoogleAutocomplete} from './googleAutocomplete.js';
+import {GoogleAutocomplete} from './googleAutocomplete.js';
 import {apiFetch} from './helperFunctions.js';
 import {LoadingScreen} from './loading.js'
 

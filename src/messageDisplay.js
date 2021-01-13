@@ -58,7 +58,7 @@ export class MessageModalView extends React.Component{
 
     let footer = 
       <div>
-        {message.mapshare ? <button className="btn btn-outline-primary"><a href={message.mapshare} target="_blank" >Garmin Mapshare</a></button> : ""}
+        {message.mapshare ? <button className="btn btn-outline-primary"><a href={message.mapshare} target="_blank" rel="noopener noreferrer" >Garmin Mapshare</a></button> : ""}
       </div>
 
     return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal} />

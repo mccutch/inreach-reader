@@ -11,7 +11,7 @@ import * as urls from './urls.js';
 import {clearToken} from './myJWT.js';
 import {LoginForm, demoLogin} from './loginWrapper.js';
 import {RegistrationForm} from './registrationForm.js';
-import {apiFetch, getObject} from './helperFunctions.js';
+import {apiFetch} from './helperFunctions.js';
 
 import {GenericNavbar} from './navBar.js';
 import {UserViewer, UserSearch} from './viewerDisplays.js';

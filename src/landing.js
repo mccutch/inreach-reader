@@ -1,5 +1,4 @@
 import React from 'react'
-import {GenericNavbar} from './navBar.js'
 
 export class LandingView extends React.Component{
   render(){

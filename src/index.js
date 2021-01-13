@@ -3,13 +3,7 @@ import ReactDOM from 'react-dom';
 import './custom.scss';
 import * as serviceWorker from './serviceWorker';
 import {AppRouter} from './app.js';
-import * as urls from './urls.js';
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import {HashRouter as Router} from "react-router-dom";
 
 ReactDOM.render(
   <Router>

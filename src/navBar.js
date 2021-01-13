@@ -90,7 +90,7 @@ export class GenericNavbar extends React.Component{
         navLeft={navLeft}
         navRight={navRight}
         navColour={navColour}
-        style={'navbar-light'}
+        styleString={'navbar-light'}
         homeUrl={urls.HOME}
         collapsed={this.state.collapsed}
         toggle={()=>{this.setState({collapsed:!this.state.collapsed})}}
@@ -107,23 +107,18 @@ export class BootstrapNavBar extends React.Component{
   render(){
 
     return(
-      <nav className={`navbar navbar-expand-lg ${this.props.style} bg-${this.props.navColour}`}>
-        <a className="navbar-brand">
+      <nav className={`navbar navbar-expand-lg ${this.props.styleString} bg-${this.props.navColour}`}>
+        <button className="navbar-brand btn bg-transparent">
           <img
             alt=""
             src={this.props.icon}
             width="40"
           />{' '}
           <CleanLink className="text-light" to={this.props.homeUrl} onClick={this.handleClick}>{this.props.title}</CleanLink>
-        </a>
+        </button>
         <button 
           className="navbar-toggler" 
-          type="button" 
-          //dataToggle="collapse" 
-          //dataTarget="#navbarTogglerDemo02" 
-          //ariaControls="navbarTogglerDemo02" 
-          //ariaExpanded="false" 
-          ariaLabel="Toggle navigation"
+          type="button"
           onClick={this.props.toggle}
         >
           <span className="navbar-toggler-icon"></span>

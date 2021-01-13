@@ -1,5 +1,5 @@
 import React from 'react';
-import {StandardModal, ObjectSelectionList} from './reactComponents.js';
+import {ObjectSelectionList} from './reactComponents.js';
 import {DEFAULT_MAP_CENTER} from './constants.js';
 import {importGoogleLibraries, getObject} from './helperFunctions.js';
 
@@ -223,8 +223,6 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   plotPaths(){
-    var gMaps = window.google.maps
-
     for(let i in this.props.paths){
       this.addPath(this.props.paths[i])
     }
@@ -253,8 +251,6 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   plotPoints(){
-    var gMaps = window.google.maps
-
     let clone = Object.assign({},this.props.points)
     console.log(clone)
     for(let i in clone){
