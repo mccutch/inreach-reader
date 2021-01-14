@@ -1,6 +1,6 @@
 import React from 'react'
 import {GoogleMapWrapper} from './googleMap.js'
-import {parseISODate, displayDate} from './dateFunctions.js'
+import {parseISODate, displayDate, displayTime} from './dateFunctions.js'
 import {Redirect} from "react-router-dom";
 import * as urls from './urls.js'
 import {apiFetch} from './helperFunctions.js'
@@ -72,11 +72,11 @@ export class TripViewer extends React.Component{
           <p>Email: {this.state.user.email}</p>
           <h4>{trip.name}</h4>
           <br/>
-          <p>Departs: {displayDate(departs)}</p>
+          <p>Departs: {displayDate(departs)} {displayTime(departs)}</p>
           <br/>
-          <p>Returns: {displayDate(returnTime)}</p>
+          <p>Returns: {displayDate(returnTime)} {displayTime(returnTime)}</p>
           <br/>
-          <p>Overdue time: {trip.overdue && displayDate(overdue)}</p>
+          <p>Overdue time: {trip.overdue && `${displayDate(overdue)} ${displayTime(overdue)}`}</p>
           <br/>
           <p>Instructions if overdue: {trip.instructions ? trip.instructions : "Not provided."}</p>
           <br/>

@@ -156,6 +156,8 @@ export class TripPlanner extends React.Component{
 
     if(this.state.overdue && (this.state.overdue < this.state.return)) return this.returnError("Overdue time must be later than return time.")
 
+    if(this.state.overdue&&!this.state.overdueInstructions) return this.returnError("Please provide instructions in case you are overdue.")
+
     // WARNINGS
     let warnings = []
     if(!this.state.description) warnings.push(
@@ -166,9 +168,6 @@ export class TripPlanner extends React.Component{
       <p> - Overdue time is within 2hrs of return. Consider allowing more time before action is required.</p>
     );
 
-    if(this.state.overdue&&!this.state.overdueInstructions) warnings.push(
-      <p> - No overdue instructions provided.</p>
-    );
 
     // If no warnings, continue. Else, show modal.
     if(warnings.length===0){
@@ -314,7 +313,7 @@ export class TripPlanner extends React.Component{
           </div>
           <div className="row">
             <div className="col">
-              <p className="text-light"><strong>{this.state.errorMessage}</strong></p>
+              <p className="text-warning"><strong>{this.state.errorMessage}</strong></p>
               {this.props.trip &&
                 <PendingBtn pending={this.state.pending} disabled={false} className="btn btn-danger m-2" onClick={this.confirmDelete}>
                   Delete
@@ -398,10 +397,60 @@ class PointDescriptions extends React.Component{
       </div>
     )
   }
-
-
 }
 
+/*
+class PathDescriptions extends React.Component{
+  constructor(props){
+    super(props)
+    this.returnChanges=this.returnChanges.bind(this)
+    this.generateList=this.generateList.bind(this)
+  }
+  returnChanges(){
+    let returnList = []
+    for(let i in this.props.points){
+      let point = this.props.points[i]
+      let description = document.getElementById(`input_${point.label}`).value
+      returnList.push({
+        position:point.position, 
+        label:point.label, 
+        description:description,
+      })
+    }
+    this.props.returnPoints(returnList)
+  }
+
+  generateList(){
+    let pathList = []
+    for(let i in this.props.paths){
+      let path = this.props.paths[i]
+      pathList.push(
+        <FormRow
+          name={path.name}
+          input={
+            <input 
+              type="text" 
+              className="form-control my-1"
+              id={`input_${point.label}`}
+              defaultValue={point.description}
+              onChange={this.returnChanges}
+            />}
+        />
+      )
+    }
+    return pointList
+  }
+
+  render(){
+    return(
+      <div> 
+        <p><strong>Points</strong></p>
+        {this.generateList()}
+      </div>
+    )
+  }
+}
+*/
 
 
 
