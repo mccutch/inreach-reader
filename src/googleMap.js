@@ -145,7 +145,7 @@ export class GoogleMapWrapper extends React.Component{
     if(!this.props.returnPoints) return;
     let ptsList=[]
     for(let i in this.state.points){
-      ptsList.push({position:this.state.points[i].getPosition().toJSON(), label:this.state.points[i].label})
+      ptsList.push({position:this.state.points[i].getPosition().toJSON(), label:this.state.points[i].label, description:""})
     }
     this.props.returnPoints(ptsList)
   }
@@ -343,7 +343,7 @@ export class GoogleMapWrapper extends React.Component{
                   <button className={`btn btn-${(this.state.mode==="editPath"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPath",activePath:this.state.paths[0]})}>Route</button>
                 </div>
                 <div className="col">
-                  <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Add Points</button>
+                  <button className={`btn btn-${(this.state.mode==="editPoints"&&!this.state.locked)?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.setState({mode:"editPoints"})}>Points</button>
                 </div>
                 <div className="col">
                   <button className={`btn btn-outline-${btnColour} btn-block`} onClick={this.undo}>Undo</button>
