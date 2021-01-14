@@ -56,6 +56,9 @@ export const TRAM_ICON = `${ICON_LOC}tram.svg`
 export const GREEN_TEA_ICON = `${ICON_LOC}green-tea.svg`
 export const BEAR_ICON = `${ICON_LOC}bear.svg`
 export const PIGGY_ICON = `${ICON_LOC}piggy-bank.svg`
+export const MESSAGE_ICON = `${ICON_LOC}envelope.svg`
+export const ROUTE_ICON = `${ICON_LOC}map-location.svg`
+
 
 
 

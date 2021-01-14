@@ -14,7 +14,7 @@ export class TripList extends React.Component{
     let trips=this.props.trips
     for(let i in trips){
       returnList.push(
-        <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick}/>
+        <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick} actions={this.props.actions}/>
       )
     }
     return returnList

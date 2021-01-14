@@ -24,14 +24,17 @@ export class Dashboard extends React.Component{
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PLANNER}`})}>+ Plan a trip</button>
         </div>
         <div className="row">
-          <div className="col-lg">
+          <div className="col border">
             <TripList
               trips={this.props.user.trips}
               app={this.props.app}
-              onClick={(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})}
+              actions={[
+                {label:"Edit", action:(trip)=>this.setState({redirect:`${urls.PLANNER}/${trip.id}`})},
+                {label:"View", action:(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})},
+              ]}
             />
           </div>
-          <div className="col-lg">
+          <div className="col border">
             <MessageList 
               messages={this.props.user.messages} 
               app={this.props.app}

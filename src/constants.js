@@ -9,7 +9,7 @@ export const DEFAULT_MAP_CENTER = {lat: -36.89471583987405, lng: 147.13738916242
 export const MAX_LEN_USERNAME = 30 //Defined in django docs?
 export const MAX_LEN_PASSWORD = 30
 export const MAX_LEN_EMAIL = 60
-export const MAX_LEN_NAME = 30
+export const MAX_LEN_NAME = 60
 
 export const POSITION_DECIMALS = 10
 

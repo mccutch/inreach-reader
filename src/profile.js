@@ -2,7 +2,7 @@ import React from 'react'
 import {Redirect} from "react-router-dom";
 
 import {GoogleAutocomplete} from './googleAutocomplete.js';
-import {apiFetch} from './helperFunctions.js';
+import {apiFetch, truncate} from './helperFunctions.js';
 import {LoadingScreen} from './loading.js'
 
 import * as urls from './urls.js';
@@ -31,12 +31,13 @@ export class Profile extends React.Component{
 
     return(
       this.state.edit ?
-      <ProfileEdit app={this.props.app} user={this.props.user} cancel={()=>this.setState({edit:false})}/>
+      <ProfileEdit app={this.props.app} user={this.props.user} completeEdit={()=>this.setState({edit:false})}/>
       :
       <div>
         <h4>Profile - {user.username}</h4>
         <p>Name: {user.first_name} {user.last_name}</p>
         <p>{user.email}</p>
+        <p>Location: {profile.location}</p>
         <h4>Sharing</h4>
         <p>Link: <strong>{window.location.host}/#/view/{user.username}</strong></p>
         <p>Pass phrase: <strong><em>{profile.pass_phrase}</em></strong></p>
@@ -58,6 +59,7 @@ export class ProfileEdit extends React.Component{
     this.validateData=this.validateData.bind(this)
     this.updateUserProfile=this.updateUserProfile.bind(this)
     this.handlePatchFailure=this.handlePatchFailure.bind(this)
+    this.checkUpdateComplete=this.checkUpdateComplete.bind(this)
   }
 
   handlePlaceData(place){
@@ -67,7 +69,7 @@ export class ProfileEdit extends React.Component{
     }
     console.log(place)
     this.setState({
-      location:place.formatted_address,
+      location:truncate(place.formatted_address, MAX_LEN_NAME),
       locationData:place.geometry.location.toJSON(),
     })
   }
@@ -83,7 +85,7 @@ export class ProfileEdit extends React.Component{
 
 
   validateData(){
-    console.log("No validations applied")
+    console.log("No validation applied.")
     this.updateUserProfile()
   }
 
@@ -116,24 +118,35 @@ export class ProfileEdit extends React.Component{
     }
     
     if(willUpdateUser){
+      this.setState({userUpdatePending:true})
       apiFetch({
         method:'PATCH',
         url:`${urls.USER}/${this.props.user.user.id}/`,
         data:userData,
-        onSuccess:this.props.app.refresh,
+        onSuccess:()=>{console.log("User updated"); this.setState({userUpdatePending:false}, this.checkUpdateComplete)},
         onFailure:this.handlePatchFailure,
       })
     }
 
     if(willUpdateProfile){
+      this.setState({profileUpdatePending:true})
       apiFetch({
         method:'PATCH',
         url:`${urls.PROFILE}/${this.props.user.profile.id}/`,
         data:profileData,
-        onSuccess:this.props.app.refresh,
+        onSuccess:()=>{console.log("Profile updated"); this.setState({profileUpdatePending:false}, this.checkUpdateComplete)},
         onFailure:this.handlePatchFailure,
       })
     }
+  }
+
+  checkUpdateComplete(){
+    if(this.state.userUpdatePending || this.state.profileUpdatePending){
+      console.log("PENDING")
+      return
+    }
+    this.props.app.refresh()
+    this.props.completeEdit()
   }
 
   handlePatchFailure(errorMessage){
@@ -159,6 +172,7 @@ export class ProfileEdit extends React.Component{
           id="locationAutocomplete"
           name="location"
           placeholder="Location"
+          defaultValue={profile.location}
           maxLength={MAX_LEN_NAME}
           className={`form-control my-2 ${this.state.locationData ? "is-valid" : ""}`}
           returnPlace={this.handlePlaceData}
@@ -173,7 +187,7 @@ export class ProfileEdit extends React.Component{
         <br/>
         <br/>
         <button className='btn btn-outline-success' onClick={this.validateData}>Save changes</button>
-        <button className='btn btn-outline-danger' onClick={this.props.cancel}>Cancel</button>
+        <button className='btn btn-outline-danger' onClick={this.props.completeEdit}>Cancel</button>
       </div>
     )
   }

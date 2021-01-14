@@ -2,6 +2,36 @@ import React from 'react';
 import * as urls from './urls.js';
 import {displayISODate, displayISOTime} from './dateFunctions.js';
 import {MessageModalView} from './messageView.js';
+import {DropdownButton, Dropdown, ButtonGroup, Button} from 'react-bootstrap'
+
+class DropdownActionsButton extends React.Component{
+
+  generateActionList(){
+    let actionList = []
+    for(let i in this.props.actions){
+      actionList.push(<Dropdown.Item as="button" onClick={()=>this.props.actions[i].action(this.props.object)}>{this.props.actions[i].label}</Dropdown.Item>)
+    }
+    return actionList
+  }
+
+  render(){
+    return(
+      <Dropdown className="btn btn-block btn-outline-info" as={ButtonGroup}>
+        <ObjectDisplayButton
+          primaryText={this.props.primaryText}
+          secondaryText={this.props.secondaryText}
+          primaryRight={this.props.primaryRight}
+          secondaryRight={this.props.secondaryRight}
+          iconSrc={this.props.iconSrc}
+          onClick={()=>this.props.actions[0].action(this.props.object)}
+          noFormat={true}
+        />
+        <Dropdown.Toggle split variant="btn-outline" id="dropdown-split-basic" ></Dropdown.Toggle>
+        <Dropdown.Menu>{this.generateActionList()}</Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+}
 
 
 class ObjectDisplayButton extends React.Component{
@@ -18,7 +48,7 @@ class ObjectDisplayButton extends React.Component{
       </div>
 
     return(
-      <button className="btn btn-outline-primary btn-block my-1" onClick={this.props.onClick}>
+      <button className={`${this.props.noFormat?"btn btn-outline":"btn btn-outline-primary btn-block my-1"}`} onClick={this.props.onClick}>
         <div className="row" style={{height:"2.5rem"}}>
           {icon}
           <div className="col-10">
@@ -55,7 +85,7 @@ export class MessageDisplayButton extends React.Component{
         secondaryText={message.message}
         primaryRight={`${displayISOTime(message.date)}`}
         secondaryRight={``}
-        iconSrc={urls.HELICOPTER_ICON}
+        iconSrc={urls.MESSAGE_ICON}
         onClick={this.props.onClick ? this.props.onClick :
           ()=>{this.props.app.setModal(<MessageModalView message={this.props.message} app={this.props.app}/>)}
         }
@@ -69,17 +99,14 @@ export class TripDisplayButton extends React.Component{
     let trip = this.props.trip
 
     return (
-      <ObjectDisplayButton
+      <DropdownActionsButton
+        object={trip}
         primaryText={`${trip.name}`}
         secondaryText={`${displayISODate(trip.departs)}-${displayISODate(trip.returns)}`}
         primaryRight={``}
         secondaryRight={``}
-        iconSrc={urls.MOTORBIKE_ICON}
-        onClick={this.props.onClick ? 
-                  ()=>this.props.onClick(this.props.trip)
-                  : 
-                  null
-                }
+        iconSrc={urls.ROUTE_ICON}
+        actions={this.props.actions}
       />
     )
   }

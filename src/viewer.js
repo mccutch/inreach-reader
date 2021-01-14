@@ -129,7 +129,9 @@ export class UserViewer extends React.Component{
           viewOnly={true}
           trips={this.state.trips}
           app={this.props.app}
-          onClick={(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})}
+          actions={[
+            {label:"View", action:(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})},
+          ]}
         />
         <MessageList 
           messages={this.state.messages}

@@ -5,7 +5,7 @@ import uuid
 # Create your models here.
 class InReachMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages', null=True)
-    sender = models.CharField(max_length=30, default="Unknown")
+    sender = models.CharField(max_length=60, default="Unknown")
     date = models.DateTimeField(auto_now_add=True, null=True)
     lat = models.FloatField(default=0)
     lon = models.FloatField(default=0)
