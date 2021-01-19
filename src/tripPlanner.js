@@ -105,7 +105,10 @@ export class TripPlanner extends React.Component{
   }
 
   componentDidMount(){
-    this.setState({showMap:(this.state.points.length>0||this.state.paths.length>0)})
+    this.setState({
+      showMap:(this.state.points.length>0||this.state.paths.length>0),
+      activePath:this.state.paths.length>0?this.state.paths.length-1:null,
+    })
   }
 
   returnError(message){
@@ -327,6 +330,9 @@ export class TripPlanner extends React.Component{
           <div>
             {this.state.points.length>0 && <PointDescriptions points={this.state.points} returnPoints={(pointList)=>this.setState({points:pointList})}/>}
           </div>
+          <div>
+            {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} setActive={(i)=>this.setState({activePath:i})}/>}
+          </div>
           {this.state.showMap ? 
               <GoogleMapWrapper 
                 id = {"baseMap"}
@@ -338,6 +344,7 @@ export class TripPlanner extends React.Component{
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}
                 returnPaths={(allPaths)=>this.setState({paths:allPaths})}
+                activePath={this.state.activePath}
               />
               : ""
             }
@@ -399,7 +406,7 @@ class PointDescriptions extends React.Component{
   }
 }
 
-/*
+
 class PathDescriptions extends React.Component{
   constructor(props){
     super(props)
@@ -408,16 +415,17 @@ class PathDescriptions extends React.Component{
   }
   returnChanges(){
     let returnList = []
-    for(let i in this.props.points){
-      let point = this.props.points[i]
-      let description = document.getElementById(`input_${point.label}`).value
+    for(let i in this.props.paths){
+      let path = this.props.paths[i]
+      let name = document.getElementById(`name_${i}`).value
+      let colour = document.getElementById(`colour_${i}`).value
       returnList.push({
-        position:point.position, 
-        label:point.label, 
-        description:description,
+        path:path.path,
+        name:name,
+        colour:colour,
       })
     }
-    this.props.returnPoints(returnList)
+    this.props.returnPaths(returnList)
   }
 
   generateList(){
@@ -425,32 +433,37 @@ class PathDescriptions extends React.Component{
     for(let i in this.props.paths){
       let path = this.props.paths[i]
       pathList.push(
-        <FormRow
-          name={path.name}
-          input={
-            <input 
-              type="text" 
-              className="form-control my-1"
-              id={`input_${point.label}`}
-              defaultValue={point.description}
-              onChange={this.returnChanges}
-            />}
-        />
+        <div className="row">
+          <input 
+            type="color" 
+            className="form-control my-1"
+            defaultValue={path.colour?path.colour:con.DEFAULT_LINE_COLOUR}
+            id={`colour_${i}`}
+            onChange={this.returnChanges}
+          />
+          <input 
+            type="text" 
+            className="form-control my-1"
+            id={`name_${i}`}
+            defaultValue={path.name}
+            onChange={this.returnChanges}
+          />
+        </div>
       )
     }
-    return pointList
+    return pathList
   }
 
   render(){
     return(
       <div> 
-        <p><strong>Points</strong></p>
+        <p><strong>Paths</strong></p>
         {this.generateList()}
       </div>
     )
   }
 }
-*/
+
 
 
 
