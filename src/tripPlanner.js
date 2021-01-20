@@ -107,7 +107,6 @@ export class TripPlanner extends React.Component{
   componentDidMount(){
     this.setState({
       showMap:(this.state.points.length>0||this.state.paths.length>0),
-      activePath:this.state.paths.length>0?this.state.paths.length-1:null,
     })
   }
 
@@ -331,7 +330,7 @@ export class TripPlanner extends React.Component{
             {this.state.points.length>0 && <PointDescriptions points={this.state.points} returnPoints={(pointList)=>this.setState({points:pointList})}/>}
           </div>
           <div>
-            {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} setActive={(i)=>this.setState({activePath:i})}/>}
+            {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
           </div>
           {this.state.showMap ? 
               <GoogleMapWrapper 
@@ -343,8 +342,7 @@ export class TripPlanner extends React.Component{
                 initialMode="editPath"
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}
-                returnPaths={(allPaths)=>this.setState({paths:allPaths})}
-                activePath={this.state.activePath}
+                returnPaths={(paths)=>this.setState({paths:paths})}
               />
               : ""
             }
