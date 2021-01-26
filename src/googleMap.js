@@ -1,7 +1,8 @@
 import React from 'react';
-import {ObjectSelectionList} from './reactComponents.js';
+import {ObjectSelectionList, IconButton} from './reactComponents.js';
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from './constants.js';
 import {importGoogleLibraries, getObject} from './helperFunctions.js';
+import * as urls from './urls.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -383,6 +384,8 @@ export class GoogleMapWrapper extends React.Component{
 
   render(){
     let btnColour = "warning"
+    let activeButton="btn-warning"
+    let inactiveButton="btn-light"
     return(
       <div>
         {this.props.editable && 
@@ -393,19 +396,49 @@ export class GoogleMapWrapper extends React.Component{
             <div className="col">
               <div className="row">
                 <div className="col">
-                  <button className={`btn btn-${this.state.mode==="editPath"?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.changeMapMode("editPath")}>R</button>
+                  <IconButton 
+                    isActive={this.state.mode==="editPath"}
+                    active={activeButton}
+                    inactive={inactiveButton} 
+                    onClick={()=>this.changeMapMode("editPath")} 
+                    icon={urls.ROUTE_ICON}
+                  />
                 </div>
                 <div className="col">
-                  <button className={`btn btn-${this.state.mode==="newPath"?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.changeMapMode("newPath")}>+R</button>
+                  <IconButton 
+                    isActive={this.state.mode==="newPath"}
+                    active={activeButton}
+                    inactive={inactiveButton} 
+                    onClick={()=>this.changeMapMode("newPath")} 
+                    icon={urls.ADD_NEW_ICON}
+                  />
                 </div>
                 <div className="col">
-                  <button className={`btn btn-${this.state.mode==="editPoints"?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.changeMapMode("editPoints")}>Points</button>
+                  <IconButton 
+                    isActive={this.state.mode==="editPoints"}
+                    active={activeButton}
+                    inactive={inactiveButton} 
+                    onClick={()=>this.changeMapMode("editPoints")} 
+                    icon={urls.WAYPOINT_ICON}
+                  />
                 </div>
                 <div className="col">
-                  <button className={`btn btn-outline-${btnColour} btn-block`} onClick={this.undo}>Undo</button>
+                  <IconButton 
+                    isActive={false}
+                    active={activeButton}
+                    inactive={inactiveButton} 
+                    onClick={this.undo} 
+                    icon={urls.UNDO_ICON}
+                  />
                 </div>
                 <div className="col">
-                  <button className={`btn btn-${this.state.mode==="locked"?"":"outline-"}${btnColour} btn-block`} onClick={()=>this.changeMapMode("toggleLock")}>{this.state.mode==="locked"?"Unlock":"Lock"}</button>
+                  <IconButton 
+                    isActive={this.state.mode==="locked"}
+                    active={activeButton}
+                    inactive={inactiveButton} 
+                    onClick={()=>this.changeMapMode("toggleLock")} 
+                    icon={urls.LOCK_ICON}
+                  />
                 </div>
               </div>
             </div>

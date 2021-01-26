@@ -58,6 +58,18 @@ export const BEAR_ICON = `${ICON_LOC}bear.svg`
 export const PIGGY_ICON = `${ICON_LOC}piggy-bank.svg`
 export const MESSAGE_ICON = `${ICON_LOC}envelope.svg`
 export const ROUTE_ICON = `${ICON_LOC}map-location.svg`
+export const HEART_ICON = `${ICON_LOC}heart.svg`
+export const CANCEL_ICON = `${ICON_LOC}cancel.svg`
+export const ERROR_MESSAGE_ICON = `${ICON_LOC}chat-balloon-error.svg`
+export const CHAT_ICON = `${ICON_LOC}chat-balloon.svg`
+export const PREFERENCES_ICON = `${ICON_LOC}preference.svg`
+export const DELETE_ICON = `${ICON_LOC}rubbish.svg`
+export const SAVE_ICON = `${ICON_LOC}floppy-disk.svg`
+export const ADD_NEW_ICON = `${ICON_LOC}add.svg`
+export const WAYPOINT_ICON = `${ICON_LOC}waypoint.svg`
+export const UNDO_ICON = `${ICON_LOC}undo-arrow.svg`
+export const LOCK_ICON = `${ICON_LOC}battery.svg`
+//export const _ICON = `${ICON_LOC}.svg`
 
 
 

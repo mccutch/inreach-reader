@@ -2,6 +2,20 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
+export class IconButton extends React.Component{
+  render(){
+    return(
+      <button className={`btn ${this.props.isActive?this.props.active:this.props.inactive} btn-block`} onClick={this.props.onClick}>
+        <img
+          alt=""
+          src={this.props.icon}
+          width={this.props.size?this.props.size:"30"}
+        />
+      </button>
+    )
+  }
+}
+
 export class WarningModal extends React.Component{
   render(){
     let title = <div>Are you sure?</div>
