@@ -432,20 +432,24 @@ class PathDescriptions extends React.Component{
       let path = this.props.paths[i]
       pathList.push(
         <div className="row">
-          <input 
-            type="color" 
-            className="form-control my-1"
-            defaultValue={path.colour?path.colour:con.DEFAULT_LINE_COLOUR}
-            id={`colour_${i}`}
-            onChange={this.returnChanges}
-          />
-          <input 
-            type="text" 
-            className="form-control my-1"
-            id={`name_${i}`}
-            defaultValue={path.name}
-            onChange={this.returnChanges}
-          />
+          <div className="col-2">
+            <input 
+              type="color" 
+              className="form-control my-1"
+              defaultValue={path.colour?path.colour:con.DEFAULT_LINE_COLOUR}
+              id={`colour_${i}`}
+              onChange={this.returnChanges}
+            />
+          </div>
+          <div className="col">
+            <input 
+              type="text" 
+              className="form-control my-1"
+              id={`name_${i}`}
+              defaultValue={path.name}
+              onChange={this.returnChanges}
+            />
+          </div>
         </div>
       )
     }
