@@ -6,7 +6,7 @@ gMap UI
  - What should happen when all points in a path are "undone"?
 
 Profile
- - Emergency contact model(name, email, number -- no functionality yet, just visible)
+ - Emergency contact model(name, email, number -- no functionality yet, just visible) - ADD NOTES TO CONTACT
  - Overdue instructions(charfield to store instructions. Use this to populate TripPlanner field)
  - Change password
 

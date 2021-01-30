@@ -114,8 +114,11 @@ export class EditContact extends React.Component{
         console.log(err)
         this.returnError("Unable to save changes.")
       },
-      onSuccess:()=>{
+      onSuccess:(newContact)=>{
         this.props.app.refresh()
+        if(this.props.onSuccess){
+          this.props.onSuccess(newContact)
+        }
         this.props.app.hideModal()
       }
     })

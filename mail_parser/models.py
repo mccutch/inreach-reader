@@ -41,6 +41,7 @@ class Trip(models.Model):
     points = models.TextField(default="[]")
     paths = models.TextField(default="[]")
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    contacts = models.ManyToManyField(Contact, related_name="trips", blank=True)
 
     class Meta:
         ordering = ["-departs"]

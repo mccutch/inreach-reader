@@ -2,8 +2,10 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import {GoogleMapWrapper} from './googleMap.js';
 import {today, TimeInputButton, parseISODate} from './dateFunctions.js';
-import {StandardModal, PendingBtn, WarningModal, FormRow} from './reactComponents.js';
-import {apiFetch} from './helperFunctions.js';
+import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from './reactComponents.js';
+import {apiFetch, getObject} from './helperFunctions.js';
+import {EditContact, ViewContact} from './contacts.jsx';
+import {ContactList} from './objectSummaryLists.js';
 import * as urls from './urls.js';
 import * as con from './constants.js';
 import {LoadingScreen} from './loading.js'
@@ -79,6 +81,7 @@ export class TripPlanner extends React.Component{
       overdueInstructions:existing&&existing.instructions ? existing.instructions : null,
       paths:existing ? JSON.parse(existing.paths) : [],
       points:existing ? JSON.parse(existing.points) : [],
+      contacts:[],
     }
 
     /*
@@ -102,9 +105,21 @@ export class TripPlanner extends React.Component{
     this.handlePostFailure=this.handlePostFailure.bind(this)
     this.confirmDelete=this.confirmDelete.bind(this)
     this.delete=this.delete.bind(this)
+    this.addEmergencyContact=this.addEmergencyContact.bind(this)
+    this.selectEmergencyContact=this.selectEmergencyContact.bind(this)
   }
 
   componentDidMount(){
+    if(this.props.trip && this.props.trip.contacts.length>0){
+      let contacts = this.props.trip.contacts
+      let contactList=[]
+      for(let i in contacts){
+        contactList.push(getObject({objectList:this.props.user.contacts, key:"id", keyValue:contacts[i]}))
+      }
+      console.log(contactList)
+      this.setState({contacts:contactList})
+    }
+
     this.setState({
       showMap:(this.state.points.length>0||this.state.paths.length>0),
     })
@@ -146,6 +161,58 @@ export class TripPlanner extends React.Component{
     })
   }
 
+  selectEmergencyContact(){
+    let title = <div>Add Emergency Contact</div>
+    let body = 
+    <div>
+      {this.props.user.contacts.length>0 ?
+        <ContactList 
+          contacts={this.props.user.contacts} 
+          app={this.props.app} 
+          actions={[
+            {label:"Use contact", action:(contact)=>{this.addEmergencyContact(contact); this.props.app.hideModal()}},
+          ]}
+        />
+        :
+        <p>You have no emergency contacts saved to your profile.</p>
+      }
+      <button 
+        className="btn text-left text-light btn-info btn-block my-2" 
+        onClick={()=>{
+          this.props.app.setModal(
+            <EditContact 
+              user={this.props.user} 
+              app={this.props.app}
+              onSuccess={(contact)=>{this.addEmergencyContact(contact)}}
+            />
+          )
+        }}
+        >+ New Contact
+      </button>
+    </div>
+    
+    this.props.app.setModal(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
+  }
+
+  addEmergencyContact(contact, mode="add"){
+    //Add or remove a contact from the current state
+    console.log("Adding contact", contact)
+    let existingContacts = this.state.contacts
+    let updatedContacts = []
+    for(let i in existingContacts){
+      if(contact===existingContacts[i]){
+        if(mode==="add"){
+          return
+        }else{
+          continue
+        }
+      }  
+      updatedContacts.push(existingContacts[i])
+    }
+    if(mode==="add"){updatedContacts.push(contact)}
+    this.setState({contacts:updatedContacts})
+  }
+
   validateInputs(){
     console.log(JSON.stringify(this.state.paths))
 
@@ -165,6 +232,10 @@ export class TripPlanner extends React.Component{
     if(!this.state.description) warnings.push(
       <p> - No trip description provided.</p>
     );
+
+    if(this.state.contacts.length===0) warnings.push(
+      <p> - No emergency contact provided.</p>
+    );
       
     if(this.state.overdue&&(((this.state.overdue.getTime()-this.state.return.getTime())/(1000*60*60))<2)) warnings.push(
       <p> - Overdue time is within 2hrs of return. Consider allowing more time before action is required.</p>
@@ -183,11 +254,17 @@ export class TripPlanner extends React.Component{
         />
       )
     }
-    
   }
+
+  
 
   saveTrip(){
     let newTrip = this.props.trip ? false:true
+
+    let contactIds = []
+    for(let i in this.state.contacts){
+      contactIds.push(this.state.contacts[i].id)
+    }
 
     let tripData={
       name:this.state.name,
@@ -196,6 +273,7 @@ export class TripPlanner extends React.Component{
       description:this.state.description,
       points:JSON.stringify(this.state.points),
       paths:JSON.stringify(this.state.paths),
+      contacts:contactIds,
     }
 
 
@@ -306,6 +384,25 @@ export class TripPlanner extends React.Component{
                   <textarea name="overdueInstructions" className="form-control my-2" placeholder={con.OVERDUE_INSTRUCTIONS} rows="3" defaultValue={this.state.overdueInstructions} onChange={this.handleChange}/>
                 </div>
               }
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              Emergency Contacts
+              {this.state.contacts.length>0 &&
+                <div className="bg-light">
+                  <ContactList 
+                    contacts={this.state.contacts} 
+                    app={this.props.app} 
+                    actions={[
+                      {label:"View", action:(contact)=>{this.props.app.setModal(<ViewContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
+                      {label:"Edit", action:(contact)=>{this.props.app.setModal(<EditContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
+                      {label:"Remove", action:(contact)=>{this.addEmergencyContact(contact, "remove")}}
+                    ]}
+                  />
+                </div>
+              }
+              <button className="btn text-left text-light btn-info btn-block my-2" onClick={this.selectEmergencyContact}>+ Add Emergency Contact</button>
             </div>
           </div>
           <div className="row">

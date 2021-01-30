@@ -240,7 +240,7 @@ export class ObjectSelectionList extends React.Component{
             value={list[i][this.props.value]}
             key = {key}
           >
-            {list[i][this.props.label]}
+            {this.props.labelFunc ? this.props.labelFunc(list[i]) : list[i][this.props.label]}
           </option>
         )
       }

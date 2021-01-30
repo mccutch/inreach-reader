@@ -69,6 +69,7 @@ export function truncate(str, maxLen){
 }
 
 export function getObject({objectList, key, keyValue}){
+  //console.log(objectList, key, keyValue)
   if(!keyValue) return null
   for(let i in objectList){
     if(!objectList[i][key]){return null}

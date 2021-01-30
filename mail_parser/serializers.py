@@ -22,9 +22,10 @@ class InReachMessageSerializer(serializers.ModelSerializer):
 
 class TripSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    contacts = serializers.PrimaryKeyRelatedField(queryset=models.Contact.objects.all(), many=True)
     class Meta:
         model = models.Trip
-        fields = ['user','name','departs','returns','overdue','description','instructions','points','paths','id','uuid']
+        fields = ['user','name','departs','returns','overdue','description','instructions','points','paths','id','uuid','contacts']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
