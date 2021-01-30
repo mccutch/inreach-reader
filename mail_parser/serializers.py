@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'id']
 
+#Does this need to be a hyperlinked serializer?
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
@@ -38,6 +39,11 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['user', 'location', 'loc_lat', 'loc_lng', 'pass_phrase', 'id']
         #read_only_fields = ['pass_phrase']
 
+class ContactSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model = models.Contact
+        fields = ['user', 'first_name', 'last_name', 'email', 'mobile', 'relationship', 'id']
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

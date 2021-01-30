@@ -12,16 +12,18 @@ export const LOGIN = '/api/login/'
 export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'
 export const MY_TRIPS = '/api/my-trips/'
+export const MY_EMG_CONTACTS = 'api/my-contacts/'
 
-// DATABASE OBJECTS - RETRIEVE/UPDATE/DESTROY (No trailing slash!)
-export const USER = '/api/user'//pk
-export const PROFILE = '/api/profile'//pk
-export const TRIP = './api/trip'//pk
+// DATABASE OBJECTS - RETRIEVE/UPDATE/DESTROY (Must add a trailing slash, otherwise error on Safari browser)
+export const USER = '/api/user'//pk/
+export const PROFILE = '/api/profile'//pk/
+export const TRIP = '/api/trip'//pk/
+export const EMG_CONTACT = '/api/contact'//pk/
 
 
 // READ-ONLY DATA
-export const USER_READ_ONLY = 'api/view-user'//username
-export const TRIP_READ_ONLY = 'api/view-trip'//trip_uuid
+export const USER_READ_ONLY = 'api/view-user'//username/
+export const TRIP_READ_ONLY = 'api/view-trip'//trip_uuid/
 
 
 // ACCOUNT/REGISTRATION - NOCACHE

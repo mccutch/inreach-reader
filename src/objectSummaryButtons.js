@@ -112,6 +112,24 @@ export class TripDisplayButton extends React.Component{
   }
 }
 
+export class ContactDisplayButton extends React.Component{
+  render(){
+    let contact = this.props.contact
+
+    return (
+      <DropdownActionsButton
+        object={contact}
+        primaryText={`${contact.first_name} ${contact.last_name}`}
+        secondaryText={`${contact.email}`}
+        primaryRight={``}
+        secondaryRight={``}
+        iconSrc={urls.HEART_ICON}
+        actions={this.props.actions}
+      />
+    )
+  }
+}
+
 
 
 

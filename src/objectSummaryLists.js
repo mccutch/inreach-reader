@@ -1,6 +1,27 @@
 import React from 'react'
-import {TripDisplayButton, MessageDisplayButton} from './objectSummaryButtons.js';
+import {TripDisplayButton, MessageDisplayButton, ContactDisplayButton} from './objectSummaryButtons.js';
 
+
+export class ContactList extends React.Component{
+  constructor(props){
+    super(props)
+    this.buildList=this.buildList.bind(this)
+  }
+
+  buildList(){
+    let returnList=[]
+    let contacts=this.props.contacts
+    for(let i in contacts){
+      returnList.push(
+        <ContactDisplayButton contact={contacts[i]} user={this.props.user} app={this.props.app} actions={this.props.actions}/>
+      )
+    }
+    return returnList
+  }
+  render(){
+    return<div>{this.buildList()}</div>
+  }
+}
 
 export class TripList extends React.Component{
 

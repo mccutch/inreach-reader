@@ -2,6 +2,7 @@
 
 from django.urls import path, include
 from . import views
+from . import validation_views as validations
 from rest_framework_simplejwt import views as jwt_views
 #from rest_framework.urlpatterns import format_suffix_patterns
 #from django.contrib.auth import views as auth_views
@@ -28,22 +29,25 @@ urlpatterns = [
     path('api/profile/<int:pk>/', views.ProfileDetail.as_view(), name="profile-detail"),
     path('api/message/<int:pk>/', views.MessageDetail.as_view(), name="message-detail"),
     path('api/trip/<int:pk>/', views.TripDetail.as_view(), name="trip-detail"),
+    path('api/contact/<int:pk>/', views.ContactDetail.as_view(), name="contact-detail"),
     #path('api//<int:pk>/', views.Detail.as_view(), name="-detail"),
 
 
 
     path('api/my-messages/', views.UserMessages.as_view(), name="my-messages"),
     path('api/my-trips/', views.UserTrips.as_view(), name="my-trips"),
+    path('api/my-contacts/', views.UserContacts.as_view(), name="my-contacts"),
 
     path('api/current-user/', views.CurrentUser.as_view(), name="current-user"),
     path('api/my-profile/', views.UserProfile.as_view(), name="my-profile"),
     path('api/login/', views.Login.as_view(), name="login"),
 
     path('account/register/', views.UserCreate.as_view(), name="create-user"),
-    path('account/update-password/', views.UpdatePassword.as_view(), name="update-password"),
+
+    path('account/update-password/', validations.UpdatePassword.as_view(), name="update-password"),
     path('account/', include('django.contrib.auth.urls')), # django default password reset views  
-    path('registration/check-username/', views.ValidateUsername.as_view(), name="check-username"),
-    path('registration/check-email/', views.ValidateEmail.as_view(), name="check-email"),
-    path('registration/check-unique/', views.CheckUnique.as_view(), name="check-unique"),
+    path('registration/check-username/', validations.ValidateUsername.as_view(), name="check-username"),
+    path('registration/check-email/', validations.ValidateEmail.as_view(), name="check-email"),
+    path('registration/check-unique/', validations.CheckUnique.as_view(), name="check-unique"),
 ]
 

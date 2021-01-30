@@ -32,15 +32,24 @@ class Login(APIView):
         except:
             tripData = {}
 
+        contactData = serializers.ContactSerializer(user.contacts.all(), many=True, context={'request':request}).data
+
+
         content = {
             "user":serializers.UserSerializer(user, context={'request':request}).data,
             "profile":profileData,
             "messages":messageData,
             "trips":tripData,
+            "contacts":contactData,
         }
         return Response(content)
 
 class ViewUser(APIView):
+    """
+        An endpoint for viewing a user's trip and message data. This endpoint can be weakly protected by a pass phrase.
+        GET: Return a status indicating whether or not the user exists.
+        POST: If the user uses a pass_phrase, this must be included in the POST request. Grants access to user's trips and messages.
+    """
     permission_classes=(AllowAny,)
 
     def get(self, request, username, format=None):
@@ -140,6 +149,23 @@ class UserTrips(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserContacts(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, format=None):
+        contacts = request.user.contacts.all()
+        serializer = serializers.ContactSerializer(contacts, many=True, context={'request':request})
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        data=request.data
+        data['user']=f'{request.user.id}'
+        serializer = serializers.ContactSerializer(data=data, context={'request':request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class UserMessages(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = serializers.InReachMessageSerializer
@@ -203,79 +229,19 @@ class TripDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.TripSerializer
     queryset = models.Trip.objects.all() 
 
+class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, permissions.IsOwner)
+    serializer_class = serializers.ContactSerializer
+    queryset = models.Contact.objects.all() 
 
-
-
-
-
-
-
-
-class ValidateUsername(APIView):
-    permission_classes = (AllowAny, )
-
-    def post(self, request):
-        print(request.data['username'])
-
-        if User.objects.filter(username=request.data['username']).exists():
-            result="false"
-        else:
-            result="true"
-        content = {"unique":result}
-        return Response(content)
-
-class ValidateEmail(APIView):
-    permission_classes = (AllowAny, )
-
-    def post(self, request):
-        print(request.data['email'])
-
-        if User.objects.filter(email=request.data['email']).exists():
-            result="false"
-        else:
-            result="true"
-        content = {"unique":result}
-        return Response(content)
-
-class CheckUnique(APIView):
-    permission_classes = (AllowAny, )
-
-    def post(self, request):
-        print(request.data)
-        content = {
-            'uniqueEmail': not User.objects.filter(email=request.data['email']).exists(),
-            'uniqueUsername': not User.objects.filter(username=request.data['username']).exists()
-        }
-        return Response(content)
 
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.CreateUserSerializer
     permission_classes = (AllowAny, )
 
-class UpdatePassword(APIView):
-    """
-    An endpoint for changing password.
-    """
-    permission_classes = (IsAuthenticated, )
 
-    def get_object(self, queryset=None):
-        return self.request.user
 
-    def put(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = serializers.ChangePasswordSerializer(data=request.data)
 
-        if serializer.is_valid():
-            # Check old password
-            old_password = serializer.data.get("old_password")
-            if not self.object.check_password(old_password):
-                return Response({"old_password": ["Wrong password."]}, 
-                                status=status.HTTP_400_BAD_REQUEST)
-            # set_password also hashes the password that the user will get
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

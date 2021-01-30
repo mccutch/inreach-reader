@@ -19,14 +19,15 @@ class InReachMessage(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.sender}, {self.date}'
-"""
-class Point(models.Model):
-    lat = models.FloatField()
-    lng = models.FloatField()
-    label = models.CharField(max_length=3)
 
-    def __str__(self):
-        return f'{self.label}'"""
+
+class Contact(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contacts')
+    first_name = models.CharField(max_length=60, blank=True)
+    last_name = models.CharField(max_length=60, blank=True)
+    email = models.EmailField(blank=True)
+    mobile = models.CharField(max_length=60, blank=True)
+    relationship = models.CharField(max_length=60, default="Unspecified")
 
 
 class Trip(models.Model):

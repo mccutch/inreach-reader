@@ -59,6 +59,7 @@ export class AppRouter extends React.Component{
           profile:data.profile,
           messages:data.messages,
           trips:data.trips,
+          contacts:data.contacts,
         }, ()=>{
           this.setState({loginPending:false})
           if(!this.state.loggedIn) this.handleLoginSuccess();
@@ -126,6 +127,7 @@ export class AppRouter extends React.Component{
       profile:this.state.profile,
       messages:this.state.messages,
       trips:this.state.trips,
+      contacts:this.state.contacts,
     }
 
     let viewerFunctions = {

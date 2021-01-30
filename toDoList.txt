@@ -8,6 +8,11 @@ gMap UI
 Profile
  - Emergency contact model(name, email, number -- no functionality yet, just visible)
  - Overdue instructions(charfield to store instructions. Use this to populate TripPlanner field)
+ - Change password
+
+TripViewer url - anonymise?
+
+UserView - Make username case insensitive
 
 
 V1---------------------------------- MARCH 2021

@@ -4,9 +4,12 @@ import {Redirect} from "react-router-dom";
 import {GoogleAutocomplete} from './googleAutocomplete.js';
 import {apiFetch, truncate} from './helperFunctions.js';
 import {LoadingScreen} from './loading.js'
+import {EditContact, ViewContact} from './contacts.jsx'
+import {ContactList} from './objectSummaryLists.js'
 
 import * as urls from './urls.js';
 import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js';
+
 
 export class Profile extends React.Component{
   constructor(props){
@@ -43,6 +46,17 @@ export class Profile extends React.Component{
         <p>Pass phrase: <strong><em>{profile.pass_phrase}</em></strong></p>
         <button className='btn btn-outline-primary m-2' onClick={()=>this.setState({edit:true})}>Edit</button>
         <button className='btn btn-outline-success m-2' onClick={()=>this.setState({redirect:urls.HOME})}>Back</button>
+        <h4>Emergency Contacts</h4>
+        <ContactList
+          app={this.props.app}
+          contacts={this.props.user.contacts}
+          actions={[
+            {label:"View", action:(contact)=>{this.props.app.setModal(<ViewContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
+            {label:"Edit", action:(contact)=>{this.props.app.setModal(<EditContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
+            {label:"Say hi!", action:(contact)=>{console.log(`Hi ${contact.first_name}!`)}}
+          ]}
+        />
+        <button className='btn btn-outline-success' onClick={()=>{this.props.app.setModal(<EditContact user={this.props.user} app={this.props.app}/>)}}>+ Add</button>
       </div>
     )
   }
