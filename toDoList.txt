@@ -1,9 +1,16 @@
-CURRENT UPDATE-------------------------
-Delete a path
-What should happen when all points in a path are "undone"?
+CURRENT TASKS-------------------------
+
+gMap UI
+ - Create a legend box for paths and points
+ - Delete a path
+ - What should happen when all points in a path are "undone"?
+
+Profile
+ - Emergency contact model(name, email, number -- no functionality yet, just visible)
+ - Overdue instructions(charfield to store instructions. Use this to populate TripPlanner field)
 
 
-V1----------------------------------
+V1---------------------------------- MARCH 2021
 Viewer layout
 
 Dashboard layout
@@ -12,11 +19,12 @@ Profile setup
  - Emergency contact details
  - Default overdue instructions
 
+Parse message from inReach KMZ
 
 
 
 
-V2----------------------------------
+V2---------------------------------- MAY 2021 - Test release
 Options for restricting data on profile view
 
 Show messages within trip window
@@ -35,7 +43,7 @@ Email trip plan to emergency contact
 
 
 
-V3----------------------------------
+V3---------------------------------- AUGUST 2021 - Beta release
 Add road trip input? ie google directions
 Add comments to trips
 Route topo stats (elevation profiles, distances, etc)
