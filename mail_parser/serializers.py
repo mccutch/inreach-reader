@@ -44,7 +44,7 @@ class ContactSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = models.Contact
-        fields = ['user', 'first_name', 'last_name', 'email', 'mobile', 'relationship', 'id']
+        fields = ['user', 'first_name', 'last_name', 'email', 'mobile', 'relationship', 'notes', 'id']
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

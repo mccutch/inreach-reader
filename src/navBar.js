@@ -47,7 +47,7 @@ export class GenericNavbar extends React.Component{
                   </Nav.Link>
 
     let profile = <Nav.Link>
-                    <CleanLink to={urls.PROFILE_SETTINGS} className="text-light" activeClassName="active" onClick={this.handleClick}>Settings</CleanLink>
+                    <CleanLink to={urls.PROFILE_SETTINGS} className="text-light" activeClassName="active" onClick={this.handleClick}>Profile</CleanLink>
                   </Nav.Link>
 
     let logout = <Nav.Link key="logout" name="logout"  className="text-light" onClick={this.handleClick}>Logout</Nav.Link>

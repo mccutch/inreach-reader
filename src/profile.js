@@ -56,7 +56,7 @@ export class Profile extends React.Component{
             {label:"Say hi!", action:(contact)=>{console.log(`Hi ${contact.first_name}!`)}}
           ]}
         />
-        <button className='btn btn-outline-success' onClick={()=>{this.props.app.setModal(<EditContact user={this.props.user} app={this.props.app}/>)}}>+ Add</button>
+        <button className='btn btn-outline-success m-2' onClick={()=>{this.props.app.setModal(<EditContact user={this.props.user} app={this.props.app}/>)}}>+ Add</button>
       </div>
     )
   }

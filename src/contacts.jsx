@@ -14,6 +14,7 @@ export class ViewContact extends React.Component{
       <div>
         <p>Email: {contact.email}</p>
         <p>Mobile: {contact.mobile}</p>
+        <p>Notes: {contact.notes}</p>
       </div>
 
     let footer = this.props.app.loggedIn ?
@@ -47,6 +48,7 @@ export class EditContact extends React.Component{
         email:contact.email,
         mobile:contact.mobile,
         relationship:contact.relationship,
+        notes:contact.notes,
 
         submitted:false,
         validEmail:contact.email?true:false,
@@ -99,7 +101,7 @@ export class EditContact extends React.Component{
   saveContact(){
     let saveNew = this.props.contact ? false:true
 
-    let contactFields = ['first_name', 'last_name', 'email', 'mobile', 'relationship']
+    let contactFields = ['first_name', 'last_name', 'email', 'mobile', 'relationship', 'notes']
     let contactData = {}
     for(let i in contactFields){
       let field = contactFields[i]
@@ -157,7 +159,9 @@ export class EditContact extends React.Component{
           className="my-2"
         />
         <input type="text" className="form-control my-2" name="mobile" maxLength={MAX_LEN_NAME} onChange={this.handleChange} defaultValue={this.state.mobile} placeholder="Mobile"/>
-        <input type="text" className="form-control my-2" name="relationship" maxLength={MAX_LEN_NAME} onChange={this.handleChange} defaultValue={this.state.relationship} placeholder="Relationship"/> 
+        <input type="text" className="form-control my-2" name="relationship" maxLength={MAX_LEN_NAME} onChange={this.handleChange} defaultValue={this.state.relationship} placeholder="Relationship"/>
+        <textarea className="form-control my-2" name="notes" placeholder="Notes" rows="3" defaultValue={this.state.notes} onChange={this.handleChange}/> 
+        <p>Note: All information stored here will be visible to anyone who views your trip.</p>
         <p><strong>{this.state.errorMessage}</strong></p>
       </div>
 

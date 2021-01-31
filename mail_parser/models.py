@@ -27,8 +27,8 @@ class Contact(models.Model):
     last_name = models.CharField(max_length=60, blank=True)
     email = models.EmailField(blank=True)
     mobile = models.CharField(max_length=60, blank=True)
-    relationship = models.CharField(max_length=60, default="Unspecified")
-
+    relationship = models.CharField(max_length=60, blank=True)
+    notes = models.TextField(default="", blank=True)
 
 class Trip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trips')
@@ -56,6 +56,7 @@ class Profile(models.Model):
     loc_lat = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
     loc_lng = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
     pass_phrase = models.CharField(max_length=60, blank=True)
+    #emergency_instructions = models.TextField(default="", blank=True)
     
     def __str__(self):
         """String for representing the Model object."""
