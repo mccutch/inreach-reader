@@ -1,12 +1,14 @@
 CURRENT TASKS-------------------------
 
+bug - adding a new contact wipes unsaved contacts
+
 gMap UI
  - Create a legend box for paths and points
  - Delete a path
  - What should happen when all points in a path are "undone"?
 
 Profile
- - Emergency contact model(name, email, number -- no functionality yet, just visible) - ADD NOTES TO CONTACT
+ - Emergency contact model(name, email, number -- no functionality yet, just visible) - ADD NOTES TO CONTACT, warn about visiblity of data
  - Overdue instructions(charfield to store instructions. Use this to populate TripPlanner field)
  - Change password
 

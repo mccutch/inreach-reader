@@ -26,8 +26,12 @@ class DropdownActionsButton extends React.Component{
           onClick={()=>this.props.actions[0].action(this.props.object)}
           noFormat={true}
         />
-        <Dropdown.Toggle split variant="btn-outline" id="dropdown-split-basic" ></Dropdown.Toggle>
-        <Dropdown.Menu>{this.generateActionList()}</Dropdown.Menu>
+        {this.props.actions.length>1 && 
+          <div>
+            <Dropdown.Toggle split variant="btn-outline" id="dropdown-split-basic" ></Dropdown.Toggle>
+            <Dropdown.Menu>{this.generateActionList()}</Dropdown.Menu>
+          </div>
+        }
       </Dropdown>
     )
   }

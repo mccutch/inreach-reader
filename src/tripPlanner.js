@@ -114,9 +114,9 @@ export class TripPlanner extends React.Component{
       let contacts = this.props.trip.contacts
       let contactList=[]
       for(let i in contacts){
-        contactList.push(getObject({objectList:this.props.user.contacts, key:"id", keyValue:contacts[i]}))
+        let contactData = getObject({objectList:this.props.user.contacts, key:"id", keyValue:contacts[i]})
+        if(contactData) contactList.push(contactData);
       }
-      console.log(contactList)
       this.setState({contacts:contactList})
     }
 
@@ -124,6 +124,25 @@ export class TripPlanner extends React.Component{
       showMap:(this.state.points.length>0||this.state.paths.length>0),
     })
   }
+
+  componentDidUpdate(prevProps){
+    //Update contact details after editing
+    if(prevProps.user.contacts!==this.props.user.contacts){
+      let updatedList=[]
+      for(let i in this.state.contacts){
+        let contact = getObject({objectList:this.props.user.contacts, key:"id", keyValue:this.state.contacts[i].id})
+        if(contact) updatedList.push(contact)
+      }
+      this.setState({contacts:updatedList})
+    }
+
+  }
+
+  parseContacts(){
+    
+  }
+
+  
 
   returnError(message){
     this.setState({

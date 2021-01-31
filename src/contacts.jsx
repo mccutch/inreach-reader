@@ -61,6 +61,7 @@ export class EditContact extends React.Component{
     this.validateData=this.validateData.bind(this)
     this.returnError=this.returnError.bind(this)
     this.saveContact=this.saveContact.bind(this)
+    this.deleteContact=this.deleteContact.bind(this)
   }
 
   handleChange(event){
@@ -122,7 +123,21 @@ export class EditContact extends React.Component{
         this.props.app.hideModal()
       }
     })
+  }
 
+  deleteContact(){
+    apiFetch({
+      url:`${urls.EMG_CONTACT}/${this.props.contact.id}/`,
+      method:'DELETE',
+      onFailure:(err)=>{
+        console.log(err)
+        this.returnError("Unable to save changes.")
+      },
+      onSuccess:()=>{
+        this.props.app.refresh()
+        this.props.app.hideModal()
+      }
+    })
   }
 
   render(){
@@ -147,11 +162,17 @@ export class EditContact extends React.Component{
       </div>
 
 
-    let footer=
+    let footer = !this.state.attemptDelete?
       <div>
-        <button className='btn btn-outline-danger' onClick={this.props.app.hideModal}>Cancel</button>
-        {/*this.props.contact && <button className='btn btn-outline-success' onClick={this.validateData}>Delete</button>*/}
+        <button className='btn btn-outline-danger m-2' onClick={this.props.app.hideModal}>Cancel</button>
+        {this.props.contact && <button className='btn btn-outline-dark m-2' onClick={()=>this.setState({attemptDelete:true})}>Delete</button>}
         <button className={`btn btn-success m-2 ${this.state.submissionPending ? "disabled":""}`} onClick={this.validateData}>Save changes</button>
+      </div>
+      :
+      <div>
+        <p>Are you sure you want to delete this contact?</p>
+        <button className='btn btn-outline-danger m-2' onClick={()=>this.setState({attemptDelete:false})}>Cancel</button>
+        <button className='btn btn-dark m-2' onClick={this.deleteContact}>Confirm</button>
       </div>
 
     return(
