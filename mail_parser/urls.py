@@ -14,6 +14,10 @@ from . import serializers
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="index.html"), name='index'),
+    path('api/mapshare/<slug:mapshareID>/', views.MapshareAPI.as_view(), name='mapShare'),
+    path('api/mapshare/<slug:mapshareID>/<str:filters>/', views.MapshareAPI.as_view(), name='mapShare'),
+    
+
 
 
     path('api/view-user/<slug:username>/', views.ViewUser.as_view(), name='view-user'),

@@ -5,9 +5,94 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.contrib.auth.models import User
 
+from fastkml import kml
+
 from . import models
 from . import serializers
 from . import permissions
+
+
+#GARMIN TEST
+import requests
+
+
+class MapshareAPI(APIView):
+    """
+    Access the inReach API and return a formatted response of the KML data in json format.
+
+    URL suffix is passed directly to Garmin API endpoint.
+
+    See docs: https://support.garmin.com/en-CA/?faq=tdlDCyo1fJ5UxjUbA9rMY8
+    """
+    permission_classes=(AllowAny,)
+
+    def parse_features(self, document):
+        placemarks = []
+
+        for feature in document:
+            if isinstance(feature, kml.Placemark):
+                placemarks.append(self.parse_placemark(feature))
+            if isinstance(feature, kml.Folder):
+                placemarks.extend(self.parse_features(list(feature.features())))
+            if isinstance(feature, kml.Document):
+                placemarks.extend(self.parse_features(list(feature.features())))
+                
+        return placemarks
+
+    def parse_placemark(self, placemark):
+        p = placemark
+        data = {}
+        data["name"] = p.name if p.name else None
+        data["description"] = p.description if p.description else None
+        data["timestamp"] = p.timeStamp if p.timeStamp else None
+        
+        if p.geometry:
+            geom_data = {}
+            geom_data["coords"] = p.geometry.coords
+            geom_data["type"] = p.geometry.geom_type
+            data["geometry"] = geom_data
+
+        if p.extended_data:
+            ext_data = {}
+            for element in p.extended_data.elements:
+                ext_data[element.name]=element.value
+            data["extendedData"] = ext_data
+
+        return data
+
+
+
+    def get(self, request, mapshareID, filters=None, format=None):
+        urlSuffix = mapshareID
+        if filters:
+            urlSuffix += f'?{filters}'
+        response = requests.get('https://share.garmin.com/Feed/Share/'+urlSuffix)
+
+        try:
+            # Read KML from response
+            k = kml.KML()
+            k.from_string(response.content)
+
+            features = list(k.features())
+            placemarks = self.parse_features(features)
+            content = {
+                'MapshareID':mapshareID,
+                'API_status': response.status_code,
+                'placemarks': placemarks if placemarks else None,
+            }
+            return Response(content)
+
+        except:
+            errors = {
+                'Error': 'Unable to read KML data.',
+                'API_status': response.status_code,
+                'Reponse status': response.reason,
+                'Content': response.content,
+            }
+            return Response(errors)
+            #return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # Create your views here.
 class Login(APIView):
@@ -120,6 +205,7 @@ class TripReadOnly(APIView):
             "user":userData,
             "trip":tripData,
             #"messages":messageData, ### Later include any messages received within timeframe
+            #contacts
         }
 
         return Response(content)

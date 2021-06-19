@@ -8,6 +8,8 @@ export const REFRESH_TOKEN = '/token/refresh/'
 
 export const LOGIN = '/api/login/'
 
+export const MAPSHARE = '/api/mapshare'
+
 // DATABASE OBJECTS - CREATE/GET
 export const CURRENT_USER = '/api/current-user/'
 export const MY_PROFILE = '/api/my-profile/'

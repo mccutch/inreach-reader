@@ -37,7 +37,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = models.Profile
-        fields = ['user', 'location', 'loc_lat', 'loc_lng', 'pass_phrase', 'id']
+        fields = ['user', 'location', 'loc_lat', 'loc_lng', 'pass_phrase', 'mapshare_ID', 'id']
         #read_only_fields = ['pass_phrase']
 
 class ContactSerializer(serializers.ModelSerializer):

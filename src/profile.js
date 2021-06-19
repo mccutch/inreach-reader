@@ -1,14 +1,15 @@
 import React from 'react'
-import {Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom"
 
-import {GoogleAutocomplete} from './googleAutocomplete.js';
-import {apiFetch, truncate} from './helperFunctions.js';
+import {GoogleAutocomplete} from './googleAutocomplete.js'
+import {apiFetch, truncate} from './helperFunctions.js'
 import {LoadingScreen} from './loading.js'
 import {EditContact, ViewContact} from './contacts.jsx'
 import {ContactList} from './objectSummaryLists.js'
+import {InreachSetupModal} from './inReachKml.js'
 
-import * as urls from './urls.js';
-import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js';
+import * as urls from './urls.js'
+import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js'
 
 
 export class Profile extends React.Component{
@@ -46,6 +47,12 @@ export class Profile extends React.Component{
         <p>Pass phrase: <strong><em>{profile.pass_phrase}</em></strong></p>
         <button className='btn btn-outline-primary m-2' onClick={()=>this.setState({edit:true})}>Edit</button>
         <button className='btn btn-outline-success m-2' onClick={()=>this.setState({redirect:urls.HOME})}>Back</button>
+        <h4>inReach Feed</h4>
+        {profile.mapshare_ID ?
+          <p>Mapshare ID: <strong><em>{profile.mapshare_ID}</em></strong></p>
+          :
+          <button className='btn btn-outline-success m-2' onClick={()=>{this.props.app.setModal(<InreachSetupModal user={this.props.user} app={this.props.app}/>)}}>+ Add</button>
+        }
         <h4>Emergency Contacts</h4>
         <ContactList
           app={this.props.app}

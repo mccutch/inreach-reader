@@ -56,6 +56,7 @@ class Profile(models.Model):
     loc_lat = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
     loc_lng = models.DecimalField(max_digits=16, decimal_places=10, blank=True, null=True)
     pass_phrase = models.CharField(max_length=60, blank=True)
+    mapshare_ID = models.CharField(max_length=60, blank=True)
     #emergency_instructions = models.TextField(default="", blank=True)
     
     def __str__(self):

@@ -3,6 +3,8 @@ import {Redirect} from "react-router-dom";
 import * as urls from './urls.js';
 import {TripList, MessageList} from './objectSummaryLists.js';
 
+import {KMLDemo} from './inReachKml.js';
+
 
 export class Dashboard extends React.Component{
   constructor(props){
@@ -22,6 +24,9 @@ export class Dashboard extends React.Component{
         <div className="row">
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PROFILE_SETTINGS}`})}>Profile settings</button>
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PLANNER}`})}>+ Plan a trip</button>
+        </div>
+        <KMLDemo app={this.props.app}/>
+        <div className="bg-light">
         </div>
         <div className="row">
           <div className="col border">
