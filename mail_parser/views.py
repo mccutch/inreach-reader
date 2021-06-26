@@ -76,7 +76,8 @@ class MapshareAPI(APIView):
             features = list(k.features())
             placemarks = self.parse_features(features)
             content = {
-                'MapshareID':mapshareID,
+                'is_valid': True,
+                'MapshareID': mapshareID,
                 'API_status': response.status_code,
                 'placemarks': placemarks if placemarks else None,
             }
@@ -84,6 +85,7 @@ class MapshareAPI(APIView):
 
         except:
             errors = {
+                'is_valid': False,
                 'Error': 'Unable to read KML data.',
                 'API_status': response.status_code,
                 'Reponse status': response.reason,

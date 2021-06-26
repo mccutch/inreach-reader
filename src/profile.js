@@ -48,11 +48,11 @@ export class Profile extends React.Component{
         <button className='btn btn-outline-primary m-2' onClick={()=>this.setState({edit:true})}>Edit</button>
         <button className='btn btn-outline-success m-2' onClick={()=>this.setState({redirect:urls.HOME})}>Back</button>
         <h4>inReach Feed</h4>
-        {profile.mapshare_ID ?
-          <p>Mapshare ID: <strong><em>{profile.mapshare_ID}</em></strong></p>
-          :
-          <button className='btn btn-outline-success m-2' onClick={()=>{this.props.app.setModal(<InreachSetupModal user={this.props.user} app={this.props.app}/>)}}>+ Add</button>
-        }
+        <div> 
+          <p>Mapshare ID: <strong><em>{profile.mapshare_ID || "Not linked"}</em></strong></p>
+          <button className='btn btn-outline-success m-2' onClick={()=>{this.props.app.setModal(<InreachSetupModal user={this.props.user} app={this.props.app}/>)}}>Setup</button>
+        </div>
+          
         <h4>Emergency Contacts</h4>
         <ContactList
           app={this.props.app}
@@ -117,7 +117,7 @@ export class ProfileEdit extends React.Component{
     let userData={}
     let willUpdateUser=false
     for(let i in userAttr){
-      if(this.state[userAttr[i]]){
+      if(typeof this.state[userAttr[i]] !== "undefined"){
         userData[userAttr[i]]=this.state[userAttr[i]]
         willUpdateUser=true
       }
@@ -126,7 +126,7 @@ export class ProfileEdit extends React.Component{
     let profileData={}
     let willUpdateProfile=false
     for(let i in profileAttr){
-      if(this.state[profileAttr[i]]){
+      if(typeof this.state[profileAttr[i]] !== "undefined"){
         profileData[profileAttr[i]]=this.state[profileAttr[i]]
         willUpdateProfile=true
       }

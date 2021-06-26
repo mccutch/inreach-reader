@@ -7,20 +7,93 @@ import {StandardModal} from './reactComponents.js'
 export class InreachSetupModal extends React.Component{
   constructor(props){
     super(props)
-    this.state = {}
+    this.state = {
+      isValid:false,
+      tested:false,
+      ID_input:this.props.user.profile.mapshare_ID,
+    }
+    this.handleChange=this.handleChange.bind(this)
+    this.testInput=this.testInput.bind(this)
+    this.saveChanges=this.saveChanges.bind(this)
+    this.checkBeforeClose=this.checkBeforeClose.bind(this)
+  }
+
+  testInput(){
+    console.log(this.state.ID_input)
+    getKMLData({
+      mapshareID:this.state.ID_input,
+      onSuccess:(json)=>(this.setState({
+        isValid:true, 
+        tested:true,
+        successMessage:"Mapshare ID received a valid response from Garmin services."
+      })),
+      onFailure:(err)=>(this.setState({
+        isValid:false, 
+        tested:true,
+        errorMessage:"Unable to verify Mapshare ID with Garmin services."
+      })),
+    })
+  }
+
+  handleChange(e){
+    this.setState({ID_input:e.target.value, isValid:false, tested:false,})
+  }
+
+  saveChanges(mapshare_ID){
+    apiFetch({
+      method:'PATCH',
+      url:`${urls.PROFILE}/${this.props.user.profile.id}/`,
+      data:{mapshare_ID:mapshare_ID},
+      onSuccess:()=>{console.log("grouse"); this.props.app.refresh(); this.props.app.hideModal();},
+      onFailure:()=>{console.log("fuck")},
+    })
+  }
+
+  checkBeforeClose(){
+    this.props.app.hideModal()
   }
 
   render(){
     let title = <div>inReach Feed Setup</div>
-    let body = <p>Mapshare ID: {this.props.user.profile.mapshare_ID}</p>
+    let mapshare_ID = this.props.user.profile.mapshare_ID
+    let body = 
+      <div>
+        <p>Mapshare ID:</p>
+        
+        <input
+          type="text"
+          defaultValue={this.props.user.profile.mapshare_ID}
+          onChange={this.handleChange}
+          placeholder={this.props.placeholder}
+          maxLength={this.props.maxLength}
+          className={`form-control my-2 ${this.state.isValid ? "is-valid":""} ${this.state.tested&&!this.state.isValid ? "is-invalid":""}`}
+        />
+        <small className={`${!this.state.isValid ? "invalid-feedback":"valid-feedback"}`}>
+          {this.state.tested ?
+            <div>{!this.state.isValid ? `${this.state.errorMessage}`:`${this.state.successMessage}`}</div>
+            :
+            ""
+          }
+        </small>
+
+
+        {!this.state.isValid && <button className="btn btn-success btn-disabled" onClick={this.testInput}>Test</button>}
+
+      </div>
+
+      let footer = 
+        <div>
+          {this.state.isValid && <button className="btn btn-success m-2" onClick={()=>this.saveChanges(this.state.ID_input)}>Save changes</button>}
+          {this.props.user.profile.mapshare_ID && <button className="btn btn-outline-danger m-2" onClick={()=>this.saveChanges("")}>Remove inReach link</button>}
+        </div>
 
     return(
-      <StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>
+      <StandardModal title={title} body={body} footer={footer} hideModal={this.checkBeforeClose}/>
     )
   }
 }
 
-export function getKMLData({mapshareID, startDate, endDate}){
+export function getKMLData({mapshareID, startDate, endDate, onSuccess, onFailure}){
   let suffix = mapshareID
 
   if(startDate){
@@ -39,14 +112,15 @@ export function getKMLData({mapshareID, startDate, endDate}){
 
   apiFetch({
     url:`${urls.MAPSHARE}/${suffix}/`,
-      method:"GET",
-      onSuccess:(json)=>{
-        console.log(json)
-      },
-      onFailure:(err)=>{
-        console.log(err)
-      },
-    })
+    method:"GET",
+    onSuccess:(json)=>{
+      if(json.is_valid){
+        onSuccess(json)
+      } else{
+        onFailure(json)
+      }
+    },
+  })
 }
 
 export class KMLDemo extends React.Component{
@@ -83,7 +157,15 @@ export class KMLDemo extends React.Component{
             className="btn-info btn-block my-2"
             app={this.props.app}
           />
-          <button className="btn btn-success" onClick={()=>getKMLData({mapshareID:this.state.mapshareID, startDate:this.state.startDate, endDate:this.state.endDate})}>Find</button>
+          <button className="btn btn-success" onClick={
+            ()=>getKMLData({
+              mapshareID:this.state.mapshareID, 
+              startDate:this.state.startDate, 
+              endDate:this.state.endDate,
+              onSuccess:(json)=>{console.log(json)},
+              onFailure:(err)=>{console.log(err)},
+            })
+          }>Find</button>
         </div>
       </div>
     )

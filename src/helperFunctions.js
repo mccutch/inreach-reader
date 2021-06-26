@@ -188,7 +188,7 @@ export function apiFetch({method, data, url, onSuccess, onFailure, noAuth, conte
       throw new Error(res.status)
     }
   }).then(json => {
-    console.log(json)
+    //console.log(json)
     if(onSuccess){onSuccess(json)}
   }).catch(error => {
     console.log(error.message)
