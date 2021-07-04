@@ -13,6 +13,8 @@ export class GoogleMapWrapper extends React.Component{
       mode:(this.props.points&&this.props.points.length>0)||(this.props.paths&&this.props.paths.length>0)?"locked":this.props.initialMode,
       points:[],
       paths:[],
+      readOnlyPoints:[],
+      readOnlyPaths:[],
       labelIndex:0,
     }
 
@@ -60,6 +62,19 @@ export class GoogleMapWrapper extends React.Component{
           console.log("Something changed")
           this.editPathIdentifiers(i)
         }
+      }
+    }
+
+    if(this.props.paths.length>(this.state.paths.length+this.state.readOnlyPaths.length)){
+      console.log("NEW PATHS ADDED, PROBABLY INREACH DATA")
+      for(let i=this.state.paths.length; i<this.props.paths.length; i++){
+        this.addPath(this.props.paths[i])
+      }
+    }
+    if(this.props.points.length>(this.state.points.length+this.state.readOnlyPoints.length)){
+      console.log("NEW POINTS ADDED, PROBABLY INREACH DATA")
+      for(let i=this.state.points.length; i<this.props.points.length; i++){
+        this.addPoint(this.props.points[i])
       }
     }
   }
@@ -258,7 +273,7 @@ export class GoogleMapWrapper extends React.Component{
     }
   }
 
-  addPath({path, name, colour}){
+  addPath({path, name, colour, readOnly}){
     console.log(path)
     console.log(name)
     let lineColour = colour?colour:DEFAULT_LINE_COLOUR
@@ -270,25 +285,23 @@ export class GoogleMapWrapper extends React.Component{
         strokeOpacity: 1.0,
         strokeWeight: 2,
         map:this.map,
-        editable:this.state.mode!=="locked",
+        editable:this.state.mode!=="locked" && !readOnly,
       });
-    gPath.addListener('dragend', this.returnPath);
-    gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
-    gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
-    gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
-    let newPath = {name:name, gPath:gPath, colour:lineColour}
-    this.state.paths.push(newPath)
-    this.setState({activePath:this.state.paths.length-1})
-    console.log("PROP PATH ADDED.")
-  }
-
-  plotPoints(){
-    let clone = Object.assign({},this.props.points)
-    console.log(clone)
-    for(let i in clone){
-      this.addPoint(clone[i])
+    if(path.readOnly){
+      console.log("READONLYPATH")
+      let newPath = {name:name, gPath:gPath, colour:lineColour}
+      this.state.readOnlyPaths.push(newPath)
+    } else {
+      gPath.addListener('dragend', this.returnPath);
+      gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
+      gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
+      gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
+      let newPath = {name:name, gPath:gPath, colour:lineColour}
+      this.state.paths.push(newPath)
+      this.setState({activePath:this.state.paths.length-1})
+      console.log("PROP PATH ADDED.")
     }
-    console.log("PROP POINTS ADDED.")
+    
   }
 
   addToPath(latLng){
@@ -300,7 +313,6 @@ export class GoogleMapWrapper extends React.Component{
       this.setState({mode:"editPath"})
     }else{
       let gPath = this.state.paths[this.state.activePath].gPath //polyline object
-      //let gPath=this.state.activePath
       let path = gPath.getPath().push(latLng)
     }
     this.returnPath()
@@ -324,6 +336,15 @@ export class GoogleMapWrapper extends React.Component{
     this.props.returnPaths(allPaths)
   }
 
+  plotPoints(){
+    let clone = Object.assign({},this.props.points)
+    console.log(clone)
+    for(let i in clone){
+      this.addPoint(clone[i])
+    }
+    console.log("PROP POINTS ADDED.")
+  }
+
   addPoint(pt){
     let gMaps = window.google.maps
     console.log(pt)
@@ -331,13 +352,18 @@ export class GoogleMapWrapper extends React.Component{
     let newPt = new gMaps.Marker({
       position:pt.position, 
       map:this.map, 
-      draggable:!this.state.mode==="locked",
+      draggable:!this.state.mode==="locked" && !pt.readOnly,
       label:pt.label,
     })
 
-    newPt.addListener('dragend', this.returnPoints); 
-    this.state.points.push(newPt)
-    this.setState({labelIndex:this.state.points.length},this.returnPoints)
+    if(pt.readOnly){
+      this.state.readOnlyPoints.push(newPt)
+    }else{
+      newPt.addListener('dragend', this.returnPoints); 
+      this.state.points.push(newPt)
+      this.setState({labelIndex:this.state.points.length},this.returnPoints)
+    }
+    
   }
 
   changeMapMode(mode){

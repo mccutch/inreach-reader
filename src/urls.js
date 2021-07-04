@@ -85,4 +85,3 @@ export const LOCK_ICON = `${ICON_LOC}battery.svg`
 
 
 
-

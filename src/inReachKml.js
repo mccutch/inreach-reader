@@ -4,6 +4,45 @@ import * as urls from './urls'
 import {today, TimeInputButton} from './dateFunctions'
 import {StandardModal} from './reactComponents.js'
 
+
+export function parseInReachData(apiData){
+  if(!apiData.is_valid || !apiData.placemarks){
+    return null
+  }
+  let points = []
+  let paths = []
+
+  for(let i in apiData.placemarks){
+    let p = apiData.placemarks[i]
+    let geo = p.geometry
+    console.log("i", typeof i)
+
+    if(geo.type==="Point"){
+      points.push({
+        description:p.extendedData["Time UTC"],
+        label:(parseInt(i)+1).toString(),
+        position:{lng:geo.coords[0][0],lat:geo.coords[0][1]},
+        readOnly:true,
+      })
+    }else if(geo.type==="LineString"){
+      let path = []
+      for(let j in geo.coords){
+        path.push({lng:geo.coords[j][0],lat:geo.coords[j][1]})
+      }
+      paths.push({
+        name:p.description,
+        colour:"#b422a8",
+        path:path,
+        readOnly:true,
+      })
+    }else{
+      console.log(geo)
+    }
+  }
+  return({points:points, paths:paths})
+}
+
+
 export class InreachSetupModal extends React.Component{
   constructor(props){
     super(props)

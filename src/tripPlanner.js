@@ -1,14 +1,15 @@
-import React from 'react';
-import {Redirect} from 'react-router-dom';
-import {GoogleMapWrapper} from './googleMap.js';
-import {today, TimeInputButton, parseISODate} from './dateFunctions.js';
-import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from './reactComponents.js';
-import {apiFetch, getObject} from './helperFunctions.js';
-import {EditContact, ViewContact} from './contacts.jsx';
-import {ContactList} from './objectSummaryLists.js';
-import * as urls from './urls.js';
-import * as con from './constants.js';
+import React from 'react'
+import {Redirect} from 'react-router-dom'
+import {GoogleMapWrapper} from './googleMap.js'
+import {today, TimeInputButton, parseISODate} from './dateFunctions.js'
+import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from './reactComponents.js'
+import {apiFetch, getObject} from './helperFunctions.js'
+import {EditContact, ViewContact} from './contacts.jsx'
+import {ContactList} from './objectSummaryLists.js'
+import * as urls from './urls.js'
+import * as con from './constants.js'
 import {LoadingScreen} from './loading.js'
+import {getKMLData, parseInReachData} from './inReachKml.js'
 
 export class TripEdit extends React.Component{
   constructor(props){
@@ -107,6 +108,7 @@ export class TripPlanner extends React.Component{
     this.delete=this.delete.bind(this)
     this.addEmergencyContact=this.addEmergencyContact.bind(this)
     this.selectEmergencyContact=this.selectEmergencyContact.bind(this)
+    this.fetchInReachData=this.fetchInReachData.bind(this)
   }
 
   componentDidMount(){
@@ -123,6 +125,8 @@ export class TripPlanner extends React.Component{
     this.setState({
       showMap:(this.state.points.length>0||this.state.paths.length>0),
     })
+
+    this.fetchInReachData()
   }
 
   componentDidUpdate(prevProps){
@@ -138,10 +142,17 @@ export class TripPlanner extends React.Component{
 
   }
 
-  parseContacts(){
-    
+  fetchInReachData(){
+    if(this.props.user.profile && this.props.user.profile.mapshare_ID){
+      getKMLData({
+        mapshareID:this.props.user.profile.mapshare_ID, 
+        startDate:this.state.depart, 
+        endDate:this.state.return, 
+        onSuccess:(json)=>(this.setState({inReachData:parseInReachData(json)})), 
+        onFailure:()=>(console.log("No inreach data loaded"))
+      })
+    }
   }
-
   
 
   returnError(message){
@@ -351,7 +362,7 @@ export class TripPlanner extends React.Component{
               <TimeInputButton
                 label={"Depart"}
                 value={this.state.depart}
-                returnDateTime={(dt)=>this.setState({depart:dt})}
+                returnDateTime={(dt)=>this.setState({depart:dt},this.fetchInReachData)}
                 className="btn-info btn-block my-2"
                 app={this.props.app}
               />
@@ -360,7 +371,7 @@ export class TripPlanner extends React.Component{
               <TimeInputButton
                 label={"Return"}
                 value={this.state.return}
-                returnDateTime={(dt)=>this.setState({return:dt})}
+                returnDateTime={(dt)=>this.setState({return:dt},this.fetchInReachData)}
                 className="btn-info btn-block my-2"
                 app={this.props.app}
               />
@@ -453,8 +464,8 @@ export class TripPlanner extends React.Component{
                 id = {"baseMap"}
                 editable={true}
                 locationBias={mapCenter}
-                points={this.state.points}
-                paths={this.state.paths}
+                points={this.state.inReachData ? this.state.points.concat(this.state.inReachData.points) : this.state.points}
+                paths={this.state.inReachData ? this.state.paths.concat(this.state.inReachData.paths) : this.state.paths}
                 initialMode="editPath"
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}
