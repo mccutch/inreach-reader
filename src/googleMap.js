@@ -7,6 +7,28 @@ import * as urls from './urls.js';
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 export class GoogleMapWrapper extends React.Component{
+  /*
+  Accept editable and read-only points to display on the map.
+
+  Editable points:
+   - Position
+   - Label
+   - Description
+
+  Read-only points:
+  - Position
+  - Label
+  - Description
+  - readOnly=true
+
+  Return points/paths:
+  - When points/paths are edited, return object containing all point/path data
+
+
+
+
+
+  */
   constructor(props){
     super(props)
     this.state = {
@@ -39,6 +61,10 @@ export class GoogleMapWrapper extends React.Component{
     this.addPoint=this.addPoint.bind(this)
     this.addPath=this.addPath.bind(this)
 
+    this.handlePathClick=this.handlePathClick.bind(this)
+    this.lockAllPaths=this.lockAllPaths.bind(this)
+    this.lockAllPoints=this.lockAllPoints.bind(this)
+
     this.returnPoints=this.returnPoints.bind(this)
     this.returnPath=this.returnPath.bind(this)
 
@@ -54,8 +80,8 @@ export class GoogleMapWrapper extends React.Component{
   componentDidUpdate(prevProps){
     if(this.props.paths!==prevProps.paths && prevProps.paths.length>0){
       for(let i in this.props.paths){
-        console.log(this.props.paths[i])
-        console.log(prevProps.paths[i])
+        //console.log(this.props.paths[i])
+        //console.log(prevProps.paths[i])
         if(prevProps.paths[i] && 
             (this.props.paths[i].name!==prevProps.paths[i].name || this.props.paths[i].colour!==prevProps.paths[i].colour)
           ){
@@ -200,6 +226,7 @@ export class GoogleMapWrapper extends React.Component{
     console.log(place)
     if(!place.geometry){this.setState({errorMessage:`Unable to find ${place.name}.`}); return}
     this.map.setCenter(place.geometry.location)
+    // Create location bias from user location if no points exist
     let temporaryMarker = new window.google.maps.Marker({
       position:place.geometry.location, map: this.map, title:place.name,
     })
@@ -287,12 +314,13 @@ export class GoogleMapWrapper extends React.Component{
         map:this.map,
         editable:this.state.mode!=="locked" && !readOnly,
       });
-    if(path.readOnly){
+    if(readOnly){
       console.log("READONLYPATH")
       let newPath = {name:name, gPath:gPath, colour:lineColour}
       this.state.readOnlyPaths.push(newPath)
     } else {
       gPath.addListener('dragend', this.returnPath);
+      gPath.addListener('click', ()=>this.handlePathClick(gPath));
       gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
       gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
       gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
@@ -306,7 +334,7 @@ export class GoogleMapWrapper extends React.Component{
 
   addToPath(latLng){
     console.log([latLng.toJSON()])
-    if(this.state.mode==="newPath" || this.props.paths.length===0){
+    if(this.state.mode==="newPath"/* || this.props.paths.length===0*/){
       console.log("new path")
       let newName = `Route ${this.state.paths.length+1}`
       this.addPath({path:[latLng],name:newName})
@@ -316,6 +344,22 @@ export class GoogleMapWrapper extends React.Component{
       let path = gPath.getPath().push(latLng)
     }
     this.returnPath()
+  }
+
+  handlePathClick(gPath){
+    if(this.state.mode==="locked"){
+      return
+    }else{
+      this.lockAllPaths({callback:()=>gPath.setEditable(true)})
+      this.setState({mode:"editPath"})
+      for(let i in this.state.paths){
+        if(this.state.paths[i].gPath==gPath){
+          this.setState({activePath:i})
+          break;
+        }
+      }
+    }
+    
   }
 
   returnPath(){
@@ -331,7 +375,11 @@ export class GoogleMapWrapper extends React.Component{
       for(let j in array){
         jsonList.push(array[j].toJSON())
       }
-      allPaths.push({path:jsonList, name:pathList[i].name, colour:pathList[i].colour})
+      if(jsonList.length > 1){
+        // Don't return a path with a single point
+        allPaths.push({path:jsonList, name:pathList[i].name, colour:pathList[i].colour})
+      }
+      
     }
     this.props.returnPaths(allPaths)
   }
@@ -347,12 +395,14 @@ export class GoogleMapWrapper extends React.Component{
 
   addPoint(pt){
     let gMaps = window.google.maps
-    console.log(pt)
+    console.log("not readonly", !pt.readOnly)
+    console.log("not locked", !(this.state.mode==="locked"))
+    
    
     let newPt = new gMaps.Marker({
       position:pt.position, 
       map:this.map, 
-      draggable:!this.state.mode==="locked" && !pt.readOnly,
+      draggable:this.state.mode!=="locked" && !pt.readOnly,
       label:pt.label,
     })
 
@@ -366,43 +416,40 @@ export class GoogleMapWrapper extends React.Component{
     
   }
 
+  lockAllPaths({callback}){
+    for(let i in this.state.paths){
+      this.state.paths[i].gPath.setEditable(false)
+    }
+    if(callback) callback();
+  }
+
+  lockAllPoints(bool=true){
+    for(let i in this.state.points){
+      this.state.points[i].setDraggable(!bool)
+    }
+  }
+
   changeMapMode(mode){
     let newMode=mode
     if(mode==="toggleLock"){
       if(this.state.mode==="locked"){
+        //Unlock to default mode
         this.changeMapMode(this.props.initialMode)
         return
       }else{
         newMode="locked"
+        this.lockAllPaths({})
+        this.lockAllPoints()
       }
-    }
-
-    let newActivePath = null
-    if(mode==="editPath"){
-      if(this.state.mode==="editPath"){
-        //Toggle activePath
-        if(this.state.activePath===this.state.paths.length-1){
-          newActivePath=0
-        }else{
-          newActivePath=this.state.activePath+1
-        }
-      }else{
-        newActivePath=this.state.paths.length-1
-      }
-    }
-
-    //setEditable for all points
-    for(let i in this.state.points){
-      this.state.points[i].setDraggable(mode==="editPoints"?true:false)
-    }
-    
-    // Lock all non-active paths
-    for(let i in this.state.paths){
-      this.state.paths[i].gPath.setEditable(newActivePath==i?true:false)
+    }else if(mode==="newPath"){
+      this.lockAllPaths({})
+      this.lockAllPoints()
+    }else if(mode==="editPoints"){
+      //Unlock point dragging
+      this.lockAllPoints(false)
     }
 
     this.setState({
-      activePath:newActivePath,
       mode:newMode,
     })
       
@@ -421,7 +468,7 @@ export class GoogleMapWrapper extends React.Component{
             </div>
             <div className="col">
               <div className="row">
-                <div className="col">
+                {/*<div className="col">
                   <IconButton 
                     isActive={this.state.mode==="editPath"}
                     active={activeButton}
@@ -429,7 +476,7 @@ export class GoogleMapWrapper extends React.Component{
                     onClick={()=>this.changeMapMode("editPath")} 
                     icon={urls.ROUTE_ICON}
                   />
-                </div>
+                </div>*/}
                 <div className="col">
                   <IconButton 
                     isActive={this.state.mode==="newPath"}

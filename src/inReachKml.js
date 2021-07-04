@@ -31,7 +31,7 @@ export function parseInReachData(apiData){
       }
       paths.push({
         name:p.description,
-        colour:"#b422a8",
+        colour:"#000000",
         path:path,
         readOnly:true,
       })

@@ -466,7 +466,7 @@ export class TripPlanner extends React.Component{
                 locationBias={mapCenter}
                 points={this.state.inReachData ? this.state.points.concat(this.state.inReachData.points) : this.state.points}
                 paths={this.state.inReachData ? this.state.paths.concat(this.state.inReachData.paths) : this.state.paths}
-                initialMode="editPath"
+                initialMode="editPoints"
                 searchBox={true}
                 returnPoints={(pointList)=>this.setState({points:pointList})}
                 returnPaths={(paths)=>this.setState({paths:paths})}
