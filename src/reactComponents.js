@@ -2,81 +2,62 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-export class IconButton extends React.Component{
-  render(){
-    return(
-      <button className={`btn ${this.props.isActive?this.props.active:this.props.inactive} btn-block`} onClick={this.props.onClick}>
-        <img
-          alt=""
-          src={this.props.icon}
-          width={this.props.size?this.props.size:"30"}
-        />
+export function IconButton({isActive, active, inactive, onClick, icon, size}){
+  return(
+    <button className={`btn ${isActive?active:inactive} btn-block`} onClick={onClick}>
+      <img alt="" src={icon} width={size?size:"30"} />
+    </button>
+  )
+}
+
+export function WarningModal({body, warnings, hideModal, onContinue}){
+  let title = <div>Are you sure?</div>
+  let modalBody = body ?
+    body
+    :
+    <div>
+      <p>The following warnings were found:</p>
+      {warnings}
+    </div>
+
+  let footer = 
+    <div>
+      <button className="btn btn-outline-danger m-2" onClick={hideModal}>Cancel</button>
+      <button className="btn btn-outline-success m-2" onClick={onContinue}>Continue</button>
+    </div>
+  return <StandardModal title={title} body={modalBody} footer={footer} hideModal={hideModal} headerClass="bg-warning text-dark"/>
+}
+
+export function PendingBtn({name, onClick, className, pending, disabled, children}){
+  let inactive = pending||disabled
+  return <button name={name} onClick={inactive?()=>{}:onClick} className={`btn ${className} ${inactive?"disabled":""}`} >{children}</button>
+}
+
+export function CenterPage({children}){
+  return <div className='container-sm my-2 bg-light' style={{maxWidth:"600px"}}>{children}</div>
+}
+
+export function CleanLink({to, className, onClick, children}){
+  return <Link to={to} className={className} style={{textDecoration:'none'}} onClick={onClick}>{children}</Link>
+}
+
+export function NavButton({to, className, children}){
+  return( 
+    <CleanLink to={to} >
+      <button className={className}>
+      {children}
       </button>
-    )
-  }
+    </CleanLink>  
+  )
 }
 
-export class WarningModal extends React.Component{
-  render(){
-    let title = <div>Are you sure?</div>
-    let body = this.props.body ?
-      this.props.body
-      :
-      <div>
-        <p>The following warnings were found:</p>
-        {this.props.warnings}
+export function VerticalSpacer({height}){
+  return(
+    <div>
+      <div className="col" style={{height:`${height?height:3}rem`}}>
       </div>
-
-    let footer = 
-      <div>
-        <button className="btn btn-outline-danger m-2" onClick={this.props.hideModal}>Cancel</button>
-        <button className="btn btn-outline-success m-2" onClick={this.props.continue}>Continue</button>
-      </div>
-    return <StandardModal title={title} body={body} footer={footer} hideModal={this.props.hideModal} headerClass="bg-warning text-dark"/>
-  }
-}
-
-export class PendingBtn extends React.Component{
-  render(){
-    return <button name={this.props.name} onClick={this.props.onClick} className={`btn ${this.props.className} ${this.props.pending?"disabled":""} ${this.props.disabled?"disabled":""}`} >{this.props.children}</button>
-  }
-}
-
-export class CenterPage extends React.Component{
-  render(){
-    return <div className='container-sm my-2 bg-light' style={{maxWidth:"600px"}}>{this.props.children}</div>
-  }
-}
-
-export class CleanLink extends React.Component{
-  render(){
-    return <Link to={this.props.to} className={this.props.className} style={{textDecoration:'none'}} onClick={this.props.onClick}>{this.props.children}</Link>
-  }
-}
-
-export class NavButton extends React.Component{
-  render(){
-    return(
-      
-        <CleanLink to={this.props.to} >
-          <button className={this.props.className}>
-          {this.props.children}
-          </button>
-        </CleanLink>
-      
-    )
-  }
-}
-
-export class VerticalSpacer extends React.Component{
-  render(){
-    return(
-      <div>
-        <div className="col" style={{height:`${this.props.height?this.props.height:3}rem`}}>
-        </div>
-      </div>
-    )
-  }      
+    </div>
+  )    
 }
 
 export class LabelledInput extends React.Component{
@@ -103,36 +84,16 @@ export class LabelledInput extends React.Component{
   }
 }
 
-export class StandardModal extends React.Component{
-  render(){
-    let modalFooter
-    if(this.props.footer){
-      modalFooter = 
-        <Modal.Footer>
-          {this.props.footer}
-        </Modal.Footer>
-    }
-
-    let modalBody
-    if(this.props.body){
-      modalBody = 
-        <Modal.Body>
-          {this.props.body}
-        </Modal.Body>
-    }
-
-    let headerClass = this.props.headerClass ? this.props.headerClass : "bg-teal text-light"
-
+export function StandardModal({title, body, footer, headerClass, hideModal}){
     return(
-      <Modal show={true} onHide={this.props.hideModal}>
-        <Modal.Header className={headerClass} closeButton>
-          <Modal.Title>{this.props.title}</Modal.Title>
+      <Modal show={true} onHide={hideModal}>
+        <Modal.Header className={headerClass ? headerClass : "bg-teal text-light"} closeButton>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        {modalBody}
-        {modalFooter}
+        {body && <Modal.Body>{body}</Modal.Body>}
+        {footer && <Modal.Footer>{footer}</Modal.Footer>}
       </Modal>
     )
-  }
 }
 
 export class FormRow extends React.Component{

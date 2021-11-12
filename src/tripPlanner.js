@@ -172,7 +172,7 @@ export class TripPlanner extends React.Component{
     this.props.app.setModal(
       <WarningModal 
         body={<div>Are you sure you want to delete this trip?</div>} 
-        continue={()=>{this.props.app.hideModal(); this.delete()}}
+        onContinue={()=>{this.props.app.hideModal(); this.delete()}}
         hideModal={()=>{this.props.app.hideModal(); this.returnError("")}}
       />)
   }
@@ -279,7 +279,7 @@ export class TripPlanner extends React.Component{
       this.props.app.setModal(
         <WarningModal
           warnings={warnings}
-          continue={()=>{this.props.app.hideModal(); this.saveTrip()}}
+          onContinue={()=>{this.props.app.hideModal(); this.saveTrip()}}
           hideModal={()=>{this.props.app.hideModal(); this.returnError("")}}
         />
       )

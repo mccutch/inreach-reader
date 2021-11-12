@@ -6,6 +6,16 @@ import * as urls from './urls.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
+class Info extends React.Component{
+  render(){
+    return(
+      <p>
+        FUCKFUCKFUCK
+      </p>
+    )
+  }
+}
+
 export class GoogleMapWrapper extends React.Component{
   /*
   Accept editable and read-only points to display on the map.
@@ -65,10 +75,13 @@ export class GoogleMapWrapper extends React.Component{
     this.lockAllPaths=this.lockAllPaths.bind(this)
     this.lockAllPoints=this.lockAllPoints.bind(this)
 
+    this.showPointInfo=this.showPointInfo.bind(this)
+
     this.returnPoints=this.returnPoints.bind(this)
     this.returnPath=this.returnPath.bind(this)
 
     this.editPathIdentifiers=this.editPathIdentifiers.bind(this)
+    this.generatePointInfo=this.generatePointInfo.bind(this)
   }
 
   componentDidMount(){
@@ -135,8 +148,7 @@ export class GoogleMapWrapper extends React.Component{
           mapTypeId:"terrain",
         });
       this.map = map
-
-      //if(this.props.points){this.setMapBounds(this.props.points)}
+      map.addListener("click", this.handleClick)
       
       if(this.props.searchBox){
         console.log("Initialising Autocomplete inputs.")
@@ -159,7 +171,12 @@ export class GoogleMapWrapper extends React.Component{
         }
       }
 
-      map.addListener("click", this.handleClick)
+      
+      let infoWindow = new gMaps.InfoWindow({
+        content: "<p>Hello world</p>",
+        map:this.map,
+      });
+      this.infoWindow = infoWindow
       
     } else {
       console.log("window.google not defined")
@@ -254,7 +271,7 @@ export class GoogleMapWrapper extends React.Component{
             boundaryPoints.push(path[j])
           }
         }
-      }  
+      } 
     }
 
 
@@ -347,6 +364,7 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   handlePathClick(gPath){
+
     if(this.state.mode==="locked"){
       return
     }else{
@@ -406,6 +424,8 @@ export class GoogleMapWrapper extends React.Component{
       label:pt.label,
     })
 
+    newPt.addListener('click', ()=>this.showPointInfo(newPt, this.generatePointInfo(pt)))
+
     if(pt.readOnly){
       this.state.readOnlyPoints.push(newPt)
     }else{
@@ -427,6 +447,35 @@ export class GoogleMapWrapper extends React.Component{
     for(let i in this.state.points){
       this.state.points[i].setDraggable(!bool)
     }
+  }
+
+  showPointInfo(gPoint, content){
+    this.infoWindow.setContent(content)
+    this.infoWindow.open({
+      anchor:gPoint,
+    })
+  }
+
+  generatePointInfo(pt){
+    let contentString = 
+    `<div>
+          <table border="3">
+            <tr>
+              <td>This is first column</td>
+              <td>This is second column</td>
+            </tr>
+            <tr>
+              <td>This is first column</td>
+              <td>This is second column</td>
+            </tr>
+            <tr>
+              <td>This is first column</td>
+              <td>This is second column</td>
+            </tr>
+          </table>
+      </div>`
+
+    return <Info/>
   }
 
   changeMapMode(mode){
