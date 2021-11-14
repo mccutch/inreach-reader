@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton} from './reactComponents.js';
+import {IconButton} from './reactComponents.jsx';
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from './constants.js';
 import {importGoogleLibraries, getObject} from './helperFunctions.js';
 import * as urls from './urls.js';

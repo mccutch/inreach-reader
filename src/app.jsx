@@ -9,18 +9,18 @@ import {
 import * as urls from './urls.js';
 
 import {clearToken} from './myJWT.js';
-import {LoginForm, demoLogin} from './loginWrapper.js';
-import {RegistrationForm} from './registrationForm.js';
+import {LoginForm, demoLogin} from './loginWrapper.jsx';
+import {RegistrationForm} from './registrationForm.jsx';
 import {apiFetch} from './helperFunctions.js';
 
-import {GenericNavbar} from './navBar.js';
-import {UserViewer, UserSearch} from './viewer.js';
-import {TripViewer} from './tripView.js';
-import {Dashboard} from './dashboard.js';
-import {LandingView} from './landing.js';
-import {ContactView} from './contact.js';
-import {TripEdit, TripPlanner} from './tripPlanner.js';
-import {Profile} from './profile.js';
+import {GenericNavbar} from './navBar.jsx';
+import {UserViewer, UserSearch} from './viewer.jsx';
+import {TripViewer} from './tripView.jsx';
+import {Dashboard} from './dashboard.jsx';
+import {LandingView} from './landing.jsx';
+import {ContactView} from './contact.jsx';
+import {TripEdit, TripPlanner} from './tripPlanner.jsx';
+import {Profile} from './profile.jsx';
 /*
 Login Process
 1. Get JWT access token

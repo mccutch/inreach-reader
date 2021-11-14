@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import {StandardModal} from './reactComponents.js'
-import * as validation from './validation.js'
+import {StandardModal} from './reactComponents.jsx'
+import * as validation from './validation.jsx'
 import {MAX_LEN_NAME} from './constants.js'
 import {apiFetch} from './helperFunctions.js'
 import * as urls from './urls.js'

@@ -2,13 +2,13 @@ import React from 'react';
 import { getToken }  from './myJWT.js';
 
 import { apiFetch } from './helperFunctions.js';
-import { StandardModal} from './reactComponents.js';
+import { StandardModal} from './reactComponents.jsx';
 
-import { PasswordInput, PasswordCheckInput, UsernameInput, EmailInput} from './validation.js';
-import * as validation from './validation.js';
+import { PasswordInput, PasswordCheckInput, UsernameInput, EmailInput} from './validation.jsx';
+import * as validation from './validation.jsx';
 
 import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js';
-import { GoogleAutocomplete} from './googleAutocomplete.js';
+import { GoogleAutocomplete} from './googleAutocomplete.jsx';
 
 import * as urls from './urls.js';
 

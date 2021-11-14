@@ -1,15 +1,15 @@
 import React from 'react'
 import {Redirect} from 'react-router-dom'
-import {GoogleMapWrapper} from './googleMap.js'
-import {today, TimeInputButton, parseISODate} from './dateFunctions.js'
-import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from './reactComponents.js'
+import {GoogleMapWrapper} from './googleMap.jsx'
+import {today, TimeInputButton, parseISODate} from './dateFunctions.jsx'
+import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from './reactComponents.jsx'
 import {apiFetch, getObject} from './helperFunctions.js'
 import {EditContact, ViewContact} from './contacts.jsx'
-import {ContactList} from './objectSummaryLists.js'
+import {ContactList} from './objectSummaryLists.jsx'
 import * as urls from './urls.js'
 import * as con from './constants.js'
-import {LoadingScreen} from './loading.js'
-import {getKMLData, parseInReachData} from './inReachKml.js'
+import {LoadingScreen} from './loading.jsx'
+import {getKMLData, parseInReachData} from './inReachKml.jsx'
 
 export class TripEdit extends React.Component{
   constructor(props){

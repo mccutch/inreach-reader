@@ -1,7 +1,7 @@
 import React from 'react';
 import * as urls from './urls.js';
-import {displayISODate, displayISOTime} from './dateFunctions.js';
-import {MessageModalView} from './messageView.js';
+import {displayISODate, displayISOTime} from './dateFunctions.jsx';
+import {MessageModalView} from './messageView.jsx';
 import {DropdownButton, Dropdown, ButtonGroup, Button} from 'react-bootstrap'
 
 class DropdownActionsButton extends React.Component{

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StandardModal} from './reactComponents.js';
+import {StandardModal} from './reactComponents.jsx';
 
 
 // Format as string for html input

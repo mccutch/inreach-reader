@@ -1,12 +1,12 @@
 import React from 'react'
 import {Redirect} from "react-router-dom"
 
-import {GoogleAutocomplete} from './googleAutocomplete.js'
+import {GoogleAutocomplete} from './googleAutocomplete.jsx'
 import {apiFetch, truncate} from './helperFunctions.js'
-import {LoadingScreen} from './loading.js'
+import {LoadingScreen} from './loading.jsx'
 import {EditContact, ViewContact} from './contacts.jsx'
-import {ContactList} from './objectSummaryLists.js'
-import {InreachSetupModal} from './inReachKml.js'
+import {ContactList} from './objectSummaryLists.jsx'
+import {InreachSetupModal} from './inReachKml.jsx'
 
 import * as urls from './urls.js'
 import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js'

@@ -1,6 +1,6 @@
 import React from 'react';
 import {getToken}  from './myJWT.js';
-import {StandardModal} from './reactComponents.js';
+import {StandardModal} from './reactComponents.jsx';
 
 
 const DEMO_USERNAME = process.env.REACT_APP_DEMO_USERNAME
