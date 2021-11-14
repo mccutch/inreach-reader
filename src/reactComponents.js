@@ -1,22 +1,25 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Modal} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-export function IconButton({isActive, active, inactive, onClick, icon, size}){
+function IconButton({isActive, active, inactive, onClick, icon, size}){
   return(
     <button className={`btn ${isActive?active:inactive} btn-block`} onClick={onClick}>
       <img alt="" src={icon} width={size?size:"30"} />
     </button>
   )
 }
-
-export function NewComponent(props){
-  return(
-    "fuck"
-  )
+IconButton.propTypes = {
+  isActive: PropTypes.bool,
+  active: PropTypes.bool,
+  inactive: PropTypes.bool,
+  onClick: PropTypes.func,
+  icon: PropTypes.string,
+  size: PropTypes.string,
 }
 
-export function WarningModal({body, warnings, hideModal, onContinue}){
+function WarningModal({body, warnings, hideModal, onContinue}){
   let title = <div>Are you sure?</div>
   let modalBody = body ?
     body
@@ -33,21 +36,44 @@ export function WarningModal({body, warnings, hideModal, onContinue}){
     </div>
   return <StandardModal title={title} body={modalBody} footer={footer} hideModal={hideModal} headerClass="bg-warning text-dark"/>
 }
+WarningModal.propTypes = {
+  body: PropTypes.element,
+  warnings: PropTypes.element,
+  hideModal: PropTypes.func,
+  onContinue: PropTypes.func,
+}
 
-export function PendingBtn({name, onClick, className, pending, disabled, children}){
+function PendingBtn({name, onClick, className, pending, disabled, children}){
   let inactive = pending||disabled
   return <button name={name} onClick={inactive?()=>{}:onClick} className={`btn ${className} ${inactive?"disabled":""}`} >{children}</button>
 }
+PendingBtn.propTypes = {
+  name: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  pending: PropTypes.bool,
+  disabled: PropTypes.bool,
+  children: PropTypes.element,
+}
 
-export function CenterPage({children}){
+function CenterPage({children}){
   return <div className='container-sm my-2 bg-light' style={{maxWidth:"600px"}}>{children}</div>
 }
-
-export function CleanLink({to, className, onClick, children}){
-  return <Link to={to} className={className} style={{textDecoration:'none'}} onClick={onClick}>{children}</Link>
+CenterPage.propTypes = {
+  children: PropTypes.element,
 }
 
-export function NavButton({to, className, children}){
+function CleanLink({to, className, onClick, children}){
+  return <Link to={to} className={className} style={{textDecoration:'none'}} onClick={onClick}>{children}</Link>
+}
+CleanLink.propTypes = {
+  to: PropTypes.func,
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  children: PropTypes.element,
+}
+
+function NavButton({to, className, children}){
   return( 
     <CleanLink to={to} >
       <button className={className}>
@@ -56,42 +82,53 @@ export function NavButton({to, className, children}){
     </CleanLink>  
   )
 }
+NavButton.propTypes = {
+  to: PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.element,
+}
 
-export function VerticalSpacer({height}){
+
+
+function VerticalSpacer({height}){
   return(
     <div>
-      <div className="col" style={{height:`${height?height:3}rem`}}>
-      
-      </div>
+      <div className="col" style={{height:`${height?height:3}rem`}}></div>
     </div>
   )    
 }
-
-export class LabelledInput extends React.Component{
-  render(){
-    return(
-      <div className={this.props.className}>
-      <div className="input-group">
-        {this.props.prepend ?
-          <div className="input-group-prepend">
-            <span className="input-group-text"> {this.props.prepend} </span>
-          </div>
-          : ""
-        }
-        {this.props.input}
-        {this.props.append ?
-          <div className="input-group-append">
-            <span className="input-group-text"> {this.props.append} </span>
-          </div>
-          : ""
-        }
-      </div>
-      </div>
-    )
-  }
+VerticalSpacer.propTypes = {
+  height: PropTypes.node,
 }
 
-export function StandardModal({title, body, footer, headerClass, hideModal}){
+function LabelledInput({className, prepend, append}){
+  return(
+    <div className={className}>
+    <div className="input-group">
+      {this.props.prepend ?
+        <div className="input-group-prepend">
+          <span className="input-group-text"> {prepend} </span>
+        </div>
+        : ""
+      }
+      {this.props.input}
+      {this.props.append ?
+        <div className="input-group-append">
+          <span className="input-group-text"> {append} </span>
+        </div>
+        : ""
+      }
+    </div>
+    </div>
+  )
+}
+LabelledInput.propTypes = {
+  className: PropTypes.string,
+  prepend: PropTypes.node,
+  append: PropTypes.node,
+}
+
+function StandardModal({title, body, footer, headerClass, hideModal}){
     return(
       <Modal show={true} onHide={hideModal}>
         <Modal.Header className={headerClass ? headerClass : "bg-teal text-light"} closeButton>
@@ -102,21 +139,33 @@ export function StandardModal({title, body, footer, headerClass, hideModal}){
       </Modal>
     )
 }
+StandardModal.propTypes = {
+  title: PropTypes.node,
+  body: PropTypes.node,
+  footer: PropTypes.node,
+  headerClass: PropTypes.string,
+  hideModal: PropTypes.func,
+}
 
-export class FormRow extends React.Component{
-  render(){
-    let labelClass = `col-${this.props.labelWidth} col-form-label`
-    let inputClass = `col-${12-this.props.labelWidth}`
-    return(
-      <div className="form-group form-row">
-        <div className={labelClass}>{this.props.label}</div>
-        <div className={inputClass}>
-          {this.props.input}
-        </div>
-        {this.props.helpText ? <small className="form-text text-muted mx-2">{this.props.helpText}</small> : ""}
+
+function FormRow({labelWidth, label, input, helpText, }){
+  let labelClass = `col-${labelWidth} col-form-label`
+  let inputClass = `col-${12-labelWidth}`
+  return(
+    <div className="form-group form-row">
+      <div className={labelClass}>{label}</div>
+      <div className={inputClass}>
+        {input}
       </div>
-    )
-  }
+      {helpText ? <small className="form-text text-muted mx-2">{helpText}</small> : ""}
+    </div>
+  )
+}
+FormRow.propTypes = {
+  labelWidth: PropTypes.number,
+  label: PropTypes.string,
+  input: PropTypes.node,
+  helpText: PropTypes.string,
 }
 
 
@@ -188,40 +237,63 @@ export class TabbedDisplay extends React.Component{
     )
   }
 }
+TabbedDisplay.propTypes = {
+  tabData: PropTypes.array,
+}
 
 
 
 
-
-export class ObjectSelectionList extends React.Component{
-  render(){
-      //props: list, key, label, value, id, name, onChange, defaultValue
-
-
-      let list = this.props.list;
-      let listOptions = [];
-      for(let i=0; i<list.length; i++){
-        let key = (this.props.key ? list[i][this.props.key] : i)
-
-        listOptions.push(
-          <option 
-            value={list[i][this.props.value]}
-            key = {key}
-          >
-            {this.props.labelFunc ? this.props.labelFunc(list[i]) : list[i][this.props.label]}
-          </option>
-        )
-      }
-      return (
-        <select
-          id = {this.props.name}
-          name = {this.props.name}
-          onChange = {this.props.onChange}
-          defaultValue = {this.props.defaultValue}
-          className="form-control my-2"
-        >
-          {listOptions}
-        </select>
-      )
+function ObjectSelectionList({list, key, label, value, id, name, onChange, defaultValue, labelFunc}){
+  let selections = list;
+  let listOptions = [];
+  for(let i=0; i<selections.length; i++){
+    listOptions.push(
+      <option 
+        value={selections[i][value]}
+        key = {key ? selections[i][key] : i}
+      >
+        {labelFunc ? labelFunc(selections[i]) : selections[i][label]}
+      </option>
+    )
   }
+  return (
+    <select
+      id = {id}
+      name = {name}
+      onChange = {onChange}
+      defaultValue = {defaultValue}
+      className="form-control my-2"
+    >
+      {listOptions}
+    </select>
+  )
+}
+ObjectSelectionList.propTypes = 
+{
+    list: PropTypes.array, 
+    key: PropTypes.node, 
+    label: PropTypes.node, 
+    value: PropTypes.string, 
+    id: PropTypes.node,
+    name: PropTypes.string, 
+    onChange: PropTypes.func, 
+    defaultValue: PropTypes.node, 
+    labelFunc: PropTypes.func,
+}
+
+
+//Exports
+export {
+  IconButton, 
+  WarningModal,
+  PendingBtn,
+  CenterPage,
+  CleanLink,
+  NavButton,
+  VerticalSpacer,
+  LabelledInput,
+  StandardModal,
+  FormRow,
+  ObjectSelectionList,
 }
