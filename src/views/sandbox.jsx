@@ -1,5 +1,5 @@
 import React from 'react'
-import {apiFetch} from './helperFunctions.js'
+import {apiFetch} from '../helperFunctions.js'
 
 export class SandBox extends React.Component{
 

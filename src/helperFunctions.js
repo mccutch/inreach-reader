@@ -1,4 +1,4 @@
-import {refreshToken}  from './myJWT.js';
+import {refreshToken}  from './authentication/myJWT.js';
 //import {} from './constants.js';
 import * as urls from './urls.js';
 

@@ -1,10 +1,10 @@
 import React from 'react'
-import {GoogleMapWrapper} from './googleMap.js'
-import {parseISODate, displayDate, displayTime} from './dateFunctions.js'
+import {GoogleMapWrapper} from '../components/googleMap.jsx'
+import {parseISODate, displayDate, displayTime} from '../components/dateFunctions.jsx'
 import {Redirect} from "react-router-dom";
-import * as urls from './urls.js'
-import {apiFetch} from './helperFunctions.js'
-import {StandardModal} from './reactComponents.js'
+import * as urls from '../urls.js'
+import {apiFetch} from '../helperFunctions.js'
+import {StandardModal} from '../components/reactComponents.jsx'
 
 
 

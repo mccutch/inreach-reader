@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './custom.scss';
 import * as serviceWorker from './serviceWorker';
-import {AppRouter} from './app.js';
+import {AppRouter} from './app.jsx';
 import {HashRouter as Router} from "react-router-dom";
 
 ReactDOM.render(

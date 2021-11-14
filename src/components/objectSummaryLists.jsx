@@ -1,5 +1,5 @@
 import React from 'react'
-import {TripDisplayButton, MessageDisplayButton, ContactDisplayButton} from './objectSummaryButtons.js';
+import {TripDisplayButton, MessageDisplayButton, ContactDisplayButton} from './objectSummaryButtons.jsx';
 
 
 export class ContactList extends React.Component{

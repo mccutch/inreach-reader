@@ -1,9 +1,9 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import * as urls from './urls.js';
-import {TripList, MessageList} from './objectSummaryLists.js';
+import * as urls from '../urls.js';
+import {TripList, MessageList} from '../components/objectSummaryLists.jsx';
 
-import {KMLDemo} from './inReachKml.js';
+import {KMLDemo} from '../components/inReachKml.jsx';
 
 
 export class Dashboard extends React.Component{
