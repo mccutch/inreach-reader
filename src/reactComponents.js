@@ -10,6 +10,12 @@ export function IconButton({isActive, active, inactive, onClick, icon, size}){
   )
 }
 
+export function NewComponent(props){
+  return(
+    "fuck"
+  )
+}
+
 export function WarningModal({body, warnings, hideModal, onContinue}){
   let title = <div>Are you sure?</div>
   let modalBody = body ?
@@ -55,6 +61,7 @@ export function VerticalSpacer({height}){
   return(
     <div>
       <div className="col" style={{height:`${height?height:3}rem`}}>
+      
       </div>
     </div>
   )    
