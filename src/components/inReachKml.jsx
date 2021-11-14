@@ -1,6 +1,6 @@
 import React from 'react'
-import {apiFetch} from './helperFunctions'
-import * as urls from './urls'
+import {apiFetch} from '../helperFunctions'
+import * as urls from '../urls'
 import {today, TimeInputButton} from './dateFunctions.jsx'
 import {StandardModal} from './reactComponents.jsx'
 

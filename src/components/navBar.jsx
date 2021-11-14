@@ -2,7 +2,7 @@ import React from 'react';
 import {Nav} from 'react-bootstrap';
 //import {} from './helperFunctions.js';
 import {CleanLink} from './reactComponents.jsx';
-import * as urls from './urls.js';
+import * as urls from '../urls.js';
 
 const LOGIN_COLOUR = "teal"
 const PUBLIC_COLOUR = "info"

@@ -1,15 +1,15 @@
 import React from 'react'
 import {Redirect} from "react-router-dom"
 
-import {GoogleAutocomplete} from './googleAutocomplete.jsx'
-import {apiFetch, truncate} from './helperFunctions.js'
-import {LoadingScreen} from './loading.jsx'
+import {GoogleAutocomplete} from '../components/googleAutocomplete.jsx'
+import {apiFetch, truncate} from '../helperFunctions.js'
+import {LoadingScreen} from '../views/loading.jsx'
 import {EditContact, ViewContact} from './contacts.jsx'
-import {ContactList} from './objectSummaryLists.jsx'
-import {InreachSetupModal} from './inReachKml.jsx'
+import {ContactList} from '../components/objectSummaryLists.jsx'
+import {InreachSetupModal} from '../components/inReachKml.jsx'
 
-import * as urls from './urls.js'
-import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js'
+import * as urls from '../urls.js'
+import { POSITION_DECIMALS, MAX_LEN_NAME } from '../constants.js'
 
 
 export class Profile extends React.Component{

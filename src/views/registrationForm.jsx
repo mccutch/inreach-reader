@@ -1,16 +1,16 @@
 import React from 'react';
-import { getToken }  from './myJWT.js';
+import { getToken }  from '../authentication/myJWT.js';
 
-import { apiFetch } from './helperFunctions.js';
-import { StandardModal} from './reactComponents.jsx';
+import { apiFetch } from '../helperFunctions.js';
+import { StandardModal} from '../components/reactComponents.jsx';
 
-import { PasswordInput, PasswordCheckInput, UsernameInput, EmailInput} from './validation.jsx';
-import * as validation from './validation.jsx';
+import { PasswordInput, PasswordCheckInput, UsernameInput, EmailInput} from '../components/validation.jsx';
+import * as validation from '../components/validation.jsx';
 
-import { POSITION_DECIMALS, MAX_LEN_NAME } from './constants.js';
-import { GoogleAutocomplete} from './googleAutocomplete.jsx';
+import { POSITION_DECIMALS, MAX_LEN_NAME } from '../constants.js';
+import { GoogleAutocomplete} from '../components/googleAutocomplete.jsx';
 
-import * as urls from './urls.js';
+import * as urls from '../urls.js';
 
 export class RegistrationForm extends React.Component{
   constructor(props){

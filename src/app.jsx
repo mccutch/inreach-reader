@@ -8,19 +8,19 @@ import {
 } from "react-router-dom";
 import * as urls from './urls.js';
 
-import {clearToken} from './myJWT.js';
-import {LoginForm, demoLogin} from './loginWrapper.jsx';
-import {RegistrationForm} from './registrationForm.jsx';
+import {clearToken} from './authentication/myJWT.js';
+import {LoginForm, demoLogin} from './authentication/loginWrapper.jsx';
+import {RegistrationForm} from './views/registrationForm.jsx';
 import {apiFetch} from './helperFunctions.js';
 
-import {GenericNavbar} from './navBar.jsx';
-import {UserViewer, UserSearch} from './viewer.jsx';
-import {TripViewer} from './tripView.jsx';
-import {Dashboard} from './dashboard.jsx';
-import {LandingView} from './landing.jsx';
-import {ContactView} from './contact.jsx';
-import {TripEdit, TripPlanner} from './tripPlanner.jsx';
-import {Profile} from './profile.jsx';
+import {GenericNavbar} from './components/navBar.jsx';
+import {UserViewer, UserSearch} from './views/viewer.jsx';
+import {TripViewer} from './views/tripView.jsx';
+import {Dashboard} from './views/dashboard.jsx';
+import {LandingView} from './views/landing.jsx';
+import {ContactView} from './views/contact.jsx';
+import {TripEdit, TripPlanner} from './views/tripPlanner.jsx';
+import {Profile} from './models/profile.jsx';
 /*
 Login Process
 1. Get JWT access token

@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import {StandardModal} from './reactComponents.jsx'
-import * as validation from './validation.jsx'
-import {MAX_LEN_NAME} from './constants.js'
-import {apiFetch} from './helperFunctions.js'
-import * as urls from './urls.js'
+import {StandardModal} from '../components/reactComponents.jsx'
+import * as validation from '../components/validation.jsx'
+import {MAX_LEN_NAME} from '../constants.js'
+import {apiFetch} from '../helperFunctions.js'
+import * as urls from '../urls.js'
 
 function ViewContact({contact, app, user}){
   let title = <div>{contact.first_name} {contact.last_name}</div>

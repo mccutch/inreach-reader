@@ -1,5 +1,5 @@
 import React from 'react';
-import {importGoogleLibraries} from './helperFunctions.js';
+import {importGoogleLibraries} from '../helperFunctions.js';
 
 export class GoogleAutocomplete extends React.Component{
   constructor(props){

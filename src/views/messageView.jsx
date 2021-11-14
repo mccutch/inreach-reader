@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {displayISODate, displayISOTime} from './dateFunctions.jsx';
-import {GoogleMapWrapper} from './googleMap.jsx';
-import {StandardModal} from './reactComponents.jsx';
+import {displayISODate, displayISOTime} from '../components/dateFunctions.jsx';
+import {GoogleMapWrapper} from '../components/googleMap.jsx';
+import {StandardModal} from '../components/reactComponents.jsx';
 
 
 export class MessageModalView extends React.Component{
