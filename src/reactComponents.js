@@ -20,6 +20,7 @@ export function WarningModal({body, warnings, hideModal, onContinue}){
       {warnings}
     </div>
 
+
   let footer = 
     <div>
       <button className="btn btn-outline-danger m-2" onClick={hideModal}>Cancel</button>
@@ -52,6 +53,7 @@ export function NavButton({to, className, children}){
 }
 
 export function VerticalSpacer({height}){
+  let heloo = "world"
   return(
     <div>
       <div className="col" style={{height:`${height?height:3}rem`}}>
