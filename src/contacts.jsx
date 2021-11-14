@@ -1,42 +1,44 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import {StandardModal} from './reactComponents.js'
 import * as validation from './validation.js'
 import {MAX_LEN_NAME} from './constants.js'
 import {apiFetch} from './helperFunctions.js'
 import * as urls from './urls.js'
 
-export class ViewContact extends React.Component{
-  render(){
-    let contact = this.props.contact
+function ViewContact({contact, app, user}){
+  let title = <div>{contact.first_name} {contact.last_name}</div>
+  let body = 
+    <div>
+      <p>Email: {contact.email}</p>
+      <p>Mobile: {contact.mobile}</p>
+      <p>Notes: {contact.notes}</p>
+    </div>
 
-    let title = <div>{contact.first_name} {contact.last_name}</div>
-    let body = 
-      <div>
-        <p>Email: {contact.email}</p>
-        <p>Mobile: {contact.mobile}</p>
-        <p>Notes: {contact.notes}</p>
-      </div>
+  let footer = app.loggedIn ?
+  <button 
+    className="btn btn-success" 
+    onClick={()=>{
+      app.setModal(
+        <EditContact contact={contact} user={user} app={app} />
+      )
+    }}
+  >Edit
+  </button>
+  : 
+  null
 
-    let footer = this.props.app.loggedIn ?
-    <button 
-      className="btn btn-success" 
-      onClick={()=>{
-        this.props.app.setModal(
-          <EditContact contact={contact} user={this.props.user} app={this.props.app} />
-        )
-      }}
-    >Edit
-    </button>
-    : 
-    null
-
-    return(
-      <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal}/>
-    )
-  }
+  return(
+    <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal}/>
+  )
+}
+ViewContact.propTypes = {
+  contact: PropTypes.object,
+  app: PropTypes.object,
+  user: PropTypes.object,
 }
 
-export class EditContact extends React.Component{
+class EditContact extends React.Component{
   constructor(props){
     super(props)
     
@@ -183,6 +185,15 @@ export class EditContact extends React.Component{
       <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal}/>
     )
   }
-    
-  
+}
+EditContact.propTypes = {
+  contact: PropTypes.object,
+  user: PropTypes.object,
+  app: PropTypes.object,
+  onSuccess: PropTypes.func,
+}
+
+export {
+  ViewContact,
+  EditContact,
 }
