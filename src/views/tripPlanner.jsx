@@ -1,8 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom'
 import {GoogleMapWrapper} from '../components/googleMap.jsx'
 import {today, TimeInputButton, parseISODate} from '../components/dateFunctions.jsx'
-import {StandardModal, PendingBtn, WarningModal, FormRow, ObjectSelectionList} from '../components/reactComponents.jsx'
+import {StandardModal, PendingBtn, WarningModal, FormRow} from '../components/reactComponents.jsx'
 import {apiFetch, getObject} from '../helperFunctions.js'
 import {EditContact, ViewContact} from '../models/contacts.jsx'
 import {ContactList} from '../components/objectSummaryLists.jsx'
@@ -10,6 +11,7 @@ import * as urls from '../urls.js'
 import * as con from '../constants.js'
 import {LoadingScreen} from './loading.jsx'
 import {getKMLData, parseInReachData} from '../components/inReachKml.jsx'
+import * as obj from '../objectDefinitions.js'
 
 export class TripEdit extends React.Component{
   constructor(props){
@@ -63,9 +65,13 @@ export class TripEdit extends React.Component{
 
   }
 }
+TripEdit.propTypes = {
+  user: PropTypes.object,
+  app: PropTypes.object,
+  tripId: PropTypes.number,
+}
 
 export class TripPlanner extends React.Component{
-
   constructor(props){
     super(props)
     let existing = this.props.trip ? this.props.trip : null
@@ -85,6 +91,7 @@ export class TripPlanner extends React.Component{
       contacts:[],
     }
 
+    this.gMap = React.createRef()
     /*
     try{
       let points = JSON.parse(existing.points)
@@ -139,7 +146,6 @@ export class TripPlanner extends React.Component{
       }
       this.setState({contacts:updatedList})
     }
-
   }
 
   fetchInReachData(){
@@ -153,7 +159,6 @@ export class TripPlanner extends React.Component{
       })
     }
   }
-  
 
   returnError(message){
     this.setState({
@@ -286,7 +291,11 @@ export class TripPlanner extends React.Component{
     }
   }
 
-  
+  gatherMapData(){
+    if(this.state.showMap){
+      this.gMap.current.returnMapData({onSuccess: this.saveTrip})
+    }
+  }
 
   saveTrip(){
     let newTrip = this.props.trip ? false:true
@@ -459,8 +468,21 @@ export class TripPlanner extends React.Component{
           <div>
             {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
           </div>
+          <button 
+            className="btn btn-outline btn-danger"
+            onClick={()=>{
+              if(this.state.showMap){
+                this.gMap.current.remoteTriggerDataReturn()
+              }else{
+                console.log("fuck")
+              }
+            }}
+          >
+            Get map data
+          </button>
           {this.state.showMap ? 
-              <GoogleMapWrapper 
+              <GoogleMapWrapper
+                ref = {this.gMap} 
                 id = {"baseMap"}
                 editable={true}
                 locationBias={mapCenter}
@@ -477,6 +499,11 @@ export class TripPlanner extends React.Component{
       </div>
     )
   }
+}
+TripPlanner.propTypes = {
+  app: PropTypes.object,
+  user: PropTypes.object,
+  trip: PropTypes.object,
 }
 
 class PointDescriptions extends React.Component{
@@ -529,6 +556,10 @@ class PointDescriptions extends React.Component{
       </div>
     )
   }
+}
+PointDescriptions.propTypes = {
+  points: PropTypes.arrayOf(obj.Point),
+  returnPoints: PropTypes.func,
 }
 
 
@@ -591,6 +622,10 @@ class PathDescriptions extends React.Component{
       </div>
     )
   }
+}
+PathDescriptions.propTypes = {
+  paths: PropTypes.arrayOf(obj.Path),
+  returnPaths: PropTypes.func,
 }
 
 

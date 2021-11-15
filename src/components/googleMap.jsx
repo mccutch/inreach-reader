@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {IconButton} from './reactComponents.jsx';
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
-import {importGoogleLibraries, getObject} from '../helperFunctions.js';
+import {importGoogleLibraries} from '../helperFunctions.js';
 import * as urls from '../urls.js';
+import * as obj from '../objectDefinitions.js'
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -16,7 +18,7 @@ class Info extends React.Component{
   }
 }
 
-export class GoogleMapWrapper extends React.Component{
+class GoogleMapWrapper extends React.Component{
   /*
   Accept editable and read-only points to display on the map.
 
@@ -33,10 +35,6 @@ export class GoogleMapWrapper extends React.Component{
 
   Return points/paths:
   - When points/paths are edited, return object containing all point/path data
-
-
-
-
 
   */
   constructor(props){
@@ -82,7 +80,11 @@ export class GoogleMapWrapper extends React.Component{
 
     this.editPathIdentifiers=this.editPathIdentifiers.bind(this)
     this.generatePointInfo=this.generatePointInfo.bind(this)
+
+    // Return data to trip planner on remote trigger
+    this.returnMapData=this.returnMapData.bind(this)
   }
+
 
   componentDidMount(){
     if(window.google){
@@ -358,7 +360,7 @@ export class GoogleMapWrapper extends React.Component{
       this.setState({mode:"editPath"})
     }else{
       let gPath = this.state.paths[this.state.activePath].gPath //polyline object
-      let path = gPath.getPath().push(latLng)
+      gPath.getPath().push(latLng)
     }
     this.returnPath()
   }
@@ -457,25 +459,8 @@ export class GoogleMapWrapper extends React.Component{
   }
 
   generatePointInfo(pt){
-    let contentString = 
-    `<div>
-          <table border="3">
-            <tr>
-              <td>This is first column</td>
-              <td>This is second column</td>
-            </tr>
-            <tr>
-              <td>This is first column</td>
-              <td>This is second column</td>
-            </tr>
-            <tr>
-              <td>This is first column</td>
-              <td>This is second column</td>
-            </tr>
-          </table>
-      </div>`
-
-    return <Info/>
+    console.log(pt)
+    return <Info />
   }
 
   changeMapMode(mode){
@@ -504,8 +489,14 @@ export class GoogleMapWrapper extends React.Component{
       
   }
 
+  returnMapData({onSuccess}){
+    console.log("Remote trigger data pull from map.")
+    this.returnPath()
+    this.returnPoints()
+    if(onSuccess){onSuccess()}
+  }
+
   render(){
-    let btnColour = "warning"
     let activeButton="btn-warning"
     let inactiveButton="btn-light"
     return(
@@ -573,3 +564,18 @@ export class GoogleMapWrapper extends React.Component{
   }
 }
 
+GoogleMapWrapper.propTypes = {
+  id: PropTypes.string,
+  editable: PropTypes.bool,
+  locationBias: PropTypes.shape(obj.Position),
+  points: PropTypes.arrayOf(obj.Point),
+  paths: PropTypes.arrayOf(obj.Path),
+  initialMode: PropTypes.string,
+  searchBox: PropTypes.bool,
+  returnPoints: PropTypes.func,
+  returnPaths: PropTypes.func,
+}
+
+export {
+  GoogleMapWrapper
+}
