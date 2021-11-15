@@ -12,8 +12,8 @@ function IconButton({isActive, active, inactive, onClick, icon, size}){
 }
 IconButton.propTypes = {
   isActive: PropTypes.bool,
-  active: PropTypes.bool,
-  inactive: PropTypes.bool,
+  active: PropTypes.string,
+  inactive: PropTypes.string,
   onClick: PropTypes.func,
   icon: PropTypes.string,
   size: PropTypes.string,
@@ -53,7 +53,7 @@ PendingBtn.propTypes = {
   className: PropTypes.string,
   pending: PropTypes.bool,
   disabled: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.node,
 }
 
 function CenterPage({children}){

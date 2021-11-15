@@ -94,7 +94,6 @@ export class InreachSetupModal extends React.Component{
 
   render(){
     let title = <div>inReach Feed Setup</div>
-    let mapshare_ID = this.props.user.profile.mapshare_ID
     let body = 
       <div>
         <p>Mapshare ID:</p>

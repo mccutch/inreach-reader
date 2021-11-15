@@ -373,7 +373,7 @@ class GoogleMapWrapper extends React.Component{
       this.lockAllPaths({callback:()=>gPath.setEditable(true)})
       this.setState({mode:"editPath"})
       for(let i in this.state.paths){
-        if(this.state.paths[i].gPath==gPath){
+        if(this.state.paths[i].gPath===gPath){
           this.setState({activePath:i})
           break;
         }
@@ -563,7 +563,6 @@ class GoogleMapWrapper extends React.Component{
     )
   }
 }
-
 GoogleMapWrapper.propTypes = {
   id: PropTypes.string,
   editable: PropTypes.bool,
