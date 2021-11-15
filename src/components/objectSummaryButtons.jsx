@@ -9,7 +9,7 @@ class DropdownActionsButton extends React.Component{
   generateActionList(){
     let actionList = []
     for(let i in this.props.actions){
-      actionList.push(<Dropdown.Item as="button" onClick={()=>this.props.actions[i].action(this.props.object)}>{this.props.actions[i].label}</Dropdown.Item>)
+      actionList.push(<Dropdown.Item key={i} as="button" onClick={()=>this.props.actions[i].action(this.props.object)}>{this.props.actions[i].label}</Dropdown.Item>)
     }
     return actionList
   }

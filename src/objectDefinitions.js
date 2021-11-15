@@ -1,26 +1,58 @@
 import PropTypes from 'prop-types';
-
-
+let pt = PropTypes
 
 const Position = {
-    lat: PropTypes.number,
-    lng: PropTypes.number,
+    lat: pt.number,
+    lng: pt.number,
 }
 
 const Point = {
-    position: PropTypes.shape(Position),
-    label: PropTypes.string,
-    description: PropTypes.string,
+    position: pt.shape(Position),
+    label: pt.string,
+    description: pt.string,
 }
 
 const Path = {
-    path: PropTypes.arrayOf(PropTypes.shape(Position)),
-    name: PropTypes.string,
-    colour: PropTypes.string,
+    path: pt.arrayOf(pt.shape(Position)),
+    name: pt.string,
+    colour: pt.string,
 }
 
 const Trip = {
 
+}
+
+const AppFunctions = {
+    refresh: pt.func,
+    hideModal: pt.func,
+    setModal: pt.func,
+    loggedIn: pt.bool,
+    loginPending: pt.bool,
+    serverError: pt.bool,
+}
+
+const User = {
+
+}
+
+const Profile = {
+
+}
+
+const Message = {
+
+}
+
+const Contact = {
+
+}
+
+const UserData = {
+    user: User,
+    profile: Profile,
+    messages: pt.arrayOf(pt.shape(Message)),
+    trips: pt.arrayOf(pt.shape(Trip)),
+    contacts: pt.arrayOf(pt.shape(Contact)),
 }
 
 export {
@@ -28,4 +60,9 @@ export {
     Point,
     Path,
     Trip,
+    AppFunctions,
+    User,
+    Message,
+    Contact,
+    UserData,
 }

@@ -35,7 +35,7 @@ export class TripList extends React.Component{
     let trips=this.props.trips
     for(let i in trips){
       returnList.push(
-        <TripDisplayButton trip={trips[i]} app={this.props.app} onClick={this.props.onClick} actions={this.props.actions}/>
+        <TripDisplayButton key={trips[i].id} trip={trips[i]} app={this.props.app} onClick={this.props.onClick} actions={this.props.actions}/>
       )
     }
     return returnList
@@ -59,7 +59,7 @@ export class MessageList extends React.Component{
     let messages=this.props.messages
     for(let i in messages){
       returnList.push(
-        <MessageDisplayButton message={messages[i]} app={this.props.app}/>
+        <MessageDisplayButton key={messages[i].id} message={messages[i]} app={this.props.app}/>
       )
     }
     return returnList

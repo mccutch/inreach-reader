@@ -66,9 +66,9 @@ export class TripEdit extends React.Component{
   }
 }
 TripEdit.propTypes = {
-  user: PropTypes.object,
-  app: PropTypes.object,
   tripId: PropTypes.number,
+  app: PropTypes.shape(obj.AppFunctions),
+  user: PropTypes.shape(obj.UserData),
 }
 
 export class TripPlanner extends React.Component{
@@ -468,18 +468,6 @@ export class TripPlanner extends React.Component{
           <div>
             {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
           </div>
-          <button 
-            className="btn btn-outline btn-danger"
-            onClick={()=>{
-              if(this.state.showMap){
-                this.gMap.current.remoteTriggerDataReturn()
-              }else{
-                console.log("fuck")
-              }
-            }}
-          >
-            Get map data
-          </button>
           {this.state.showMap ? 
               <GoogleMapWrapper
                 ref = {this.gMap} 
@@ -501,9 +489,9 @@ export class TripPlanner extends React.Component{
   }
 }
 TripPlanner.propTypes = {
-  app: PropTypes.object,
-  user: PropTypes.object,
-  trip: PropTypes.object,
+  app: PropTypes.shape(obj.AppFunctions),
+  user: PropTypes.shape(obj.UserData),
+  trip: PropTypes.shape(obj.Trip),
 }
 
 class PointDescriptions extends React.Component{

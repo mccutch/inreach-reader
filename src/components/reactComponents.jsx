@@ -67,10 +67,10 @@ function CleanLink({to, className, onClick, children}){
   return <Link to={to} className={className} style={{textDecoration:'none'}} onClick={onClick}>{children}</Link>
 }
 CleanLink.propTypes = {
-  to: PropTypes.func,
+  to: PropTypes.string,
   className: PropTypes.string,
   onClick: PropTypes.func,
-  children: PropTypes.element,
+  children: PropTypes.string,
 }
 
 function NavButton({to, className, children}){
