@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Redirect} from "react-router-dom";
 import * as urls from '../urls.js';
 import {TripList, MessageList} from '../components/objectSummaryLists.jsx';
-
-import {KMLDemo} from '../components/inReachKml.jsx';
+import * as obj from '../objectDefinitions.js'
 
 
 export class Dashboard extends React.Component{
@@ -25,7 +25,6 @@ export class Dashboard extends React.Component{
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PROFILE_SETTINGS}`})}>Profile settings</button>
           <button className="btn btn-outline-primary m-2" onClick={()=>this.setState({redirect:`${urls.PLANNER}`})}>+ Plan a trip</button>
         </div>
-        <KMLDemo app={this.props.app}/>
         <div className="bg-light">
         </div>
         <div className="row">
@@ -49,5 +48,9 @@ export class Dashboard extends React.Component{
       </div>
     )
   }
+}
+Dashboard.propTypes = {
+  user: PropTypes.shape(obj.UserData),
+  app: PropTypes.shape(obj.AppFunctions),
 }
 
