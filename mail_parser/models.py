@@ -3,23 +3,6 @@ from django.contrib.auth.models import User
 import uuid
 
 # Create your models here.
-class InReachMessage(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages', null=True)
-    sender = models.CharField(max_length=60, default="Unknown")
-    date = models.DateTimeField(auto_now_add=True, null=True)
-    lat = models.FloatField(default=0)
-    lon = models.FloatField(default=0)
-    message = models.TextField(default="None")
-    mapshare = models.URLField(default="#")
-    original = models.TextField(default="None")
-
-    class Meta:
-        ordering = ["-date"]
-    
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.sender}, {self.date}'
-
 
 class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contacts')

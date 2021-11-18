@@ -3,23 +3,6 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class InReachMessageParser(serializers.ModelSerializer):
-    # Used when parsing a new message, consuming username as a slug
-    user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="username", default=None)
-    class Meta:
-        model = models.InReachMessage
-        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date','id']
-        ordering = ["-date"]
-
-
-
-class InReachMessageSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    class Meta:
-        model = models.InReachMessage
-        fields = ['sender', 'lat', 'lon', 'message', 'mapshare', 'original', 'user', 'date','id']
-        ordering = ["-date"]
-
 class TripSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     contacts = serializers.PrimaryKeyRelatedField(queryset=models.Contact.objects.all(), many=True)

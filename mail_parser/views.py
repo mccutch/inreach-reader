@@ -133,7 +133,7 @@ class Login(APIView):
 
 class ViewUser(APIView):
     """
-        An endpoint for viewing a user's trip and message data. This endpoint can be weakly protected by a pass phrase.
+        An endpoint for viewing a user's trip data. This endpoint can be weakly protected by a pass phrase.
         GET: Return a status indicating whether or not the user exists.
         POST: If the user uses a pass_phrase, this must be included in the POST request. Grants access to user's trips and messages.
     """
@@ -171,12 +171,6 @@ class ViewUser(APIView):
             print("No pass phrase has been set. Permission granted.")
 
         try:
-            all_messages = user.messages.all()
-            messageData = serializers.InReachMessageSerializer(all_messages, many=True, context={'request':request}).data
-        except:
-            messageData = {}
-
-        try:
             all_trips = user.trips.all()
             tripData = serializers.TripSerializer(all_trips, many=True, context={'request':request}).data
         except:
@@ -185,7 +179,6 @@ class ViewUser(APIView):
         content = {
             "user":userData,
             "trips":tripData,
-            "messages":messageData,
         }
 
         return Response(content)
@@ -211,12 +204,6 @@ class TripReadOnly(APIView):
         }
 
         return Response(content)
-
-class PostNewMessage(generics.CreateAPIView):
-    permission_classes = (AllowAny, )
-    serializer_class = serializers.InReachMessageParser
-
-
 
 
 class UserTrips(APIView):
@@ -254,13 +241,6 @@ class UserContacts(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserMessages(generics.ListAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = serializers.InReachMessageSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return user.messages.all()
 
 class UserProfile(APIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
@@ -306,11 +286,6 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)
     serializer_class = serializers.ProfileSerializer
     queryset = models.Profile.objects.all() 
-
-class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated, permissions.IsOwner)
-    serializer_class = serializers.InReachMessageSerializer
-    queryset = models.InReachMessage.objects.all() 
 
 class TripDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, permissions.IsOwner)

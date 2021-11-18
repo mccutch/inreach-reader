@@ -17,9 +17,6 @@ urlpatterns = [
     path('api/mapshare/<slug:mapshareID>/', views.MapshareAPI.as_view(), name='mapShare'),
     path('api/mapshare/<slug:mapshareID>/<str:filters>/', views.MapshareAPI.as_view(), name='mapShare'),
     
-
-
-
     path('api/view-user/<slug:username>/', views.ViewUser.as_view(), name='view-user'),
     path('api/view-trip/<slug:uuid>/', views.TripReadOnly.as_view(), name='view-trip'),
 
@@ -27,18 +24,12 @@ urlpatterns = [
     path('token/', jwt_views.TokenObtainPairView.as_view(serializer_class=serializers.FlexibleJWTSerializer), name='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('api/inreach-messages/', views.PostNewMessage.as_view(), name="inreach-messages"),
-
     path('api/user/<int:pk>/', views.UserDetail.as_view(), name="user-detail"),
     path('api/profile/<int:pk>/', views.ProfileDetail.as_view(), name="profile-detail"),
-    path('api/message/<int:pk>/', views.MessageDetail.as_view(), name="message-detail"),
     path('api/trip/<int:pk>/', views.TripDetail.as_view(), name="trip-detail"),
     path('api/contact/<int:pk>/', views.ContactDetail.as_view(), name="contact-detail"),
     #path('api//<int:pk>/', views.Detail.as_view(), name="-detail"),
 
-
-
-    path('api/my-messages/', views.UserMessages.as_view(), name="my-messages"),
     path('api/my-trips/', views.UserTrips.as_view(), name="my-trips"),
     path('api/my-contacts/', views.UserContacts.as_view(), name="my-contacts"),
 
