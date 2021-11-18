@@ -497,67 +497,11 @@ class GoogleMapWrapper extends React.Component{
   }
 
   render(){
-    let activeButton="btn-warning"
-    let inactiveButton="btn-light"
+    
     return(
       <div>
-        {this.props.editable && 
-          <div className="form-row p-2">
-            <div className="col-md">
-              <input type="search" id="search" placeholder="Search" className="form-control my-2"/>
-            </div>
-            <div className="col">
-              <div className="row">
-                {/*<div className="col">
-                  <IconButton 
-                    isActive={this.state.mode==="editPath"}
-                    active={activeButton}
-                    inactive={inactiveButton} 
-                    onClick={()=>this.changeMapMode("editPath")} 
-                    icon={urls.ROUTE_ICON}
-                  />
-                </div>*/}
-                <div className="col">
-                  <IconButton 
-                    isActive={this.state.mode==="newPath"}
-                    active={activeButton}
-                    inactive={inactiveButton} 
-                    onClick={()=>this.changeMapMode("newPath")} 
-                    icon={urls.ADD_NEW_ICON}
-                  />
-                </div>
-                <div className="col">
-                  <IconButton 
-                    isActive={this.state.mode==="editPoints"}
-                    active={activeButton}
-                    inactive={inactiveButton} 
-                    onClick={()=>this.changeMapMode("editPoints")} 
-                    icon={urls.WAYPOINT_ICON}
-                  />
-                </div>
-                <div className="col">
-                  <IconButton 
-                    isActive={false}
-                    active={activeButton}
-                    inactive={inactiveButton} 
-                    onClick={this.undo} 
-                    icon={urls.UNDO_ICON}
-                  />
-                </div>
-                <div className="col">
-                  <IconButton 
-                    isActive={this.state.mode==="locked"}
-                    active={activeButton}
-                    inactive={inactiveButton} 
-                    onClick={()=>this.changeMapMode("toggleLock")} 
-                    icon={urls.LOCK_ICON}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-        <div id={this.props.id} style={{height:"100vh"}}></div>
+        {this.state.editable && <MapControls mode={this.state.mode} changeMode={this.changeMapMode} undo={this.undo} />}
+        <GoogleMap id={this.props.id} />
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>
     )
@@ -575,6 +519,73 @@ GoogleMapWrapper.propTypes = {
   returnPaths: PropTypes.func,
 }
 
-export {
-  GoogleMapWrapper
+function GoogleMap({id}){
+  return(
+    <div id={id} style={{height:"100vh"}}></div>
+  )
 }
+GoogleMap.propTypes = {
+  id: PropTypes.string,
+}
+
+function MapControls({mode, changeMode}){
+  let activeStyle="btn-warning"
+  let inactiveStyle="btn-light"
+  return(
+    <div className="form-row p-2">
+      <div className="col-md">
+        <input type="search" id="search" placeholder="Search" className="form-control my-2"/>
+      </div>
+      <div className="col">
+        <div className="row">
+          <div className="col">
+            <IconButton 
+              isActive={mode==="newPath"}
+              activeStyle={activeStyle}
+              inactiveStyle={inactiveStyle} 
+              onClick={()=>changeMode("newPath")} 
+              icon={urls.ADD_NEW_ICON}
+            />
+          </div>
+          <div className="col">
+            <IconButton 
+              isActive={mode==="editPoints"}
+              activeStyle={activeStyle}
+              inactiveStyle={inactiveStyle} 
+              onClick={()=>changeMode("editPoints")} 
+              icon={urls.WAYPOINT_ICON}
+            />
+          </div>
+          <div className="col">
+            <IconButton 
+              isActive={false}
+              activeStyle={activeStyle}
+              inactiveStyle={inactiveStyle} 
+              onClick={this.undo} 
+              icon={urls.UNDO_ICON}
+            />
+          </div>
+          <div className="col">
+            <IconButton 
+              isActive={mode==="locked"}
+              activeStyle={activeStyle}
+              inactiveStyle={inactiveStyle} 
+              onClick={()=>changeMode("toggleLock")} 
+              icon={urls.LOCK_ICON}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+MapControls.propTypes = {
+  mode: PropTypes.string,
+  changeMode: PropTypes.func,
+}
+
+
+export {
+  GoogleMapWrapper,
+}
+

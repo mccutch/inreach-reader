@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import {Modal} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-function IconButton({isActive, active, inactive, onClick, icon, size}){
+function IconButton({isActive, activeStyle, inactiveStyle, onClick, icon, size}){
   return(
-    <button className={`btn ${isActive?active:inactive} btn-block`} onClick={onClick}>
+    <button className={`btn ${isActive?activeStyle:inactiveStyle} btn-block`} onClick={onClick}>
       <img alt="" src={icon} width={size?size:"30"} />
     </button>
   )
 }
 IconButton.propTypes = {
   isActive: PropTypes.bool,
-  active: PropTypes.string,
-  inactive: PropTypes.string,
+  activeStyle: PropTypes.string,
+  inactiveStyle: PropTypes.string,
   onClick: PropTypes.func,
   icon: PropTypes.string,
   size: PropTypes.string,
