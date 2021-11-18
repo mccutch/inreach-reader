@@ -57,7 +57,6 @@ export class AppRouter extends React.Component{
         this.setState({
           user:data.user,
           profile:data.profile,
-          messages:data.messages,
           trips:data.trips,
           contacts:data.contacts,
         }, ()=>{
@@ -125,7 +124,6 @@ export class AppRouter extends React.Component{
     let userData = {
       user:this.state.user,
       profile:this.state.profile,
-      messages:this.state.messages,
       trips:this.state.trips,
       contacts:this.state.contacts,
     }

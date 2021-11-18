@@ -1,7 +1,6 @@
 import React from 'react';
 import * as urls from '../urls.js';
 import {displayISODate, displayISOTime} from './dateFunctions.jsx';
-import {MessageModalView} from '../views/messageView.jsx';
 import {Dropdown, ButtonGroup} from 'react-bootstrap'
 
 class DropdownActionsButton extends React.Component{
@@ -75,25 +74,6 @@ class ObjectDisplayButton extends React.Component{
           </div>
         </div>
       </button>
-    )
-  }
-}
-
-export class MessageDisplayButton extends React.Component{
-  render(){
-    let message = this.props.message
-
-    return (
-      <ObjectDisplayButton
-        primaryText={`${displayISODate(message.date)}`}
-        secondaryText={message.message}
-        primaryRight={`${displayISOTime(message.date)}`}
-        secondaryRight={``}
-        iconSrc={urls.MESSAGE_ICON}
-        onClick={this.props.onClick ? this.props.onClick :
-          ()=>{this.props.app.setModal(<MessageModalView message={this.props.message} app={this.props.app}/>)}
-        }
-      />
     )
   }
 }

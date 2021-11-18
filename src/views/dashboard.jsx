@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Redirect} from "react-router-dom";
 import * as urls from '../urls.js';
-import {TripList, MessageList} from '../components/objectSummaryLists.jsx';
+import {TripList} from '../components/objectSummaryLists.jsx';
 import * as obj from '../objectDefinitions.js'
 
 
@@ -36,12 +36,6 @@ export class Dashboard extends React.Component{
                 {label:"Edit", action:(trip)=>this.setState({redirect:`${urls.PLANNER}/${trip.id}`})},
                 {label:"View", action:(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})},
               ]}
-            />
-          </div>
-          <div className="col border">
-            <MessageList 
-              messages={this.props.user.messages} 
-              app={this.props.app}
             />
           </div>
         </div>

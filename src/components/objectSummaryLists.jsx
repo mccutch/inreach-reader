@@ -1,5 +1,5 @@
 import React from 'react'
-import {TripDisplayButton, MessageDisplayButton, ContactDisplayButton} from './objectSummaryButtons.jsx';
+import {TripDisplayButton, ContactDisplayButton} from './objectSummaryButtons.jsx';
 
 
 export class ContactList extends React.Component{
@@ -42,35 +42,5 @@ export class TripList extends React.Component{
   }
   render(){
     return<div>{this.buildList()}</div>
-  }
-}
-
-
-export class MessageList extends React.Component{
-
-  constructor(props){
-    super(props)
-    this.state={}
-    this.buildList=this.buildList.bind(this)
-  }
-
-  buildList(){
-    let returnList=[]
-    let messages=this.props.messages
-    for(let i in messages){
-      returnList.push(
-        <MessageDisplayButton key={messages[i].id} message={messages[i]} app={this.props.app}/>
-      )
-    }
-    return returnList
-  }
-
-  render(){
-
-    return(
-      <div>
-        {this.buildList()}
-      </div>
-    )
   }
 }

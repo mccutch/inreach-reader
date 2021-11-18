@@ -1,5 +1,5 @@
 import React from 'react'
-import {TripList, MessageList} from '../components/objectSummaryLists.jsx'
+import {TripList} from '../components/objectSummaryLists.jsx'
 import {Redirect} from "react-router-dom";
 import * as urls from '../urls.js'
 import {apiFetch} from '../helperFunctions.js'
@@ -98,7 +98,6 @@ export class UserViewer extends React.Component{
         this.setState({
           user:json.user[0],
           trips:json.trips,
-          messages:json.messages,
         })
       },
       onFailure:(err)=>{
@@ -132,10 +131,6 @@ export class UserViewer extends React.Component{
           actions={[
             {label:"View", action:(trip)=>this.setState({redirect:`${urls.VIEW_TRIP}/${trip.uuid}`})},
           ]}
-        />
-        <MessageList 
-          messages={this.state.messages}
-          app={this.props.app}
         />
       </div> 
     )
