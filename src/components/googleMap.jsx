@@ -1,10 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
 import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
 import * as obj from '../objectDefinitions.js';
-import {setMapToSearchInput, setLocationBias, setMapBounds, addPath} from './googleMapFunctions.js';
+
+import {
+  setMapToSearchInput, 
+  setLocationBias, 
+  setMapBounds, 
+  addPath,
+  addPoint,
+} from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -73,7 +79,7 @@ class GoogleMapWrapper extends React.Component{
     this.showPointInfo=this.showPointInfo.bind(this)
 
     this.returnPoints=this.returnPoints.bind(this)
-    this.returnPath=this.returnPath.bind(this)
+    this.returnPaths=this.returnPaths.bind(this)
 
     this.editPathIdentifiers=this.editPathIdentifiers.bind(this)
     this.generatePointInfo=this.generatePointInfo.bind(this)
@@ -168,7 +174,6 @@ class GoogleMapWrapper extends React.Component{
           // Make components available to other functions in the class
           this.searchBox = searchBox
 
-
           if(this.props.locationBias){
             setLocationBias({searchBox:this.searchBox, position: this.props.locationBias, })
           } else {
@@ -178,7 +183,6 @@ class GoogleMapWrapper extends React.Component{
             }
           }
         }
-
         
         let infoWindow = new gMaps.InfoWindow({
           content: "<p>Hello world</p>",
@@ -214,7 +218,7 @@ class GoogleMapWrapper extends React.Component{
     }else if(mode==="editPoints"){
       //A,B,C,...Z,A1,B1,...Z1,A2,B2,...
       let label = `${markerLabels[this.state.labelIndex%markerLabels.length]}${this.state.labelIndex>=markerLabels.length?`${Math.floor(this.state.labelIndex/markerLabels.length)}`:""}`
-      this.addPoint({position:latLng.toJSON(),label:label})
+      this.addPoint({position:latLng.toJSON(),label:label, description:""})
     }else{
       console.log("No valid mode")
     }
@@ -228,14 +232,13 @@ class GoogleMapWrapper extends React.Component{
     if(this.state.mode==="editPoints"){
       if(this.state.points.length===0) return;
       let lastPoint = this.state.points[this.state.points.length-1]
-      lastPoint.setMap(null)
+      lastPoint.gPoint.setMap(null)
       this.state.points.pop()
-      this.setState({labelIndex:this.state.labelIndex-1}, this.returnPoints)
+      this.setState({labelIndex:this.state.labelIndex-1})
     }
     if(this.state.mode==="editPath"){
       if(this.state.paths.length===0) return;
       let gPath = this.state.paths[this.state.activePath].gPath
-      //let gPath = this.state.activePath
       if(gPath.getPath().getLength()>0){
         gPath.getPath().pop()
       }
@@ -246,7 +249,10 @@ class GoogleMapWrapper extends React.Component{
     if(!this.props.returnPoints) return;
     let ptsList=[]
     for(let i in this.state.points){
-      ptsList.push({position:this.state.points[i].getPosition().toJSON(), label:this.state.points[i].label, description:""})
+      ptsList.push({
+        position:this.state.points[i].gPoint.getPosition().toJSON(), 
+        label:this.state.points[i].label, 
+        description:this.state.points[i].description})
     }
     this.props.returnPoints(ptsList)
   }
@@ -331,8 +337,8 @@ class GoogleMapWrapper extends React.Component{
     
   }
 
-  returnPath(){
-    console.log("returnPath")
+  returnPaths(){
+    console.log("returnPaths")
     let pathList = this.state.paths
 
     let allPaths = []
@@ -359,32 +365,22 @@ class GoogleMapWrapper extends React.Component{
     for(let i in clone){
       this.addPoint(clone[i])
     }
-    console.log("PROP POINTS ADDED.")
   }
 
   addPoint(pt){
-    let gMaps = window.google.maps
-    console.log("not readonly", !pt.readOnly)
-    console.log("not locked", !(this.state.mode==="locked"))
-    
-   
-    let newPt = new gMaps.Marker({
-      position:pt.position, 
-      map:this.map, 
-      draggable:this.state.mode!=="locked" && !pt.readOnly,
-      label:pt.label,
+
+    let newPt = addPoint({
+      map:this.map,
+      pt: pt,
+      draggable: this.state.mode!=="locked" && !pt.readOnly,
+      onClick: (point)=>{console.log(point)},
     })
 
-    newPt.addListener('click', ()=>this.showPointInfo(newPt, this.generatePointInfo(pt)))
-
     if(pt.readOnly){
-      this.state.readOnlyPoints.push(newPt)
+      this.setState({readOnlyPoints: [...this.state.readOnlyPoints, newPt]})
     }else{
-      newPt.addListener('dragend', this.returnPoints); 
-      this.state.points.push(newPt)
-      this.setState({labelIndex:this.state.points.length},this.returnPoints)
-    }
-    
+      this.setState({points: [...this.state.points, newPt], labelIndex:this.state.labelIndex+1})
+    }    
   }
 
   lockAllPaths({callback}){
@@ -440,7 +436,7 @@ class GoogleMapWrapper extends React.Component{
 
   returnMapData({onSuccess}){
     console.log("Remote trigger data pull from map.")
-    this.returnPath()
+    this.returnPaths()
     this.returnPoints()
     if(onSuccess){onSuccess()}
   }

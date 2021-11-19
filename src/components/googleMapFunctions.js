@@ -59,11 +59,26 @@ function addPath({map, path, name, colour, editable, readOnly, onChange, onClick
       gMaps.event.addListener(gPath.getPath(), "set_at", onChange);
     }
     return {name:name, gPath:gPath, colour:lineColour}
-  }
+}
+
+// Add point to google map, return as object to store in state
+function addPoint({map, pt, draggable, onClick}){
+    let gPoint = new window.google.maps.Marker({
+      position: pt.position, 
+      map: map, 
+      draggable: draggable,
+      label: pt.label,
+    })
+
+    gPoint.addListener('click', ()=>{onClick(gPoint)})
+
+    return {label:pt.label, gPoint:gPoint, description:pt.description}
+}
 
 export {
     setMapToSearchInput,
     setLocationBias,
     setMapBounds,
     addPath,
+    addPoint,
 }
