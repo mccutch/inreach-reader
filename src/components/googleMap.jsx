@@ -289,7 +289,7 @@ class GoogleMapWrapper extends React.Component{
       colour: colour, 
       editable: this.state.mode!=="locked" && !readOnly,
       readOnly: readOnly,
-      onChange: this.returnPath,
+      onChange: ()=>{},
       onClick: this.handlePathClick,
     })
     // Add new path to state
@@ -302,8 +302,8 @@ class GoogleMapWrapper extends React.Component{
   }
 
   addToPath(latLng){
-    console.log([latLng.toJSON()])
-    if(this.state.mode==="newPath"/* || this.props.paths.length===0*/){
+    //console.log([latLng.toJSON()])
+    if(this.state.mode==="newPath"){
       console.log("new path")
       let newName = `Route ${this.state.paths.length+1}`
       this.addPath({path:[latLng],name:newName})
@@ -312,7 +312,6 @@ class GoogleMapWrapper extends React.Component{
       let gPath = this.state.paths[this.state.activePath].gPath //polyline object
       gPath.getPath().push(latLng)
     }
-    this.returnPath()
   }
 
   handlePathClick(gPath){
@@ -472,15 +471,6 @@ GoogleMapWrapper.propTypes = {
   searchBox: PropTypes.bool,
   returnPoints: PropTypes.func,
   returnPaths: PropTypes.func,
-}
-
-function GoogleMap({id}){
-  return(
-    <div id={id} style={{height:"100vh"}}></div>
-  )
-}
-GoogleMap.propTypes = {
-  id: PropTypes.string,
 }
 
 

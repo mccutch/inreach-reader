@@ -116,6 +116,7 @@ export class TripPlanner extends React.Component{
     this.addEmergencyContact=this.addEmergencyContact.bind(this)
     this.selectEmergencyContact=this.selectEmergencyContact.bind(this)
     this.fetchInReachData=this.fetchInReachData.bind(this)
+    this.gatherMapData=this.gatherMapData.bind(this)
   }
 
   componentDidMount(){
@@ -291,9 +292,9 @@ export class TripPlanner extends React.Component{
     }
   }
 
-  gatherMapData(){
+  gatherMapData({onSuccess}){
     if(this.state.showMap){
-      this.gMap.current.returnMapData({onSuccess: this.saveTrip})
+      this.gMap.current.returnMapData({onSuccess: onSuccess})
     }
   }
 
@@ -468,6 +469,7 @@ export class TripPlanner extends React.Component{
           <div>
             {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
           </div>
+          <button className="btn btn-danger m-2" onClick={this.gatherMapData}>Get map data</button>
           {this.state.showMap ? 
               <GoogleMapWrapper
                 ref = {this.gMap} 
