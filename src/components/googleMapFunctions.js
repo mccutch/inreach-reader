@@ -1,31 +1,17 @@
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 
-function editPathIdentifiers(i_loc){
-    let updatedPaths=[]
-    for(let i in this.state.paths){
-        if(i===i_loc){
-            console.log("i=iloc")
-            this.state.paths[i].gPath.setOptions({strokeColor:this.props.paths[i].colour})
-            let updatedPath = {name:this.props.paths[i].name, colour:this.props.paths[i].colour, gPath:this.state.paths[i].gPath}
-            updatedPaths.push(updatedPath)
-        }else{
-            updatedPaths.push(this.state.paths[i])
-        }
-    }
-    this.setState({paths:updatedPaths},()=>console.log(this.state.paths))
-}
 
-function useSearchInput(){
-    let place = this.searchBox.getPlace()
+function setMapToSearchInput({searchBox, map, onNotFound}){
+    let place = searchBox.getPlace()
     console.log(place)
-    if(!place.geometry){this.setState({errorMessage:`Unable to find ${place.name}.`}); return}
-    this.map.setCenter(place.geometry.location)
+    if(!place.geometry){onNotFound(place.name); return null}
+    map.setCenter(place.geometry.location)
     // Create location bias from user location if no points exist
     let temporaryMarker = new window.google.maps.Marker({
-        position:place.geometry.location, map: this.map, title:place.name,
+        position:place.geometry.location, map: map, title:place.name,
     })
-    this.map.setZoom(13)
-    this.temporaryMarker = temporaryMarker
+    map.setZoom(13)
+    return temporaryMarker
 }
 
 function addPath({map, path, name, colour, readOnly}){
@@ -101,9 +87,8 @@ function changeMapMode(mode){
 }
 
 export {
-    editPathIdentifiers,
     addPath,
     setLocationBias,
-    useSearchInput,
+    setMapToSearchInput,
     changeMapMode,
 }

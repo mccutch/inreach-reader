@@ -4,6 +4,7 @@ import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
 import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
 import * as obj from '../objectDefinitions.js';
+import {setMapToSearchInput} from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -59,7 +60,6 @@ class GoogleMapWrapper extends React.Component{
     this.plotPoints=this.plotPoints.bind(this)
     
     this.handleClick=this.handleClick.bind(this)
-    this.useSearchInput=this.useSearchInput.bind(this)
     this.undo=this.undo.bind(this)
     this.changeMapMode=this.changeMapMode.bind(this)
 
@@ -158,7 +158,15 @@ class GoogleMapWrapper extends React.Component{
           // Set the data fields to return when the user selects a place.
           searchBox.setFields(['address_components', 'geometry', 'icon', 'name', 'place_id'])
           // Take action when autocomplete suggestion is chosen, or raw text input is submitted
-          searchBox.addListener('place_changed', this.useSearchInput)
+          searchBox.addListener('place_changed', ()=>{
+            this.temporaryMarker = setMapToSearchInput({
+              searchBox:searchBox,
+              map:this.map,
+              onNotFound:(searchTerm)=>{
+                this.setState({errorMessage:`Unable to find ${searchTerm}.`})
+              }
+            })
+          })
           // Make components available to other functions in the class
           this.searchBox = searchBox
 
@@ -245,18 +253,6 @@ class GoogleMapWrapper extends React.Component{
     this.props.returnPoints(ptsList)
   }
 
-  useSearchInput(){
-    let place = this.searchBox.getPlace()
-    console.log(place)
-    if(!place.geometry){this.setState({errorMessage:`Unable to find ${place.name}.`}); return}
-    this.map.setCenter(place.geometry.location)
-    // Create location bias from user location if no points exist
-    let temporaryMarker = new window.google.maps.Marker({
-      position:place.geometry.location, map: this.map, title:place.name,
-    })
-    this.map.setZoom(13)
-    this.temporaryMarker = temporaryMarker
-  }
 
   setMapBounds(points){
     let boundaryPoints=[]
@@ -535,8 +531,6 @@ function GoogleMap({id}){
 GoogleMap.propTypes = {
   id: PropTypes.string,
 }
-
-
 
 
 export {
