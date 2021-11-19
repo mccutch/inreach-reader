@@ -14,7 +14,7 @@ function setMapToSearchInput({searchBox, map, onNotFound}){
 }
 
 // Set map and autocomplete biasing based on user location
-function setLocationBias(searchBox, map, position, geolocation){
+function setLocationBias({searchBox, map, position, geolocation}){
     if(!(position||geolocation)){return}
     let pos = position ? position : {lat: parseFloat(geolocation.coords.latitude),lng: parseFloat(geolocation.coords.latitude)}
     
@@ -25,66 +25,23 @@ function setLocationBias(searchBox, map, position, geolocation){
     if(map){map.setCenter(geolocation)}  
 }
 
-
-function addPath({map, path, name, colour, readOnly}){
-    console.log(path)
-    console.log(name)
-    let lineColour = colour?colour:DEFAULT_LINE_COLOUR
-    let gMaps = window.google.maps
-    let gPath = new gMaps.Polyline({
-        path: path,
-        geodesic: true,
-        strokeColor: lineColour,
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map:this.map,
-        editable:this.state.mode!=="locked" && !readOnly,
-      });
-    if(readOnly){
-        console.log("READONLYPATH")
-        let newPath = {name:name, gPath:gPath, colour:lineColour}
-        this.state.readOnlyPaths.push(newPath)
-    } else {
-        gPath.addListener('dragend', this.returnPath);
-        gPath.addListener('click', ()=>this.handlePathClick(gPath));
-        gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
-        gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
-        gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
-        let newPath = {name:name, gPath:gPath, colour:lineColour}
-        this.state.paths.push(newPath)
-        this.setState({activePath:this.state.paths.length-1})
-        console.log("PROP PATH ADDED.")
+// Set map bounds to include all points
+function setMapBounds({map, points, locationBias}){
+    if(points.length<=1){
+        map.setCenter(points[0] ? points[0]:(locationBias ? locationBias:DEFAULT_MAP_CENTER))
+        return
     }
+    let bounds = new window.google.maps.LatLngBounds()
+    for(let i in points){
+        bounds.extend(points[i])
+    }
+    map.fitBounds(bounds)
 }
 
 
-
-function changeMapMode(mode){
-    let newMode=mode
-    if(mode==="toggleLock"){
-        if(this.state.mode==="locked"){
-            //Unlock to default mode
-            this.changeMapMode(this.props.initialMode)
-            return
-        }else{
-            newMode="locked"
-            this.lockAllPaths({})
-            this.lockAllPoints()
-        }
-    }else if(mode==="newPath"){
-        this.lockAllPaths({})
-        this.lockAllPoints()
-    }else if(mode==="editPoints"){
-        //Unlock point dragging
-        this.lockAllPoints(false)
-    }
-
-    this.setState({
-        mode:newMode,
-    })   
-}
 
 export {
     setMapToSearchInput,
     setLocationBias,
+    setMapBounds,
 }

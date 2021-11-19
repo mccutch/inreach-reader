@@ -4,7 +4,7 @@ import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
 import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
 import * as obj from '../objectDefinitions.js';
-import {setMapToSearchInput, setLocationBias} from './googleMapFunctions.js';
+import {setMapToSearchInput, setLocationBias, setMapBounds} from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -52,9 +52,8 @@ class GoogleMapWrapper extends React.Component{
     window.initGoogleMap=this.initGoogleMap  
     importGoogleLibraries("initGoogleMap")
     
-    this.parseGeolocation=this.parseGeolocation.bind(this)   
-    this.setMapBounds=this.setMapBounds.bind(this)
-
+    this.parseGeolocation=this.parseGeolocation.bind(this)
+    this.findMapBounds=this.findMapBounds.bind(this)
     this.plotPaths=this.plotPaths.bind(this)
     this.plotPoints=this.plotPoints.bind(this)
     
@@ -191,7 +190,7 @@ class GoogleMapWrapper extends React.Component{
         console.log("window.google not defined")
       }
 
-      this.setMapBounds()
+      this.findMapBounds()
       this.plotPaths()
       this.plotPoints()
     }
@@ -253,42 +252,22 @@ class GoogleMapWrapper extends React.Component{
   }
 
 
-  setMapBounds(points){
-    let boundaryPoints=[]
-    if(points){
-      console.log(points)
-      boundaryPoints=points
-    } else{
-      if(this.props.points && this.props.points.length>0){
-        console.log("Prop points found")
-        for(let i in this.props.points){
-          console.log(this.props.points[i])
-          boundaryPoints.push(this.props.points[i].position);
+  findMapBounds(){
+    let boundaryPoints = []
+    if(this.props.points && this.props.points.length>0){
+      for(let i in this.props.points){
+        boundaryPoints.push(this.props.points[i].position);
+      }
+    }
+    if(this.props.paths){
+      for(let i in this.props.paths){
+        let path = this.props.paths[i].path
+        for(let j in path){
+          boundaryPoints.push(path[j])
         }
       }
-      if(this.props.paths){
-        for(let i in this.props.paths){
-          let path = this.props.paths[i].path
-          for(let j in path){
-            boundaryPoints.push(path[j])
-          }
-        }
-      } 
-    }
-
-    console.log(boundaryPoints)
-    if(boundaryPoints.length<=1){
-      console.log(boundaryPoints[0])
-      this.map.setCenter(boundaryPoints[0] ? boundaryPoints[0]:(this.props.locationBias ? this.props.locationBias:DEFAULT_MAP_CENTER))
-      return
-    }
-
-    var gMaps = window.google.maps
-    let bounds = new gMaps.LatLngBounds()
-    for(let i in boundaryPoints){
-      bounds.extend(boundaryPoints[i])
-    }
-    this.map.fitBounds(bounds)
+    } 
+    setMapBounds({map: this.map, points: boundaryPoints, locationBias: this.props.locationBias})
   }
 
   parseGeolocation(geolocation){
