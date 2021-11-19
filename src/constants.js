@@ -1,10 +1,11 @@
 
-
 export const USER_CACHE = "dynamic-user"
-
 
 export const DEFAULT_MAP_CENTER = {lat: -36.89471583987405, lng: 147.13738916242673} //Mt Feathertop
 export const DEFAULT_LINE_COLOUR = "#b422a8"
+export const STROKE_WEIGHT = 2
+export const DEFAULT_GMAP_ZOOM = 13
+export const DEFAULT_GMAP_BIAS_RADIUS = 30
 
 export const MAX_LEN_USERNAME = 30 //Defined in django docs?
 export const MAX_LEN_PASSWORD = 30

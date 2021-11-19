@@ -4,7 +4,7 @@ import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
 import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
 import * as obj from '../objectDefinitions.js';
-import {setMapToSearchInput, setLocationBias, setMapBounds} from './googleMapFunctions.js';
+import {setMapToSearchInput, setLocationBias, setMapBounds, addPath} from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -282,33 +282,22 @@ class GoogleMapWrapper extends React.Component{
   }
 
   addPath({path, name, colour, readOnly}){
-    console.log(path)
-    console.log(name)
-    let lineColour = colour?colour:DEFAULT_LINE_COLOUR
-    let gMaps = window.google.maps
-    let gPath = new gMaps.Polyline({
-        path: path,
-        geodesic: true,
-        strokeColor: lineColour,
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map:this.map,
-        editable:this.state.mode!=="locked" && !readOnly,
-      });
+    let newPath = addPath({
+      map:this.map, 
+      path: path, 
+      name: name, 
+      colour: colour, 
+      editable: this.state.mode!=="locked" && !readOnly,
+      readOnly: readOnly,
+      onChange: this.returnPath,
+      onClick: this.handlePathClick,
+    })
+    // Add new path to state
     if(readOnly){
-      console.log("READONLYPATH")
-      let newPath = {name:name, gPath:gPath, colour:lineColour}
-      this.state.readOnlyPaths.push(newPath)
-    } else {
-      gPath.addListener('dragend', this.returnPath);
-      gPath.addListener('click', ()=>this.handlePathClick(gPath));
-      gMaps.event.addListener(gPath.getPath(), "insert_at", this.returnPath);
-      gMaps.event.addListener(gPath.getPath(), "remove_at", this.returnPath);
-      gMaps.event.addListener(gPath.getPath(), "set_at", this.returnPath);
-      let newPath = {name:name, gPath:gPath, colour:lineColour}
-      this.state.paths.push(newPath)
+      this.setState({readOnlyPaths: [...this.state.readOnlyPaths, newPath]})
+    }else{
+      this.setState({paths: [...this.state.paths, newPath]})
       this.setState({activePath:this.state.paths.length-1})
-      console.log("PROP PATH ADDED.")
     }
   }
 
