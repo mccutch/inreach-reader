@@ -1,18 +1,30 @@
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 
-
+// Use search input to position the map and return a marker
 function setMapToSearchInput({searchBox, map, onNotFound}){
     let place = searchBox.getPlace()
     console.log(place)
     if(!place.geometry){onNotFound(place.name); return null}
     map.setCenter(place.geometry.location)
-    // Create location bias from user location if no points exist
     let temporaryMarker = new window.google.maps.Marker({
         position:place.geometry.location, map: map, title:place.name,
     })
     map.setZoom(13)
     return temporaryMarker
 }
+
+// Set map and autocomplete biasing based on user location
+function setLocationBias(searchBox, map, position, geolocation){
+    if(!(position||geolocation)){return}
+    let pos = position ? position : {lat: parseFloat(geolocation.coords.latitude),lng: parseFloat(geolocation.coords.latitude)}
+    
+    let circle = new window.google.maps.Circle(
+        {center: pos, radius:30}
+    )
+    if(searchBox){searchBox.setBounds(circle.getBounds())}
+    if(map){map.setCenter(geolocation)}  
+}
+
 
 function addPath({map, path, name, colour, readOnly}){
     console.log(path)
@@ -45,21 +57,7 @@ function addPath({map, path, name, colour, readOnly}){
     }
 }
 
-function setLocationBias(searchBox, lat, lng){
-    // Set map center and autocomplete biasing based on user location
-    var gMaps = window.google.maps
 
-    let geolocation = {
-        lat: parseFloat(lat),
-        lng: parseFloat(lng)
-    }
-    console.log(geolocation)
-    let circle = new gMaps.Circle(
-        {center: geolocation, radius:30}
-    )
-    this.searchBox.setBounds(circle.getBounds())
-    //this.map.setCenter(geolocation)  
-}
 
 function changeMapMode(mode){
     let newMode=mode
@@ -87,8 +85,6 @@ function changeMapMode(mode){
 }
 
 export {
-    addPath,
-    setLocationBias,
     setMapToSearchInput,
-    changeMapMode,
+    setLocationBias,
 }

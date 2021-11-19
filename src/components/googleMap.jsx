@@ -4,7 +4,7 @@ import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
 import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
 import * as obj from '../objectDefinitions.js';
-import {setMapToSearchInput} from './googleMapFunctions.js';
+import {setMapToSearchInput, setLocationBias} from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -52,7 +52,6 @@ class GoogleMapWrapper extends React.Component{
     window.initGoogleMap=this.initGoogleMap  
     importGoogleLibraries("initGoogleMap")
     
-    this.setLocationBias=this.setLocationBias.bind(this)
     this.parseGeolocation=this.parseGeolocation.bind(this)   
     this.setMapBounds=this.setMapBounds.bind(this)
 
@@ -172,7 +171,7 @@ class GoogleMapWrapper extends React.Component{
 
 
           if(this.props.locationBias){
-            this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
+            setLocationBias({searchBox:this.searchBox, position: this.props.locationBias, })
           } else {
             if(navigator.geolocation){
               console.log("Geolocation available")
@@ -292,25 +291,9 @@ class GoogleMapWrapper extends React.Component{
     this.map.fitBounds(bounds)
   }
 
-  parseGeolocation(position){
-    this.setLocationBias(position.coords.latitude, position.coords.longitude)
-    console.log(`Position accuracy: ${position.coords.accuracy}`)
-  }
-
-  setLocationBias(lat, lng){
-    // Set map center and autocomplete biasing based on user location
-    var gMaps = window.google.maps
-
-    let geolocation = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng)
-    }
-    console.log(geolocation)
-    let circle = new gMaps.Circle(
-      {center: geolocation, radius:30}
-    )
-    this.searchBox.setBounds(circle.getBounds())
-    //this.map.setCenter(geolocation)  
+  parseGeolocation(geolocation){
+    setLocationBias({searchBox:this.searchBox, geolocation:geolocation})
+    console.log(`Position accuracy: ${geolocation.coords.accuracy}`)
   }
 
   plotPaths(){
