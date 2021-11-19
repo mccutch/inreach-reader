@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {IconButton} from './reactComponents.jsx';
 import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR} from '../constants.js';
 import {importGoogleLibraries} from '../helperFunctions.js';
-import * as urls from '../urls.js';
-import * as obj from '../objectDefinitions.js'
+import {MapControls, SEARCH_BAR_ID} from './googleMapControls.jsx';
+import * as obj from '../objectDefinitions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
@@ -137,56 +136,62 @@ class GoogleMapWrapper extends React.Component{
 
   initGoogleMap() {
     console.log(`Initialising Google Maps.`)
+    console.log(this.props.id)
+    try{
+      if(window.google){
+        var gMaps = window.google.maps
 
-    if(window.google){
-      var gMaps = window.google.maps
-
-      console.log("Initialising map...")
-      let map = new gMaps.Map(document.getElementById(this.props.id), {
+        console.log("Initialising map...")
+        let map = new gMaps.Map(document.getElementById(this.props.id), {
           zoom: 12,
           controlSize: 20,
           draggable: true,
           mapTypeControl: true,
           mapTypeId:"terrain",
         });
-      this.map = map
-      map.addListener("click", this.handleClick)
-      
-      if(this.props.searchBox){
-        console.log("Initialising Autocomplete inputs.")
-        let searchBox = new gMaps.places.Autocomplete(document.getElementById("search"))
-        // Set the data fields to return when the user selects a place.
-        searchBox.setFields(['address_components', 'geometry', 'icon', 'name', 'place_id'])
-        // Take action when autocomplete suggestion is chosen, or raw text input is submitted
-        searchBox.addListener('place_changed', this.useSearchInput)
-        // Make components available to other functions in the class
-        this.searchBox = searchBox
+        this.map = map
+        map.addListener("click", this.handleClick)
+        
+        if(this.props.searchBox){
+          console.log("Initialising Autocomplete inputs.")
+          let searchBox = new gMaps.places.Autocomplete(document.getElementById(SEARCH_BAR_ID))
+          // Set the data fields to return when the user selects a place.
+          searchBox.setFields(['address_components', 'geometry', 'icon', 'name', 'place_id'])
+          // Take action when autocomplete suggestion is chosen, or raw text input is submitted
+          searchBox.addListener('place_changed', this.useSearchInput)
+          // Make components available to other functions in the class
+          this.searchBox = searchBox
 
 
-        if(this.props.locationBias){
-          this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
-        } else {
-          if(navigator.geolocation){
-            console.log("Geolocation available")
-            navigator.geolocation.getCurrentPosition(this.parseGeolocation)
+          if(this.props.locationBias){
+            this.setLocationBias(this.props.locationBias.lat, this.props.locationBias.lng)
+          } else {
+            if(navigator.geolocation){
+              console.log("Geolocation available")
+              navigator.geolocation.getCurrentPosition(this.parseGeolocation)
+            }
           }
         }
+
+        
+        let infoWindow = new gMaps.InfoWindow({
+          content: "<p>Hello world</p>",
+          map:this.map,
+        });
+        this.infoWindow = infoWindow
+        
+      } else {
+        console.log("window.google not defined")
       }
 
-      
-      let infoWindow = new gMaps.InfoWindow({
-        content: "<p>Hello world</p>",
-        map:this.map,
-      });
-      this.infoWindow = infoWindow
-      
-    } else {
-      console.log("window.google not defined")
+      this.setMapBounds()
+      this.plotPaths()
+      this.plotPoints()
     }
-
-    this.setMapBounds()
-    this.plotPaths()
-    this.plotPoints()
+    catch(err){
+      console.log("initGoogleMaps error:", err)
+      this.setState({renderError:true})
+    }
   }
 
   handleClick(event){
@@ -276,7 +281,6 @@ class GoogleMapWrapper extends React.Component{
       } 
     }
 
-
     console.log(boundaryPoints)
     if(boundaryPoints.length<=1){
       console.log(boundaryPoints[0])
@@ -348,7 +352,6 @@ class GoogleMapWrapper extends React.Component{
       this.setState({activePath:this.state.paths.length-1})
       console.log("PROP PATH ADDED.")
     }
-    
   }
 
   addToPath(latLng){
@@ -497,11 +500,16 @@ class GoogleMapWrapper extends React.Component{
   }
 
   render(){
-    
+    console.log("RENDER", this.props.id)
+    if(this.state.renderError){
+      return(
+        <div><p>Sorry, unable to render map.</p></div>
+      )
+    }
     return(
       <div>
-        {this.state.editable && <MapControls mode={this.state.mode} changeMode={this.changeMapMode} undo={this.undo} />}
-        <GoogleMap id={this.props.id} />
+        {this.props.editable && <MapControls mode={this.state.mode} changeMode={this.changeMapMode} undo={this.undo} />}
+        <div id={this.props.id} style={{height:"100vh"}}></div>
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>
     )
@@ -528,61 +536,7 @@ GoogleMap.propTypes = {
   id: PropTypes.string,
 }
 
-function MapControls({mode, changeMode}){
-  let activeStyle="btn-warning"
-  let inactiveStyle="btn-light"
-  return(
-    <div className="form-row p-2">
-      <div className="col-md">
-        <input type="search" id="search" placeholder="Search" className="form-control my-2"/>
-      </div>
-      <div className="col">
-        <div className="row">
-          <div className="col">
-            <IconButton 
-              isActive={mode==="newPath"}
-              activeStyle={activeStyle}
-              inactiveStyle={inactiveStyle} 
-              onClick={()=>changeMode("newPath")} 
-              icon={urls.ADD_NEW_ICON}
-            />
-          </div>
-          <div className="col">
-            <IconButton 
-              isActive={mode==="editPoints"}
-              activeStyle={activeStyle}
-              inactiveStyle={inactiveStyle} 
-              onClick={()=>changeMode("editPoints")} 
-              icon={urls.WAYPOINT_ICON}
-            />
-          </div>
-          <div className="col">
-            <IconButton 
-              isActive={false}
-              activeStyle={activeStyle}
-              inactiveStyle={inactiveStyle} 
-              onClick={this.undo} 
-              icon={urls.UNDO_ICON}
-            />
-          </div>
-          <div className="col">
-            <IconButton 
-              isActive={mode==="locked"}
-              activeStyle={activeStyle}
-              inactiveStyle={inactiveStyle} 
-              onClick={()=>changeMode("toggleLock")} 
-              icon={urls.LOCK_ICON}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-MapControls.propTypes = {
-  mode: PropTypes.string,
-  changeMode: PropTypes.func,
-}
+
 
 
 export {
