@@ -19,7 +19,7 @@ import {TripViewer} from './views/tripView.jsx';
 import {Dashboard} from './views/dashboard.jsx';
 import {LandingView} from './views/landing.jsx';
 import {ContactView} from './views/contact.jsx';
-import {TripEdit, TripPlanner} from './views/tripPlanner.jsx';
+import {TripEdit, TripPlannerWrapper} from './views/tripPlannerWrapper.jsx';
 import {Profile} from './models/profile.jsx';
 /*
 Login Process
@@ -167,7 +167,7 @@ export class AppRouter extends React.Component{
 
               <Route 
                 path={urls.PLANNER}
-                render={() => <TripPlanner app={appFunctions} user={userData} />}
+                render={() => <TripPlannerWrapper app={appFunctions} user={userData} />}
               />
 
               <Route 
