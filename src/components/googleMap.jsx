@@ -10,6 +10,7 @@ import {
   setMapBounds, 
   addPath,
   addPoint,
+  bundleMapData,
 } from './googleMapFunctions.js';
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ"
@@ -77,9 +78,6 @@ class GoogleMapWrapper extends React.Component{
     this.lockAllPoints=this.lockAllPoints.bind(this)
 
     this.showPointInfo=this.showPointInfo.bind(this)
-
-    this.returnPoints=this.returnPoints.bind(this)
-    this.returnPaths=this.returnPaths.bind(this)
 
     this.editPathIdentifiers=this.editPathIdentifiers.bind(this)
     this.generatePointInfo=this.generatePointInfo.bind(this)
@@ -245,18 +243,6 @@ class GoogleMapWrapper extends React.Component{
     }
   }
 
-  returnPoints(){
-    if(!this.props.returnPoints) return;
-    let ptsList=[]
-    for(let i in this.state.points){
-      ptsList.push({
-        position:this.state.points[i].gPoint.getPosition().toJSON(), 
-        label:this.state.points[i].label, 
-        description:this.state.points[i].description})
-    }
-    this.props.returnPoints(ptsList)
-  }
-
 
   findMapBounds(){
     let boundaryPoints = []
@@ -337,28 +323,6 @@ class GoogleMapWrapper extends React.Component{
     
   }
 
-  returnPaths(){
-    console.log("returnPaths")
-    let pathList = this.state.paths
-
-    let allPaths = []
-    for(let i in pathList){
-      let gPath = pathList[i].gPath
-      let array = gPath.getPath().getArray()
-
-      let jsonList = []
-      for(let j in array){
-        jsonList.push(array[j].toJSON())
-      }
-      if(jsonList.length > 1){
-        // Don't return a path with a single point
-        allPaths.push({path:jsonList, name:pathList[i].name, colour:pathList[i].colour})
-      }
-      
-    }
-    this.props.returnPaths(allPaths)
-  }
-
   plotPoints(){
     let clone = Object.assign({},this.props.points)
     console.log(clone)
@@ -392,7 +356,7 @@ class GoogleMapWrapper extends React.Component{
 
   lockAllPoints(bool=true){
     for(let i in this.state.points){
-      this.state.points[i].setDraggable(!bool)
+      this.state.points[i].gPoint.setDraggable(!bool)
     }
   }
 
@@ -434,11 +398,11 @@ class GoogleMapWrapper extends React.Component{
       
   }
 
-  returnMapData({onSuccess}){
+  // Pull data from parent component. Returns !readOnly data to save.
+  returnMapData(){
     console.log("Remote trigger data pull from map.")
-    this.returnPaths()
-    this.returnPoints()
-    if(onSuccess){onSuccess()}
+    console.log(this.state.paths, this.state.points)
+    return bundleMapData({paths:this.state.paths, points:this.state.points})
   }
 
   render(){
@@ -465,8 +429,6 @@ GoogleMapWrapper.propTypes = {
   paths: PropTypes.arrayOf(obj.Path),
   initialMode: PropTypes.string,
   searchBox: PropTypes.bool,
-  returnPoints: PropTypes.func,
-  returnPaths: PropTypes.func,
 }
 
 

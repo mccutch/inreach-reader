@@ -75,10 +75,38 @@ function addPoint({map, pt, draggable, onClick}){
     return {label:pt.label, gPoint:gPoint, description:pt.description}
 }
 
+function bundleMapData({paths, points}){
+    console.log(paths, points)
+    let exportPaths = []
+    for(let i in paths){
+      let array = paths[i].gPath.getPath().getArray()
+      let jsonList = []
+      for(let j in array){
+        jsonList.push(array[j].toJSON())
+      }
+      if(jsonList.length > 1){exportPaths.push({path:jsonList, name:paths[i].name, colour:paths[i].colour})}
+    }
+    let exportPoints = []
+    for(let i in points){
+        exportPoints.push({
+            position:points[i].gPoint.getPosition().toJSON(), 
+            label:points[i].label, 
+            description:points[i].description,
+        })
+    }
+
+    return({
+        paths:exportPaths,
+        points:exportPoints,
+    })
+}
+
+
 export {
     setMapToSearchInput,
     setLocationBias,
     setMapBounds,
     addPath,
     addPoint,
+    bundleMapData,
 }

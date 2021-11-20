@@ -280,12 +280,12 @@ export class TripPlanner extends React.Component{
 
     // If no warnings, continue. Else, show modal.
     if(warnings.length===0){
-      this.saveTrip()
+      this.gatherMapData({onSuccess:this.saveTrip})
     } else {
       this.props.app.setModal(
         <WarningModal
           warnings={warnings}
-          onContinue={()=>{this.props.app.hideModal(); this.saveTrip()}}
+          onContinue={()=>{this.props.app.hideModal(); this.gatherMapData({onSuccess:this.saveTrip})}}
           hideModal={()=>{this.props.app.hideModal(); this.returnError("")}}
         />
       )
@@ -294,7 +294,9 @@ export class TripPlanner extends React.Component{
 
   gatherMapData({onSuccess}){
     if(this.state.showMap){
-      this.gMap.current.returnMapData({onSuccess: onSuccess})
+      let mapData = this.gMap.current.returnMapData()
+      console.log("Gathered data: ", mapData)
+      this.setState({paths:mapData.paths, points:mapData.points}, onSuccess)
     }
   }
 
@@ -469,19 +471,16 @@ export class TripPlanner extends React.Component{
           <div>
             {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
           </div>
-          <button className="btn btn-danger m-2" onClick={this.gatherMapData}>Get map data</button>
           {this.state.showMap ? 
               <GoogleMapWrapper
                 ref = {this.gMap} 
-                id = {"baseMap"}
+                id = {con.GOOGLE_MAP_ID}
                 editable={true}
                 locationBias={mapCenter}
                 points={this.state.inReachData ? this.state.points.concat(this.state.inReachData.points) : this.state.points}
                 paths={this.state.inReachData ? this.state.paths.concat(this.state.inReachData.paths) : this.state.paths}
                 initialMode="editPoints"
                 searchBox={true}
-                returnPoints={(pointList)=>this.setState({points:pointList})}
-                returnPaths={(paths)=>this.setState({paths:paths})}
               />
               : ""
             }

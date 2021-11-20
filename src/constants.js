@@ -6,6 +6,7 @@ export const DEFAULT_LINE_COLOUR = "#b422a8"
 export const STROKE_WEIGHT = 2
 export const DEFAULT_GMAP_ZOOM = 13
 export const DEFAULT_GMAP_BIAS_RADIUS = 30
+export const GOOGLE_MAP_ID = "baseMap"
 
 export const MAX_LEN_USERNAME = 30 //Defined in django docs?
 export const MAX_LEN_PASSWORD = 30
