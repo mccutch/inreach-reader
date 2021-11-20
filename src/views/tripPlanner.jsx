@@ -465,25 +465,19 @@ export class TripPlanner extends React.Component{
               </PendingBtn>
             </div>
           </div>
-          <div>
-            {this.state.points.length>0 && <PointDescriptions points={this.state.points} returnPoints={(pointList)=>this.setState({points:pointList})}/>}
-          </div>
-          <div>
-            {this.state.paths.length>0 && <PathDescriptions paths={this.state.paths} returnPaths={(pathList)=>this.setState({paths:pathList})} />}
-          </div>
           {this.state.showMap ? 
-              <GoogleMapWrapper
-                ref = {this.gMap} 
-                id = {con.GOOGLE_MAP_ID}
-                editable={true}
-                locationBias={mapCenter}
-                points={this.state.inReachData ? this.state.points.concat(this.state.inReachData.points) : this.state.points}
-                paths={this.state.inReachData ? this.state.paths.concat(this.state.inReachData.paths) : this.state.paths}
-                initialMode="editPoints"
-                searchBox={true}
-              />
-              : ""
-            }
+            <GoogleMapWrapper
+              ref = {this.gMap} 
+              id = {con.GOOGLE_MAP_ID}
+              editable={true}
+              locationBias={mapCenter}
+              points={this.state.inReachData ? this.state.points.concat(this.state.inReachData.points) : this.state.points}
+              paths={this.state.inReachData ? this.state.paths.concat(this.state.inReachData.paths) : this.state.paths}
+              initialMode="editPoints"
+              searchBox={true}
+            />
+            : ""
+          }
         </div>
       </div>
     )
@@ -495,127 +489,7 @@ TripPlanner.propTypes = {
   trip: PropTypes.shape(obj.Trip),
 }
 
-class PointDescriptions extends React.Component{
-  constructor(props){
-    super(props)
-    this.returnChanges=this.returnChanges.bind(this)
-    this.generateList=this.generateList.bind(this)
-  }
-  returnChanges(){
-    let returnList = []
-    for(let i in this.props.points){
-      let point = this.props.points[i]
-      let description = document.getElementById(`input_${point.label}`).value
-      returnList.push({
-        position:point.position, 
-        label:point.label, 
-        description:description,
-      })
-    }
-    this.props.returnPoints(returnList)
-  }
 
-  generateList(){
-    let pointList = []
-    for(let i in this.props.points){
-      let point = this.props.points[i]
-      pointList.push(
-        <FormRow
-          label={point.label}
-          //labelWidth={1}
-          input={
-            <input 
-              type="text" 
-              className="form-control my-1"
-              id={`input_${point.label}`}
-              defaultValue={point.description}
-              onChange={this.returnChanges}
-            />}
-        />
-      )
-    }
-    return pointList
-  }
-
-  render(){
-    return(
-      <div> 
-        <p><strong>Points</strong></p>
-        {this.generateList()}
-      </div>
-    )
-  }
-}
-PointDescriptions.propTypes = {
-  points: PropTypes.arrayOf(obj.Point),
-  returnPoints: PropTypes.func,
-}
-
-
-class PathDescriptions extends React.Component{
-  constructor(props){
-    super(props)
-    this.returnChanges=this.returnChanges.bind(this)
-    this.generateList=this.generateList.bind(this)
-  }
-  returnChanges(){
-    let returnList = []
-    for(let i in this.props.paths){
-      let path = this.props.paths[i]
-      let name = document.getElementById(`name_${i}`).value
-      let colour = document.getElementById(`colour_${i}`).value
-      returnList.push({
-        path:path.path,
-        name:name,
-        colour:colour,
-      })
-    }
-    this.props.returnPaths(returnList)
-  }
-
-  generateList(){
-    let pathList = []
-    for(let i in this.props.paths){
-      let path = this.props.paths[i]
-      pathList.push(
-        <div className="row">
-          <div className="col-2">
-            <input 
-              type="color" 
-              className="form-control my-1"
-              defaultValue={path.colour?path.colour:con.DEFAULT_LINE_COLOUR}
-              id={`colour_${i}`}
-              onChange={this.returnChanges}
-            />
-          </div>
-          <div className="col">
-            <input 
-              type="text" 
-              className="form-control my-1"
-              id={`name_${i}`}
-              defaultValue={path.name}
-              onChange={this.returnChanges}
-            />
-          </div>
-        </div>
-      )
-    }
-    return pathList
-  }
-
-  render(){
-    return(
-      <div> 
-        <p><strong>Paths</strong></p>
-        {this.generateList()}
-      </div>
-    )
-  }
-}
-PathDescriptions.propTypes = {
-  paths: PropTypes.arrayOf(obj.Path),
-  returnPaths: PropTypes.func,
-}
 
 
 

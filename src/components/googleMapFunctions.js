@@ -1,4 +1,10 @@
-import {DEFAULT_MAP_CENTER, DEFAULT_LINE_COLOUR, STROKE_WEIGHT, DEFAULT_GMAP_ZOOM, DEFAULT_GMAP_BIAS_RADIUS} from '../constants.js';
+import {
+    DEFAULT_MAP_CENTER, 
+    DEFAULT_LINE_COLOUR, 
+    STROKE_WEIGHT, 
+    DEFAULT_GMAP_ZOOM, 
+    DEFAULT_GMAP_BIAS_RADIUS,
+} from '../constants.js';
 
 // Use search input to position the map and return a marker
 function setMapToSearchInput({searchBox, map, onNotFound}){
@@ -75,6 +81,7 @@ function addPoint({map, pt, draggable, onClick}){
     return {label:pt.label, gPoint:gPoint, description:pt.description}
 }
 
+// Gather editable data from map to export as json
 function bundleMapData({paths, points}){
     console.log(paths, points)
     let exportPaths = []

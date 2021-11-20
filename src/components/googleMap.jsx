@@ -86,7 +86,6 @@ class GoogleMapWrapper extends React.Component{
     this.returnMapData=this.returnMapData.bind(this)
   }
 
-
   componentDidMount(){
     if(window.google){
       this.initGoogleMap()
@@ -307,7 +306,6 @@ class GoogleMapWrapper extends React.Component{
   }
 
   handlePathClick(gPath){
-
     if(this.state.mode==="locked"){
       return
     }else{
@@ -332,7 +330,6 @@ class GoogleMapWrapper extends React.Component{
   }
 
   addPoint(pt){
-
     let newPt = addPoint({
       map:this.map,
       pt: pt,
@@ -415,7 +412,7 @@ class GoogleMapWrapper extends React.Component{
     return(
       <div>
         {this.props.editable && <MapControls mode={this.state.mode} changeMode={this.changeMapMode} undo={this.undo} />}
-        <div id={this.props.id} style={{height:"100vh"}}></div>
+        <div id={this.props.id} style={{height:"80vh"}}></div>
         {<p><strong>{this.state.errorMessage}</strong></p>}
       </div>
     )
