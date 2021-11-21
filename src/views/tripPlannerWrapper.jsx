@@ -130,8 +130,8 @@ function TripPlannerWrapper({app, user, trip}){
       description: d.description,
       points: JSON.stringify(d.points),
       paths: JSON.stringify(d.paths),
-      contacts: JSON.stringify(contactIds),
-      overdue: d.overdueTime ? d.overdueTime.toISOString() : "",
+      contacts: contactIds,
+      overdue: d.overdueTime ? d.overdueTime.toISOString() : null,
       instructions: d.overdueTime ? d.overdueInstructions : "",
     }
     console.log("Data is about to be saved: ", tripData)
