@@ -29,7 +29,7 @@ function ViewContact({contact, app, user}){
   null
 
   return(
-    <StandardModal title={title} body={body} footer={footer} hideModal={this.props.app.hideModal}/>
+    <StandardModal title={title} body={body} footer={footer} hideModal={app.hideModal}/>
   )
 }
 ViewContact.propTypes = {
