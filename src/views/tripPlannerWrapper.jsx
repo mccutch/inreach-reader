@@ -6,7 +6,7 @@ import {apiFetch} from '../helperFunctions.js'
 import * as urls from '../urls.js'
 import {LoadingScreen} from './loading.jsx'
 import * as obj from '../objectDefinitions.js'
-import { TripPlanner } from './tripPlanner.jsx';
+import { TripPlannerForm } from './tripPlannerForm.jsx';
 
 // TripEdit checks that tripId is valid and current user is the trip owner, then renders a TripPlannerWrapper
 class TripEdit extends React.Component{
@@ -67,7 +67,7 @@ TripEdit.propTypes = {
   user: PropTypes.shape(obj.UserData),
 }
 
-// Wrapper component handles validation and API calls to database
+// TripPlannerWrapper component handles validation and API calls to database
 function TripPlannerWrapper({app, user, trip}){
   const [errorMessage, setErrorMessage] = useState("")
   const [pending, setPending] = useState(false)
@@ -135,7 +135,6 @@ function TripPlannerWrapper({app, user, trip}){
       instructions: d.overdueTime ? d.overdueInstructions : "",
     }
     console.log("Data is about to be saved: ", tripData)
-    console.log(tripData)
 
     apiFetch({
       url: newTrip ? urls.MY_TRIPS : `${urls.TRIP}/${trip.id}/`,
@@ -202,7 +201,7 @@ function TripPlannerWrapper({app, user, trip}){
   }
 
   return(
-    <TripPlanner
+    <TripPlannerForm
       app={app}
       user={user}
       trip={trip}

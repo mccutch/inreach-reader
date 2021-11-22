@@ -1,21 +1,18 @@
 import React from 'react'
-import PropTypes from 'prop-types';
-import {Redirect} from 'react-router-dom'
+import PropTypes from 'prop-types'
 import {GoogleMapWrapper} from '../components/googleMap.jsx'
 import {today, TimeInputButton, parseISODate} from '../components/dateFunctions.jsx'
-import {StandardModal, PendingBtn, WarningModal, FormRow} from '../components/reactComponents.jsx'
-import {apiFetch, getObject} from '../helperFunctions.js'
+import {StandardModal, PendingBtn} from '../components/reactComponents.jsx'
+import {getObject} from '../helperFunctions.js'
 import {EditContact, ViewContact} from '../models/contacts.jsx'
 import {ContactList} from '../components/objectSummaryLists.jsx'
-import * as urls from '../urls.js'
 import * as con from '../constants.js'
-import {LoadingScreen} from './loading.jsx'
 import {getKMLData, parseInReachData} from '../components/inReachKml.jsx'
 import * as obj from '../objectDefinitions.js'
 
 
 
-export class TripPlanner extends React.Component{
+export class TripPlannerForm extends React.Component{
   constructor(props){
     super(props)
     let existing = this.props.trip ? this.props.trip : null
@@ -285,7 +282,7 @@ export class TripPlanner extends React.Component{
     )
   }
 }
-TripPlanner.propTypes = {
+TripPlannerForm.propTypes = {
   app: PropTypes.shape(obj.AppFunctions),
   user: PropTypes.shape(obj.UserData),
   trip: PropTypes.shape(obj.Trip),
