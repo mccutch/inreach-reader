@@ -6,21 +6,22 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import * as urls from './urls.js';
+import * as urls from './urls';
 
-import {clearToken} from './authentication/myJWT.js';
-import {LoginForm, demoLogin} from './authentication/loginWrapper.jsx';
-import {RegistrationForm} from './views/registrationForm.jsx';
-import {apiFetch} from './helperFunctions.js';
+import {clearToken} from './authentication/myJWT';
+import {LoginForm, demoLogin} from './authentication/loginWrapper';
+import {RegistrationForm} from './views/registrationForm';
+import {apiFetch} from './helperFunctions';
 
-import {GenericNavbar} from './components/navBar.jsx';
-import {UserViewer, UserSearch} from './views/viewer.jsx';
-import {TripViewer} from './views/tripView.jsx';
-import {Dashboard} from './views/dashboard.jsx';
-import {LandingView} from './views/landing.jsx';
-import {ContactView} from './views/contact.jsx';
-import {TripEdit, TripPlannerWrapper} from './views/tripPlannerWrapper.jsx';
-import {Profile} from './models/profile.jsx';
+import {GenericNavbar} from './components/navBar';
+import {UserViewer, UserSearch} from './views/viewer';
+import {TripViewer} from './views/tripView';
+import {Dashboard} from './views/dashboard';
+import {LandingView} from './views/landing';
+import {ContactView} from './views/contact';
+import {TripPlanner} from './views/tripPlanner';
+import {TripEditor} from './views/tripEditor'
+import {Profile} from './models/profile';
 /*
 Login Process
 1. Get JWT access token
@@ -162,12 +163,12 @@ export class AppRouter extends React.Component{
 
               <Route 
                 path={`${urls.PLANNER}/:tripId`}
-                render={(router) => <TripEdit tripId={router.match.params.tripId} app={appFunctions} user={userData}/>}
+                render={(router) => <TripEditor tripId={router.match.params.tripId} app={appFunctions} user={userData}/>}
               />
 
               <Route 
                 path={urls.PLANNER}
-                render={() => <TripPlannerWrapper app={appFunctions} user={userData} />}
+                render={() => <TripPlanner app={appFunctions} user={userData} />}
               />
 
               <Route 

@@ -20,13 +20,14 @@ IconButton.propTypes = {
 }
 
 function WarningModal({body, warnings, hideModal, onContinue}){
+  console.log(warnings)
   let title = <div>Are you sure?</div>
   let modalBody = body ?
     body
     :
     <div>
       <p>The following warnings were found:</p>
-      {warnings}
+      {warnings.map((text, index) => <p key={index}>- {text}</p>)}
     </div>
 
   let footer = 
