@@ -1,73 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {GoogleMapWrapper} from '../components/googleMap.jsx'
-import {today, TimeInputButton, parseISODate} from '../components/dateFunctions.jsx'
-import {StandardModal, PendingBtn} from '../components/reactComponents.jsx'
-import {getObject} from '../helperFunctions.js'
-import {EditContact, ViewContact} from '../models/contacts.jsx'
-import {ContactList} from '../components/objectSummaryLists.jsx'
-import * as con from '../constants.js'
-import {getKMLData, parseInReachData} from '../components/inReachKml.jsx'
-import * as obj from '../objectDefinitions.js'
-
+import {GoogleMapWrapper} from '../components/googleMap'
+import {today, TimeInputButton, parseISODate, offsetTimeByHrs} from '../components/dateFunctions'
+import {PendingBtn} from '../components/reactComponents'
+import {getObjectById} from '../helperFunctions'
+import {EditContact, ViewContact, AddEmergencyContactButton} from '../models/contacts'
+import {ContactList} from '../components/objectSummaryLists'
+import * as con from '../constants'
+import {getKMLData, parseInReachData} from '../components/inReachKml'
+import * as obj from '../objectDefinitions'
 
 
 export class TripPlannerForm extends React.Component{
   constructor(props){
     super(props)
-    let existing = this.props.trip ? this.props.trip : null
-    console.log("existing: ", existing)
+
+    const existingTrip = this.props.trip||null
 
     this.state={
-      showOverdue: existing&&existing.overdue ? true : false,
       showMap:false,
-
-      name:existing ? existing.name : null,
-      departTime:existing ? parseISODate(existing.departs) : today({roundToMins:20}),
-      returnTime:existing ? parseISODate(existing.returns) : today({addDays:2, setHour:19}),
-      overdueTime:existing&&existing.overdue ? parseISODate(existing.overdue) : null,
-      description:existing ? existing.description : "",
-      overdueInstructions:existing&&existing.instructions ? existing.instructions : null,
-      paths:existing ? JSON.parse(existing.paths) : [],
-      points:existing ? JSON.parse(existing.points) : [],
-      contacts:[],
+      contacts: [],
+      ...generateInitialFormValues(existingTrip, this.props.user)
     }
 
     this.gMap = React.createRef()
     this.handleChange=this.handleChange.bind(this)
     this.addEmergencyContact=this.addEmergencyContact.bind(this)
-    this.selectEmergencyContact=this.selectEmergencyContact.bind(this)
+    this.removeEmergencyContact=this.removeEmergencyContact.bind(this)
     this.fetchInReachData=this.fetchInReachData.bind(this)
     this.returnInputsToWrapper=this.returnInputsToWrapper.bind(this)
   }
 
   componentDidMount(){
-    if(this.props.trip && this.props.trip.contacts.length>0){
-      let contacts = this.props.trip.contacts
-      let contactList=[]
-      for(let i in contacts){
-        let contactData = getObject({objectList:this.props.user.contacts, key:"id", keyValue:contacts[i]})
-        if(contactData) contactList.push(contactData);
-      }
-      this.setState({contacts:contactList})
-    }
-
-    this.setState({
-      showMap:(this.state.points.length>0||this.state.paths.length>0),
-    })
-
     this.fetchInReachData()
   }
 
   componentDidUpdate(prevProps){
-    //Update contact details after editing
     if(prevProps.user.contacts!==this.props.user.contacts){
-      let updatedList=[]
-      for(let i in this.state.contacts){
-        let contact = getObject({objectList:this.props.user.contacts, key:"id", keyValue:this.state.contacts[i].id})
-        if(contact) updatedList.push(contact)
-      }
-      this.setState({contacts:updatedList})
+      this.setState({contacts: getContactDetailsFromProfile(this.props.trip.contacts, this.props.user)})
     }
   }
 
@@ -87,56 +57,15 @@ export class TripPlannerForm extends React.Component{
     this.setState({[event.target.name]:event.target.value})
   }
 
-  selectEmergencyContact(){
-    let title = <div>Add Emergency Contact</div>
-    let body = 
-    <div>
-      {this.props.user.contacts.length>0 ?
-        <ContactList 
-          contacts={this.props.user.contacts} 
-          app={this.props.app} 
-          actions={[
-            {label:"Use contact", action:(contact)=>{this.addEmergencyContact(contact); this.props.app.hideModal()}},
-          ]}
-        />
-        :
-        <p>You have no emergency contacts saved to your profile.</p>
-      }
-      <button 
-        className="btn text-left text-light btn-info btn-block my-2" 
-        onClick={()=>{
-          this.props.app.setModal(
-            <EditContact 
-              user={this.props.user} 
-              app={this.props.app}
-              onSuccess={(contact)=>{this.addEmergencyContact(contact)}}
-            />
-          )
-        }}
-        >+ New Contact
-      </button>
-    </div>
-    
-    this.props.app.setModal(<StandardModal title={title} body={body} hideModal={this.props.app.hideModal}/>)
+  removeEmergencyContact(contactToRemove){
+    this.setState({
+      contacts: this.state.contacts.filter(contact => contact!==contactToRemove)
+    })
   }
 
-  addEmergencyContact(contact, mode="add"){
-    //Add or remove a contact from the current state
-    console.log("Adding contact", contact)
-    let existingContacts = this.state.contacts
-    let updatedContacts = []
-    for(let i in existingContacts){
-      if(contact===existingContacts[i]){
-        if(mode==="add"){
-          return
-        }else{
-          continue
-        }
-      }  
-      updatedContacts.push(existingContacts[i])
-    }
-    if(mode==="add"){updatedContacts.push(contact)}
-    this.setState({contacts:updatedContacts})
+  addEmergencyContact(contactToAdd){
+    if(this.state.contacts.find(contact => contact===contactToAdd)){ return }
+    this.setState({contacts: [...this.state.contacts, contactToAdd]})
   }
 
   returnInputsToWrapper(){
@@ -197,11 +126,9 @@ export class TripPlannerForm extends React.Component{
                 <button 
                   className="btn text-left text-light btn-info btn-block my-2"
                   onClick={()=>{
-                    let overdueTime = new Date(this.state.returnTime.getTime())
-                    overdueTime.setHours(overdueTime.getHours()+4)
                     this.setState({
                       showOverdue:true,
-                      overdueTime:overdueTime
+                      overdueTime:offsetTimeByHrs(this.state.returnTime, 4)
                     })
                   }}
                 >+ Add an overdue time</button>
@@ -235,12 +162,12 @@ export class TripPlannerForm extends React.Component{
                     actions={[
                       {label:"View", action:(contact)=>{this.props.app.setModal(<ViewContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
                       {label:"Edit", action:(contact)=>{this.props.app.setModal(<EditContact contact={contact} user={this.props.user} app={this.props.app}/>)}},
-                      {label:"Remove", action:(contact)=>{this.addEmergencyContact(contact, "remove")}}
+                      {label:"Remove", action:(contact)=>{this.removeEmergencyContact(contact)}}
                     ]}
                   />
                 </div>
               }
-              <button className="btn text-left text-light btn-info btn-block my-2" onClick={this.selectEmergencyContact}>+ Add Emergency Contact</button>
+              <AddEmergencyContactButton app={this.props.app} user={this.props.user} onSelect={this.addEmergencyContact} />
             </div>
           </div>
           <div className="row">
@@ -292,6 +219,46 @@ TripPlannerForm.propTypes = {
   pending: PropTypes.bool,
 }
 
+function getContactDetailsFromProfile(contactIds, user){
+  return contactIds.map(contactId => getObjectById(user.contacts, contactId))
+}
+
+function generateInitialFormValues(trip, user){
+  const doesTripAlreadyExist = !!trip
+  
+  // If the trip already exists, we need to get the values from the trip
+  if (doesTripAlreadyExist) {
+    const points = JSON.parse(trip.points)
+    const paths = JSON.parse(trip.paths)
+    return {
+      name: trip.name,
+      departTime: parseISODate(trip.departs),
+      returnTime: parseISODate(trip.returns),
+      overdueTime: trip.overdue ? parseISODate(trip.overdue) : null,
+      description: trip.description,
+      overdueInstructions: trip.instructions,
+      paths: paths,
+      points: points,
+      showOverdue: !!(trip.overdue),
+      contacts: getContactDetailsFromProfile(trip.contacts, user),
+      showMap: points.length>0||paths.length>0,
+    }
+  }
+  // If the trip does not already exist, we need to generate a new trip with default values
+  return {
+    name: null,
+    departTime: today({roundToMins:20}),
+    returnTime: today({addDays:2, setHour:19}),
+    overdueTime: null,
+    description: "",
+    overdueInstructions: null,
+    paths: [],
+    points: [],
+    showOverdue: false,
+    contacts: [],
+    showMap: false,
+  }
+}
 
 
 

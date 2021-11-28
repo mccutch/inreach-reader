@@ -5,6 +5,52 @@ import * as validation from '../components/validation.jsx'
 import {MAX_LEN_NAME} from '../constants.js'
 import {apiFetch} from '../helperFunctions.js'
 import * as urls from '../urls.js'
+import {ContactList} from '../components/objectSummaryLists.jsx'
+
+
+function AddEmergencyContactButton(props){
+  return(
+    <button 
+      className="btn text-left text-light btn-info btn-block my-2" 
+      onClick={
+        ()=>renderEmergencyContactSelection(props)
+      }
+    >+ Add Emergency Contact</button>
+  )
+}
+
+function renderEmergencyContactSelection({app, user, onSelect}){
+  let title = <div>Select Emergency Contact</div>
+  let body = 
+  <div>
+    {user.contacts.length>0 ?
+      <ContactList 
+        contacts={user.contacts} 
+        app={app} 
+        actions={[
+          {label:"Use contact", action:(contact)=>{onSelect(contact); app.hideModal()}},
+        ]}
+      />
+      :
+      <p>You have no emergency contacts saved to your profile.</p>
+    }
+    <button 
+      className="btn text-left text-light btn-info btn-block my-2" 
+      onClick={()=>{
+        app.setModal(
+          <EditContact 
+            user={user} 
+            app={app}
+            onSuccess={(contact)=>{onSelect(contact)}}
+          />
+        )
+      }}
+      >+ New Contact
+    </button>
+  </div>
+  
+  app.setModal(<StandardModal title={title} body={body} hideModal={app.hideModal}/>)
+}
 
 function ViewContact({contact, app, user}){
   let title = <div>{contact.first_name} {contact.last_name}</div>
@@ -196,4 +242,6 @@ EditContact.propTypes = {
 export {
   ViewContact,
   EditContact,
+  renderEmergencyContactSelection,
+  AddEmergencyContactButton,
 }

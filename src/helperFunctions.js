@@ -68,6 +68,14 @@ export function truncate(str, maxLen){
   }
 }
 
+export function getObjectById(objectList, idToFind){
+  //this.props.user.contacts.find(({id}) => id === contactId)
+  if(!objectList){
+    return
+  }
+  return objectList.find(({id})=> id===idToFind )
+}
+
 export function getObject({objectList, key, keyValue}){
   //console.log(objectList, key, keyValue)
   if(!keyValue) return null

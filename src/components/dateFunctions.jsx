@@ -1,6 +1,12 @@
 import React from 'react';
 import {StandardModal} from './reactComponents.jsx';
 
+// Offset and return datetime object
+export function offsetTimeByHrs(date, offsetHrs){
+  let offsetTime = new Date(date.getTime())
+  offsetTime.setHours(offsetTime.getHours()+offsetHrs)
+  return offsetTime
+}
 
 // Format as string for html input
 export function formatDate(date){
