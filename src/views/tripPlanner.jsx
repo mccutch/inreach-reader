@@ -8,9 +8,6 @@ import {LoadingScreen} from './loading'
 import * as obj from '../objectDefinitions'
 import { TripPlannerForm } from './tripPlannerForm';
 
-
-
-
 // TripPlanner component handles validation and API calls to database
 function TripPlanner({app, user, trip}){
   const [errorMessage, setErrorMessage] = useState("")

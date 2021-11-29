@@ -88,20 +88,19 @@ export class TimeInputButton extends React.Component{
 
   editDateTime(event){
     this.props.app.setModal(
-      <TimeInputModal 
-        title={this.props.label}
+      <TimeInputModal
         defaultDate={formatDate(this.props.value)} 
         defaultTime={formatTime(this.props.value)}
         returnDateTime={this.props.returnDateTime}
         app={this.props.app} 
-      />
+      >{this.props.children}</TimeInputModal>
     )
   }
 
   render(){
     return(
       <button className={`btn text-left text-light ${this.props.className}`} onClick={this.editDateTime}>
-       {this.props.label}: <em>{displayDate(this.props.value)}, {displayTime(this.props.value)}</em>
+       {this.props.children}: <em>{displayDate(this.props.value)}, {displayTime(this.props.value)}</em>
       </button>           
     )
   }
@@ -137,7 +136,7 @@ export class TimeInputModal extends React.Component{
   }
 
   render(){
-    let title=<div>{this.props.title}</div>
+    let title=<div>{this.props.children}</div>
     let body = 
       <form className="form-row">
         <div className="col-6">

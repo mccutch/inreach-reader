@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {GoogleMapWrapper} from '../components/googleMap'
-import {today, TimeInputButton, parseISODate, offsetTimeByHrs} from '../components/dateFunctions'
+import {today, parseISODate, offsetTimeByHrs} from '../components/dateFunctions'
+import { TimeInputButton } from '../components/tripPlannerFormElements'
 import {PendingBtn} from '../components/reactComponents'
 import {getObjectById} from '../helperFunctions'
 import {EditContact, ViewContact, AddEmergencyContactButton} from '../models/contacts'
@@ -97,31 +98,25 @@ export class TripPlannerForm extends React.Component{
           <div className="row">
             <div className="col-lg">
               <TimeInputButton
-                label={"Depart"}
                 value={this.state.departTime}
                 returnDateTime={(dt)=>this.setState({departTime:dt},this.fetchInReachData)}
-                className="btn-info btn-block my-2"
                 app={this.props.app}
-              />
+              >Depart</TimeInputButton>
             </div>
             <div className="col-lg">
               <TimeInputButton
-                label={"Return"}
                 value={this.state.returnTime}
                 returnDateTime={(dt)=>this.setState({returnTime:dt},this.fetchInReachData)}
-                className="btn-info btn-block my-2"
                 app={this.props.app}
-              />
+              >Return</TimeInputButton>
             </div>
             <div className="col-lg">
               {this.state.showOverdue ?
                 <TimeInputButton
-                  label={"Overdue"}
                   value={this.state.overdueTime}
                   returnDateTime={(dt)=>this.setState({overdueTime:dt})}
-                  className="btn-info btn-block my-2"
                   app={this.props.app}
-                />
+                >Overdue</TimeInputButton>
                 :
                 <button 
                   className="btn text-left text-light btn-info btn-block my-2"
@@ -191,7 +186,7 @@ export class TripPlannerForm extends React.Component{
               </PendingBtn>
             </div>
           </div>
-          {this.state.showMap ? 
+          {this.state.showMap &&
             <GoogleMapWrapper
               ref = {this.gMap} 
               id = {con.GOOGLE_MAP_ID}
@@ -202,7 +197,6 @@ export class TripPlannerForm extends React.Component{
               initialMode="editPoints"
               searchBox={true}
             />
-            : ""
           }
         </div>
       </div>
@@ -223,10 +217,10 @@ function getContactDetailsFromProfile(contactIds, user){
   return contactIds.map(contactId => getObjectById(user.contacts, contactId))
 }
 
+// Populate state using an existing trip, or set all to defaults
 function generateInitialFormValues(trip, user){
   const doesTripAlreadyExist = !!trip
   
-  // If the trip already exists, we need to get the values from the trip
   if (doesTripAlreadyExist) {
     const points = JSON.parse(trip.points)
     const paths = JSON.parse(trip.paths)
@@ -243,20 +237,20 @@ function generateInitialFormValues(trip, user){
       contacts: getContactDetailsFromProfile(trip.contacts, user),
       showMap: points.length>0||paths.length>0,
     }
-  }
-  // If the trip does not already exist, we need to generate a new trip with default values
-  return {
-    name: null,
-    departTime: today({roundToMins:20}),
-    returnTime: today({addDays:2, setHour:19}),
-    overdueTime: null,
-    description: "",
-    overdueInstructions: null,
-    paths: [],
-    points: [],
-    showOverdue: false,
-    contacts: [],
-    showMap: false,
+  } else {
+    return {
+      name: null,
+      departTime: today({roundToMins:20}),
+      returnTime: today({addDays:2, setHour:19}),
+      overdueTime: null,
+      description: "",
+      overdueInstructions: null,
+      paths: [],
+      points: [],
+      showOverdue: false,
+      contacts: [],
+      showMap: false,
+    }
   }
 }
 
