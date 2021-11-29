@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
   HashRouter as Router,
@@ -6,22 +6,22 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import * as urls from './urls';
+import * as urls from "./urls";
 
-import {clearToken} from './authentication/myJWT';
-import {LoginForm, demoLogin} from './authentication/loginWrapper';
-import {RegistrationForm} from './views/registrationForm';
-import {apiFetch} from './helperFunctions';
+import { clearToken } from "./authentication/myJWT";
+import { LoginForm, demoLogin } from "./authentication/loginWrapper";
+import { RegistrationForm } from "./views/registrationForm";
+import { apiFetch } from "./helperFunctions";
 
-import {GenericNavbar} from './components/navBar';
-import {UserViewer, UserSearch} from './views/viewer';
-import {TripViewer} from './views/tripView';
-import {Dashboard} from './views/dashboard';
-import {LandingView} from './views/landing';
-import {ContactView} from './views/contact';
-import {TripPlanner} from './views/tripPlanner';
-import {TripEditor} from './views/tripEditor'
-import {Profile} from './models/profile';
+import { GenericNavbar } from "./components/navBar";
+import { UserViewer, UserSearch } from "./views/viewer";
+import { TripViewer } from "./views/tripView";
+import { Dashboard } from "./views/dashboard";
+import { LandingView } from "./views/landing";
+import { ContactView } from "./views/contact";
+import { TripPlanner } from "./views/tripPlanner";
+import { TripEditor } from "./views/tripEditor";
+import { Profile } from "./models/profile";
 /*
 Login Process
 1. Get JWT access token
@@ -29,181 +29,207 @@ Login Process
 3. Set this.state.loggedIn
 */
 
-
-export class AppRouter extends React.Component{
-  constructor(props){
-    super(props)
-    this.state={
-      loggedIn:false,
-      loginPending:true,
-    }
-    this.setModal=this.setModal.bind(this)
-    this.hideModal=this.hideModal.bind(this)
-    this.handleLoginSuccess=this.handleLoginSuccess.bind(this)
-    this.handleLogout=this.handleLogout.bind(this)
-    this.handleNavClick=this.handleNavClick.bind(this)
-    this.fetchUserProfile=this.fetchUserProfile.bind(this)
+export class AppRouter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false,
+      loginPending: true,
+    };
+    this.setModal = this.setModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.handleNavClick = this.handleNavClick.bind(this);
+    this.fetchUserProfile = this.fetchUserProfile.bind(this);
   }
 
-  componentDidMount(){
-    this.fetchUserProfile()
+  componentDidMount() {
+    this.fetchUserProfile();
   }
 
-  fetchUserProfile(){
-    this.setState({loginPending:true})
+  fetchUserProfile() {
+    this.setState({ loginPending: true });
     apiFetch({
-      url:urls.LOGIN,
-      method:'GET',
-      onSuccess:(data)=>{
-        this.setState({
-          user:data.user,
-          profile:data.profile,
-          trips:data.trips,
-          contacts:data.contacts,
-        }, ()=>{
-          this.setState({loginPending:false})
-          if(!this.state.loggedIn) this.handleLoginSuccess();
-        })
+      url: urls.LOGIN,
+      method: "GET",
+      onSuccess: (data) => {
+        this.setState(
+          {
+            user: data.user,
+            profile: data.profile,
+            trips: data.trips,
+            contacts: data.contacts,
+          },
+          () => {
+            this.setState({ loginPending: false });
+            if (!this.state.loggedIn) this.handleLoginSuccess();
+          }
+        );
       },
-      onFailure:(error)=>{
-        this.setState({loginPending:false})
-        if(error==="500"){
-          this.setState({serverError:true})
+      onFailure: (error) => {
+        this.setState({ loginPending: false });
+        if (error === "500") {
+          this.setState({ serverError: true });
         }
-      }
-    })
+      },
+    });
   }
 
-  setModal(modal){this.setState({modal:modal})}
+  setModal(modal) {
+    this.setState({ modal: modal });
+  }
 
-  hideModal(){this.setModal(null)}
+  hideModal() {
+    this.setModal(null);
+  }
 
-  handleLoginSuccess(){
-    console.log("Login success")
-    this.setState({loggedIn:true})
-    this.hideModal()
+  handleLoginSuccess() {
+    console.log("Login success");
+    this.setState({ loggedIn: true });
+    this.hideModal();
     //this.setState({redirect:urls.HOME})
   }
 
-  handleLogout(){
+  handleLogout() {
     clearToken({
-      onSuccess:()=>{
-        console.log("Logout success..")
-        
-        this.setState({redirect:urls.HOME},()=>window.location.reload(false))
-      }
-    })
+      onSuccess: () => {
+        console.log("Logout success..");
+
+        this.setState({ redirect: urls.HOME }, () =>
+          window.location.reload(false)
+        );
+      },
+    });
   }
 
-  authenticateViewer(){
+  authenticateViewer() {}
 
-  }
-
-  handleNavClick(nav){
-    this.fetchUserProfile()
-    if(nav==="login"){
-      this.setModal(<LoginForm onSuccess={this.fetchUserProfile} hideModal={this.hideModal}/>)
-    }else if(nav==="logout"){
-      this.handleLogout()
-    }else if(nav==="demoUser"){
-      demoLogin({onSuccess:this.fetchUserProfile})
-    }else if(nav==="register"){
-      this.setModal(<RegistrationForm onSuccess={this.fetchUserProfile} hideModal={this.hideModal}/>)
+  handleNavClick(nav) {
+    this.fetchUserProfile();
+    if (nav === "login") {
+      this.setModal(
+        <LoginForm
+          onSuccess={this.fetchUserProfile}
+          hideModal={this.hideModal}
+        />
+      );
+    } else if (nav === "logout") {
+      this.handleLogout();
+    } else if (nav === "demoUser") {
+      demoLogin({ onSuccess: this.fetchUserProfile });
+    } else if (nav === "register") {
+      this.setModal(
+        <RegistrationForm
+          onSuccess={this.fetchUserProfile}
+          hideModal={this.hideModal}
+        />
+      );
     }
   }
 
-  render(){
+  render() {
     let appFunctions = {
-      refresh:this.fetchUserProfile,
-      hideModal:this.hideModal, 
-      setModal:this.setModal,
-      loggedIn:this.state.loggedIn,
-      loginPending:this.state.loginPending,
-      serverError:this.state.serverError,
-    }
+      refresh: this.fetchUserProfile,
+      hideModal: this.hideModal,
+      setModal: this.setModal,
+      loggedIn: this.state.loggedIn,
+      loginPending: this.state.loginPending,
+      serverError: this.state.serverError,
+    };
 
     let userData = {
-      user:this.state.user,
-      profile:this.state.profile,
-      trips:this.state.trips,
-      contacts:this.state.contacts,
-    }
+      user: this.state.user,
+      profile: this.state.profile,
+      trips: this.state.trips,
+      contacts: this.state.contacts,
+    };
 
     let viewerFunctions = {
-      phrase:this.state.viewerPassPhrase?this.state.viewerPassPhrase:"",
-      setPhrase:(phrase, onSuccess)=>this.setState({viewerPassPhrase:phrase}, onSuccess),
+      phrase: this.state.viewerPassPhrase ? this.state.viewerPassPhrase : "",
+      setPhrase: (phrase, onSuccess) =>
+        this.setState({ viewerPassPhrase: phrase }, onSuccess),
+    };
+
+    if (this.state.redirect) {
+      let to = this.state.redirect;
+      this.setState({ redirect: null });
+      return <Redirect push={true} to={to} />;
     }
 
-    if(this.state.redirect){
-      let to = this.state.redirect
-      this.setState({redirect:null})
-      return <Redirect push={true} to={to}/>
-    }
-
-    return(
-      <Router>     
+    return (
+      <Router>
         {this.state.modal}
-        <GenericNavbar app={appFunctions} onClick={this.handleNavClick}/>
+        <GenericNavbar app={appFunctions} onClick={this.handleNavClick} />
         <div className="container">
           <Switch>
-              <Route path={urls.CONTACT}>
-                <ContactView />
-              </Route>
+            <Route path={urls.CONTACT}>
+              <ContactView />
+            </Route>
 
+            <Route
+              path={`${urls.VIEWER}/:username`}
+              render={(router) => (
+                <UserViewer
+                  userParam={router.match.params.username}
+                  app={appFunctions}
+                  viewer={viewerFunctions}
+                />
+              )}
+            />
 
-              <Route 
-                path={`${urls.VIEWER}/:username`}
-                render={(router) => <UserViewer userParam={router.match.params.username} app={appFunctions} viewer={viewerFunctions}/>}
-              />
+            <Route path={urls.VIEWER} component={UserSearch} />
 
-              <Route 
-                path={urls.VIEWER}
-                component={UserSearch}
-              />
+            <Route
+              path={`${urls.PLANNER}/:tripId`}
+              render={(router) => (
+                <TripEditor
+                  tripId={router.match.params.tripId}
+                  app={appFunctions}
+                  user={userData}
+                />
+              )}
+            />
 
-              <Route 
-                path={`${urls.PLANNER}/:tripId`}
-                render={(router) => <TripEditor tripId={router.match.params.tripId} app={appFunctions} user={userData}/>}
-              />
+            <Route
+              path={urls.PLANNER}
+              render={() => <TripPlanner app={appFunctions} user={userData} />}
+            />
 
-              <Route 
-                path={urls.PLANNER}
-                render={() => <TripPlanner app={appFunctions} user={userData} />}
-              />
+            <Route
+              path={`${urls.VIEW_TRIP}/:UUID`}
+              render={(router) => (
+                <TripViewer
+                  uuid={router.match.params.UUID}
+                  app={appFunctions}
+                  user={userData}
+                />
+              )}
+            />
 
-              <Route 
-                path={`${urls.VIEW_TRIP}/:UUID`}
-                render={(router) => <TripViewer uuid={router.match.params.UUID} app={appFunctions} user={userData}/>}
-              />
+            <Route
+              path={urls.PROFILE_SETTINGS}
+              render={() => <Profile app={appFunctions} user={userData} />}
+            />
 
-              <Route 
-                path={urls.PROFILE_SETTINGS}
-                render={() => <Profile app={appFunctions} user={userData}/>}
-              />
-
-              <Route exact path={urls.HOME}>
-                <div>
-                {this.state.loggedIn ?
+            <Route exact path={urls.HOME}>
+              <div>
+                {this.state.loggedIn ? (
                   <Dashboard app={appFunctions} user={userData} />
-                  :
+                ) : (
                   <LandingView />
-                }
-                </div>
-              </Route>
+                )}
+              </div>
+            </Route>
 
-              <Route path="*">
-                <div><h4>404 Not found</h4></div>
-              </Route>
+            <Route path="*">
+              <div>
+                <h4>404 Not found</h4>
+              </div>
+            </Route>
           </Switch>
         </div>
       </Router>
-      )
+    );
   }
-
-
 }
-
-
-
-
-

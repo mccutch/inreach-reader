@@ -1,5 +1,5 @@
 /* import only the necessary Bootstrap files */
-//@import "~bootstrap/scss/functions"; 
+//@import "~bootstrap/scss/functions";
 //@import "~bootstrap/scss/variables";
 //@import "~bootstrap/scss/mixins";
 
@@ -7,13 +7,13 @@
 /* change the primary theme color to red */
 $theme-colors: (
   "primary": #795838,
-  "danger": #9A031E,
-  "info":#006466,
-  "warning":#EE9E59,
-  "light":#fefae0,
-  "success":#245501,
-  "teal":#439D8E,
-  "banner":#d8572a,
+  "danger": #9a031e,
+  "info": #006466,
+  "warning": #ee9e59,
+  "light": #fefae0,
+  "success": #245501,
+  "teal": #439d8e,
+  "banner": #d8572a,
 );
 /* -------end customization-------- */
 /* finally, import Bootstrap to set the changes! */
