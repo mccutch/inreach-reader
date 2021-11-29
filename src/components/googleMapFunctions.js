@@ -38,8 +38,8 @@ function setMapBounds({map, points, locationBias}){
         return
     }
     let bounds = new window.google.maps.LatLngBounds()
-    for(let i in points){
-        bounds.extend(points[i])
+    for(const point of points){
+        bounds.extend(point)
     }
     map.fitBounds(bounds)
 }
@@ -83,29 +83,25 @@ function addPoint({map, pt, draggable, onClick}){
 
 // Gather editable data from map to export as json
 function bundleMapData({paths, points}){
-    console.log(paths, points)
-    let exportPaths = []
-    for(let i in paths){
-      let array = paths[i].gPath.getPath().getArray()
-      let jsonList = []
-      for(let j in array){
-        jsonList.push(array[j].toJSON())
-      }
-      if(jsonList.length > 1){exportPaths.push({path:jsonList, name:paths[i].name, colour:paths[i].colour})}
-    }
-    let exportPoints = []
-    for(let i in points){
-        exportPoints.push({
-            position:points[i].gPoint.getPosition().toJSON(), 
-            label:points[i].label, 
-            description:points[i].description,
-        })
-    }
+    //console.log(paths, points)
+    const exportPaths = paths.map((pathObj)=>{
+        const positionList = pathObj.gPath.getPath().getArray()
+        return {
+            path:positionList.map(pos => pos.toJSON()), 
+            name:pathObj.name, 
+            colour:pathObj.colour
+        }
+    }).filter(pathObj => pathObj.path.length > 1)
 
-    return({
-        paths:exportPaths,
-        points:exportPoints,
+    const exportPoints = points.map((point)=>{
+        return {
+            position:point.gPoint.getPosition().toJSON(), 
+            label:point.label, 
+            description:point.description,
+        }
     })
+
+    return({paths:exportPaths, points:exportPoints})
 }
 
 

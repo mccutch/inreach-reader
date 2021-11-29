@@ -93,26 +93,14 @@ class GoogleMapWrapper extends React.Component{
   }
 
   componentDidUpdate(prevProps){
-    if(this.props.paths!==prevProps.paths && prevProps.paths.length>0){
-      for(let i in this.props.paths){
-        //console.log(this.props.paths[i])
-        //console.log(prevProps.paths[i])
-        if(prevProps.paths[i] && 
-            (this.props.paths[i].name!==prevProps.paths[i].name || this.props.paths[i].colour!==prevProps.paths[i].colour)
-          ){
-          console.log("Something changed")
-          this.editPathIdentifiers(i)
-        }
-      }
-    }
 
-    if(this.props.paths.length>(this.state.paths.length+this.state.readOnlyPaths.length)){
+    if(this.props.paths.length>(prevProps.paths.length)){
       console.log("NEW PATHS ADDED, PROBABLY INREACH DATA")
       for(let i=this.state.paths.length; i<this.props.paths.length; i++){
         this.addPath(this.props.paths[i])
       }
     }
-    if(this.props.points.length>(this.state.points.length+this.state.readOnlyPoints.length)){
+    if(this.props.points.length>(prevProps.points.length)){
       console.log("NEW POINTS ADDED, PROBABLY INREACH DATA")
       for(let i=this.state.points.length; i<this.props.points.length; i++){
         this.addPoint(this.props.points[i])
@@ -246,15 +234,14 @@ class GoogleMapWrapper extends React.Component{
   findMapBounds(){
     let boundaryPoints = []
     if(this.props.points && this.props.points.length>0){
-      for(let i in this.props.points){
-        boundaryPoints.push(this.props.points[i].position);
+      for(const point of this.props.points){
+        boundaryPoints.push(point.position);
       }
     }
     if(this.props.paths){
-      for(let i in this.props.paths){
-        let path = this.props.paths[i].path
-        for(let j in path){
-          boundaryPoints.push(path[j])
+      for(const pathObj of this.props.paths){
+        for(const position of pathObj.path){
+          boundaryPoints.push(position)
         }
       }
     } 
@@ -267,8 +254,8 @@ class GoogleMapWrapper extends React.Component{
   }
 
   plotPaths(){
-    for(let i in this.props.paths){
-      this.addPath(this.props.paths[i])
+    for(const path of this.props.paths){
+      this.addPath(path)
     }
   }
 
@@ -322,10 +309,10 @@ class GoogleMapWrapper extends React.Component{
   }
 
   plotPoints(){
-    let clone = Object.assign({},this.props.points)
+    let clone = Object.assign([],this.props.points)
     console.log(clone)
-    for(let i in clone){
-      this.addPoint(clone[i])
+    for(const point of clone){
+      this.addPoint(point)
     }
   }
 
@@ -345,15 +332,15 @@ class GoogleMapWrapper extends React.Component{
   }
 
   lockAllPaths({callback}){
-    for(let i in this.state.paths){
-      this.state.paths[i].gPath.setEditable(false)
+    for(const path of this.state.paths){
+      path.gPath.setEditable(false)
     }
     if(callback) callback();
   }
 
   lockAllPoints(bool=true){
-    for(let i in this.state.points){
-      this.state.points[i].gPoint.setDraggable(!bool)
+    for(const point of this.state.points){
+      point.gPoint.setDraggable(!bool)
     }
   }
 
