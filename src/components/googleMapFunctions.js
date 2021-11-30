@@ -6,6 +6,51 @@ import {
   DEFAULT_GMAP_BIAS_RADIUS,
 } from "../constants.js";
 
+function initialiseAutocomplete({locationBias, inputId, useGeolocation}) {
+  console.log(`Initialising Google Autocomplete field.`);
+  if (!window.google) {
+    console.log("window.google not defined");
+    return null;
+  }
+
+  var gMaps = window.google.maps;
+  console.log("Initialising Autocomplete inputs.");
+  let autocomplete = new gMaps.places.Autocomplete(
+    document.getElementById(inputId)
+  );
+
+  // Set the data fields to return when the user selects a place.
+  autocomplete.setFields([
+    "address_components",
+    "geometry",
+    "icon",
+    "name",
+    "place_id",
+    "formatted_address",
+  ]);
+
+  // Take action when autocomplete suggestion is chosen, or raw text input is submitted
+  autocomplete.addListener("place_changed", ()=>window.useLocation());
+
+  if (locationBias) {
+    setLocationBias({ searchBox:autocomplete, position:locationBias })
+  } else {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(useGeolocation);
+    }
+  }
+
+  return autocomplete
+}
+
+//
+function convertGeoToPos(geolocation){
+  return({
+    lat: geolocation.coords.latitude,
+    lng: geolocation.coords.longitude,
+  });
+}
+
 // Use search input to position the map and return a marker
 function setMapToSearchInput({ searchBox, map, onNotFound }) {
   let place = searchBox.getPlace();
@@ -25,16 +70,11 @@ function setMapToSearchInput({ searchBox, map, onNotFound }) {
 }
 
 // Set map and autocomplete biasing based on user location
-function setLocationBias({ searchBox, map, position, geolocation }) {
-  if (!(position || geolocation)) {
+function setLocationBias({ searchBox, map, position}) {
+  if (!position) {
     return;
   }
   let pos = position
-    ? position
-    : {
-        lat: parseFloat(geolocation.coords.latitude),
-        lng: parseFloat(geolocation.coords.latitude),
-      };
 
   let circle = new window.google.maps.Circle({
     center: pos,
@@ -44,7 +84,7 @@ function setLocationBias({ searchBox, map, position, geolocation }) {
     searchBox.setBounds(circle.getBounds());
   }
   if (map) {
-    map.setCenter(geolocation);
+    map.setCenter(position);
   }
 }
 
@@ -143,4 +183,6 @@ export {
   addPath,
   addPoint,
   bundleMapData,
+  convertGeoToPos,
+  initialiseAutocomplete,
 };

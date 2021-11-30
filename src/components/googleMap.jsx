@@ -11,6 +11,7 @@ import {
   addPath,
   addPoint,
   bundleMapData,
+  convertGeoToPos,
 } from "./googleMapFunctions.js";
 
 const markerLabels = "ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -186,6 +187,7 @@ class GoogleMapWrapper extends React.Component {
           } else {
             if (navigator.geolocation) {
               console.log("Geolocation available");
+              console.log(navigator.geolocation.getCurrentPosition((res)=>console.log(res),(err)=>console.warn(err)))
               navigator.geolocation.getCurrentPosition(this.parseGeolocation);
             }
           }
@@ -280,7 +282,8 @@ class GoogleMapWrapper extends React.Component {
   }
 
   parseGeolocation(geolocation) {
-    setLocationBias({ searchBox: this.searchBox, geolocation: geolocation });
+    console.log(geolocation)
+    setLocationBias({ searchBox: this.searchBox, map:this.map, position: convertGeoToPos(geolocation) });
     console.log(`Position accuracy: ${geolocation.coords.accuracy}`);
   }
 

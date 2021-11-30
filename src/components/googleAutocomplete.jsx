@@ -1,5 +1,6 @@
 import React from "react";
 import { importGoogleLibraries } from "../helperFunctions.js";
+import { convertGeoToPos, initialiseAutocomplete, setLocationBias } from "./googleMapFunctions.js";
 
 export class GoogleAutocomplete extends React.Component {
   constructor(props) {
@@ -10,94 +11,36 @@ export class GoogleAutocomplete extends React.Component {
 
     importGoogleLibraries("initAutocomplete");
 
-    this.setLocationBias = this.setLocationBias.bind(this);
     this.useLocation = this.useLocation.bind(this);
     window.useLocation = this.useLocation;
-    this.parseGeolocation = this.parseGeolocation.bind(this);
+    this.useGeolocation = this.useGeolocation.bind(this);
   }
 
   componentDidMount() {
     if (window.google) {
-      this.initAutocomplete();
+      this.initAutocomplete()
     }
   }
 
-  initAutocomplete() {
-    console.log(`Initialising Google Autocomplete field.`);
-
-    if (window.google) {
-      var gMaps = window.google.maps;
-
-      console.log("Initialising Autocomplete inputs.");
-      let autoObject = new gMaps.places.Autocomplete(
-        document.getElementById(this.props.id)
-      );
-      // Make components available to other functions in the class
-      this.autoObject = autoObject;
-
-      // Set the data fields to return when the user selects a place.
-      let returnFields = [
-        "address_components",
-        "geometry",
-        "icon",
-        "name",
-        "place_id",
-        "formatted_address",
-      ];
-      autoObject.setFields(returnFields);
-
-      // Take action when autocomplete suggestion is chosen, or raw text input is submitted
-      autoObject.addListener("place_changed", function () {
-        window.useLocation();
-      });
-
-      if (this.props.locationBias) {
-        this.setLocationBias(
-          this.props.locationBias.lat,
-          this.props.locationBias.lng
-        );
-      } else {
-        if (navigator.geolocation) {
-          console.log("Geolocation available");
-          navigator.geolocation.getCurrentPosition(this.parseGeolocation);
-        }
-      }
-    } else {
-      console.log("window.google not defined");
-    }
+  initAutocomplete(){
+    this.autoObject = initialiseAutocomplete({locationBias:this.props.locationBias, inputId:this.props.id, useGeolocation:this.useGeolocation})
   }
 
-  parseGeolocation(position) {
-    this.setLocationBias(position.coords.latitude, position.coords.longitude);
-    console.log(`Position accuracy: ${position.coords.accuracy}`);
-    if (this.props.returnLocation) {
-      this.props.returnLocation({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-    }
-  }
-
-  setLocationBias(lat, lng) {
-    var gMaps = window.google.maps;
-
-    let geolocation = {
-      lat: parseFloat(lat),
-      lng: parseFloat(lng),
-    };
-    console.log(geolocation);
-    let circle = new gMaps.Circle({ center: geolocation, radius: 30 });
-    this.autoObject.setBounds(circle.getBounds());
+  useGeolocation(geolocation) {
+    const position = convertGeoToPos(geolocation)
+    setLocationBias({searchBox:this.autoObject, position:position});
+    //console.log(`Position accuracy: ${geolocation.coords.accuracy}`);
+    if (this.props.returnLocation) this.props.returnLocation(position);
   }
 
   useLocation() {
-    console.log("useLocation");
-    let place = this.autoObject.getPlace();
-    if (!place.geometry) {
+    const place = this.autoObject.getPlace();
+    if (place.geometry) {
+      this.props.returnPlace(place);
+    } else {
       this.setState({ errorMessage: `Unable to find ${place.name}.` });
-      place = null;
+      this.props.returnPlace(null)
     }
-    this.props.returnPlace(place);
   }
 
   render() {

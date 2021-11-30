@@ -207,10 +207,10 @@ export class ProfileEdit extends React.Component {
         willUpdateProfile = true;
       }
     }
-    if (this.state.locationData) {
+    if (typeof this.state.locationData !== "undefined") {
       let data = this.state.locationData;
-      profileData["loc_lat"] = parseFloat(data.lat).toFixed(POSITION_DECIMALS);
-      profileData["loc_lng"] = parseFloat(data.lng).toFixed(POSITION_DECIMALS);
+      profileData["loc_lat"] = data ? parseFloat(data.lat).toFixed(POSITION_DECIMALS) : null;
+      profileData["loc_lng"] = data ? parseFloat(data.lng).toFixed(POSITION_DECIMALS) : null;
       willUpdateProfile = true;
     }
 
