@@ -1,6 +1,6 @@
 //Implementation using simplejwt on Django server
-import { apiFetch } from "../helperFunctions.js";
-import * as api from "../urls.js";
+import { apiFetch } from "../helperFunctions";
+import * as api from "../urls";
 
 export function getToken({ data, onSuccess, onFailure }) {
   apiFetch({
@@ -10,16 +10,12 @@ export function getToken({ data, onSuccess, onFailure }) {
     onSuccess: (json) => {
       localStorage.setItem("access", json.access);
       localStorage.setItem("refresh", json.refresh);
-      if (onSuccess) {
-        onSuccess();
-      }
+      if (onSuccess) onSuccess();
     },
     onFailure: (error) => {
       console.log(error);
       clearToken({});
-      if (onFailure) {
-        onFailure();
-      }
+      if (onFailure) onFailure();
     },
   });
 }
@@ -38,9 +34,7 @@ export function refreshToken({ onSuccess, onFailure }) {
     data = { refresh: localStorage.getItem("refresh") };
   } catch {
     console.log("No refresh token in localStorage");
-    if (onFailure) {
-      onFailure();
-    }
+    if (onFailure) onFailure();
     return;
   }
 
@@ -51,16 +45,12 @@ export function refreshToken({ onSuccess, onFailure }) {
     onSuccess: (json) => {
       console.log(json);
       localStorage.setItem("access", json.access);
-      if (onSuccess) {
-        onSuccess();
-      }
+      if (onSuccess) onSuccess();
     },
     onFailure: (error) => {
       console.log(`Refresh token error: ${error}`);
       clearToken({});
-      if (onFailure) {
-        onFailure(error);
-      }
+      if (onFailure) onFailure(error);
     },
   });
 }
