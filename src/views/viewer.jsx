@@ -5,43 +5,45 @@ import * as urls from "../urls.js";
 import { apiFetch } from "../helperFunctions.js";
 import { StandardModal } from "../components/reactComponents.jsx";
 
-export class ViewerAuthenticator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+export function ViewerAuthenticator({
+  username,
+  errorMessage,
+  viewer,
+  onSuccess,
+  app,
+}){
 
-  render() {
-    let title = <div>{this.props.username} - Restricted view</div>;
-    let body = (
-      <form>
-        <p>
-          <strong>{this.props.errorMessage}</strong>
-        </p>
-        <input id="phrase" type="text" className="form-control my-2" />
-        <button
-          className="btn btn-outline-primary my-2"
-          onClick={(e) => {
-            e.preventDefault();
-            let phrase = document.getElementById("phrase").value;
-            console.log(phrase);
-            this.props.viewer.setPhrase(phrase, this.props.onSuccess);
-            this.props.app.hideModal();
-          }}
-        >
-          Submit
-        </button>
-      </form>
-    );
-
-    return (
-      <StandardModal
-        title={title}
-        body={body}
-        hideModal={this.props.app.hideModal}
-      />
-    );
+  function getPhrase(e){
+    e.preventDefault();
+    const phrase = document.getElementById("phrase").value;
+    viewer.setPhrase(phrase, onSuccess);
+    app.hideModal();
   }
+  
+  const title = <div>{username} - Restricted view</div>;
+  const body = (
+    <form>
+      <p>
+        <strong>{errorMessage}</strong>
+      </p>
+      <input id="phrase" type="text" className="form-control my-2" />
+      <button
+        className="btn btn-outline-primary my-2"
+        onClick={getPhrase}
+      >
+        Submit
+      </button>
+    </form>
+  );
+
+  return (
+    <StandardModal
+      title={title}
+      body={body}
+      hideModal={app.hideModal}
+    />
+  );
+  
 }
 
 export class UserSearch extends React.Component {
