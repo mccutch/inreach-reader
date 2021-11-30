@@ -8,7 +8,7 @@ class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contacts')
     first_name = models.CharField(max_length=60, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
-    email = models.EmailField(blank=True)
+    email = models.CharField(max_length=60, blank=True)
     mobile = models.CharField(max_length=60, blank=True)
     relationship = models.CharField(max_length=60, blank=True)
     notes = models.TextField(default="", blank=True)
