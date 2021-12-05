@@ -13,7 +13,7 @@ import {
 import * as validation from "../components/validation.jsx";
 
 import { POSITION_DECIMALS, MAX_LEN_NAME } from "../constants.js";
-import { GoogleAutocomplete } from "../components/googleAutocomplete.jsx";
+import { AutocompleteInput } from "../components/google/AutocompleteInput.jsx";
 
 import * as urls from "../urls.js";
 
@@ -266,7 +266,7 @@ export class RegistrationForm extends React.Component {
           }}
           className="my-2"
         />
-        <GoogleAutocomplete
+        <AutocompleteInput
           id="locationAutocomplete"
           name="location"
           placeholder="Location"

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { GoogleMapWrapper } from "../components/googleMap";
+import { GoogleMapWrapper } from "../components/google/googleMap";
 import {
   today,
   parseISODate,
@@ -18,6 +18,7 @@ import { ContactList } from "../components/objectSummaryLists";
 import * as con from "../constants";
 import { getKMLData, parseInReachData } from "../components/inReachKml";
 import * as obj from "../objectDefinitions";
+import { EDIT_POINTS } from "../components/google/mapModeDefinitions";
 
 export class TripPlannerForm extends React.Component {
   constructor(props) {
@@ -308,7 +309,7 @@ export class TripPlannerForm extends React.Component {
                   ? this.state.paths.concat(this.state.inReachData.paths)
                   : this.state.paths
               }
-              initialMode="editPoints"
+              initialMode={EDIT_POINTS}
               searchBox={true}
             />
           )}

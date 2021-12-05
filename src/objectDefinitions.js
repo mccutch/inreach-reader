@@ -6,28 +6,28 @@ const Position = {
   lng: pt.number,
 };
 
-const Point = {
+const Point = pt.shape({
   position: pt.shape(Position),
   label: pt.string,
   description: pt.string,
-};
+});
 
-const Path = {
+const Path = pt.shape({
   path: pt.arrayOf(pt.shape(Position)),
   name: pt.string,
   colour: pt.string,
-};
+});
 
 const Trip = {};
 
-const AppFunctions = {
+const AppFunctions = pt.shape({
   refresh: pt.func,
   hideModal: pt.func,
   setModal: pt.func,
   loggedIn: pt.bool,
   loginPending: pt.bool,
   serverError: pt.bool,
-};
+});
 
 const User = {};
 

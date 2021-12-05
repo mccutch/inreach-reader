@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { GoogleAutocomplete } from "../components/googleAutocomplete.jsx";
+import { AutocompleteInput } from "../components/google/AutocompleteInput.jsx";
 import { apiFetch, truncate } from "../helperFunctions.js";
 import { LoadingScreen } from "../views/loading.jsx";
 import { EditContact, ViewContact } from "./contacts.jsx";
@@ -290,7 +290,7 @@ export class ProfileEdit extends React.Component {
           onChange={this.handleChange}
         />
         <br />
-        <GoogleAutocomplete
+        <AutocompleteInput
           id="locationAutocomplete"
           name="location"
           placeholder="Location"
