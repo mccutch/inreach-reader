@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { importGoogleLibraries } from "../../helperFunctions.js";
 import { initialiseAutocomplete } from "./autocompleteFunctions.js";
-import { convertGeoToPos, setLocationBias } from "./googleFunctions.js";
+import { convertGeoToPos, setLocationBias, importGoogleLibraries } from "./googleFunctions.js";
 
 
 // Render an AutoComplete input component
@@ -69,8 +68,7 @@ export function AutocompleteInput({
       defaultValue={defaultValue}
       maxLength={maxLength}
       onChange={(event) => {
-        onChange(event);
-        returnPlace(null);
+        if (onChange) onChange(event);
       }}
     />
   ); 

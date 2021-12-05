@@ -83,12 +83,12 @@ function setMapBounds({ map, points, locationBias }) {
 function getAllPoints({points, paths}){
   let boundaryPoints = [];
   if (points) {
-    for (const point of this.props.points) {
+    for (const point of points) {
       boundaryPoints.push(point.position);
     }
   }
   if (paths) {
-    for (const pathObj of this.props.paths) {
+    for (const pathObj of paths) {
       for (const position of pathObj.path) {
         boundaryPoints.push(position);
       }
@@ -222,8 +222,8 @@ function selectPathToEdit({gPath, pathList}){
     callback: () => gPath.setEditable(true) 
   });
 
-  for (let i in this.state.paths) {
-    if (this.state.paths[i].gPath === gPath) {
+  for (let i in pathList) {
+    if (pathList[i].gPath === gPath) {
       const activePathIndex = i
       return activePathIndex;
     }
@@ -241,9 +241,11 @@ function hasPoints(dataObject){
 
 // Intitialise map as locked if it already has data
 function getInitialMapMode(mapProps){
-  (hasPaths(mapProps) || hasPoints(mapProps))
-    ? modes.LOCKED
-    : this.props.initialMode
+  
+  if (hasPaths(mapProps) || hasPoints(mapProps)){
+    return modes.LOCKED;
+  }
+  return mapProps.initialMode || modes.EDIT_POINTS
 }
 
 

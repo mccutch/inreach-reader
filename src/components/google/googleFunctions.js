@@ -1,4 +1,26 @@
-import { DEFAULT_GMAP_BIAS_RADIUS } from '../../constants'
+import { 
+  DEFAULT_GMAP_BIAS_RADIUS,
+  GOOGLE_API_KEY,
+  GOOGLE_IMPORT_SCRIPT_ID,
+} from '../../constants'
+
+// Check if google libraries are already imported, or are being imported
+function googleLibrariesAreImported(){
+  return !!(window.google || document.getElementById(GOOGLE_IMPORT_SCRIPT_ID))
+}
+
+// Add script to index.html to import google libraries
+function importGoogleLibraries(callbackFunctionName) {
+  if (googleLibrariesAreImported()){
+    return
+  }
+  var script = document.createElement("script");
+  script.id = GOOGLE_IMPORT_SCRIPT_ID;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places,geometry&callback=${callbackFunctionName}`;
+  script.defer = true;
+  script.async = true;
+  document.head.appendChild(script);
+}
 
 // Set map and autocomplete biasing based on user location
 function setLocationBias({ searchBox, map, position}) {
@@ -30,4 +52,5 @@ function convertGeoToPos(geolocation){
 export {
   setLocationBias,
   convertGeoToPos,
+  importGoogleLibraries,
 }

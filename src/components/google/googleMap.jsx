@@ -62,7 +62,7 @@ class GoogleMapWrapper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: getInitialMapMode(this.props),
+      mode: getInitialMapMode(props),
       points: [],
       paths: [],
       readOnlyPoints: [],
