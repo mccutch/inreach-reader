@@ -117,6 +117,7 @@ class GoogleMapWrapper extends React.Component {
   }
 
   initGoogleMap() {
+    console.log("initGoogleMap")
     this.map = initialiseGoogleMap({
       id: this.props.id,
       onClick: this.handleClick,

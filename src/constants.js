@@ -22,3 +22,10 @@ export const POSITION_DECIMALS = 10;
 
 export const OVERDUE_INSTRUCTIONS =
   "Action required by your home base if you are overdue. Prefill this field by saving a default to your profile.";
+
+export const GARMIN_STATUS_UNKNOWN = 0
+export const GARMIN_NOT_CONNECTED_TO_PROFILE = 1
+export const GARMIN_OK = 2
+export const GARMIN_EXTERNAL_ERROR = 3
+export const GARMIN_INTERNAL_ERROR = 4
+export const GARMIN_NOT_OK = 5

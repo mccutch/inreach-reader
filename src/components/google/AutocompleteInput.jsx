@@ -32,7 +32,8 @@ export function AutocompleteInput({
   },[])
 
   function initAutocomplete(){
-    setAutocompleteInstance(
+    console.log("initAutocomplete")
+    setAutocompleteInstance(()=>
       initialiseAutocomplete({
         locationBias:locationBias, 
         inputId:id, 
@@ -50,7 +51,9 @@ export function AutocompleteInput({
   }
 
   function useLocation() {
-    const place = autocompleteInstance.getPlace();
+    const inst = autocompleteInstance
+    console.log(autocompleteInstance)
+    const place = inst.getPlace();
     if (place.geometry) {
       returnPlace(place);
     } else {

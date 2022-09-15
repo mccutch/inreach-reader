@@ -16,9 +16,11 @@ import {
 } from "../models/contacts";
 import { ContactList } from "../components/objectSummaryLists";
 import * as con from "../constants";
-import { getKMLData, parseInReachData } from "../components/inReachKml";
+import { getKMLData, GarminStatusIndicator } from "../components/inReachKml";
 import * as obj from "../objectDefinitions";
 import { EDIT_POINTS } from "../components/google/mapModeDefinitions";
+import { importGoogleLibraries } from "../components/google/googleFunctions";
+import { hasPaths, hasPoints } from "../components/google/googleMapFunctions";
 
 export class TripPlannerForm extends React.Component {
   constructor(props) {
@@ -28,7 +30,6 @@ export class TripPlannerForm extends React.Component {
 
     this.state = {
       showMap: false,
-      contacts: [],
       ...generateInitialFormValues(existingTrip, this.props.user),
     };
 
@@ -38,10 +39,15 @@ export class TripPlannerForm extends React.Component {
     this.removeEmergencyContact = this.removeEmergencyContact.bind(this);
     this.fetchInReachData = this.fetchInReachData.bind(this);
     this.returnInputsToWrapper = this.returnInputsToWrapper.bind(this);
+    this.loadGoogleServices = this.loadGoogleServices.bind(this)
+    this.onGoogleServicesLoaded = this.onGoogleServicesLoaded.bind(this)
   }
 
   componentDidMount() {
     this.fetchInReachData();
+    if(hasPaths(this.state)||hasPoints(this.state)){
+      this.loadGoogleServices()
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -61,10 +67,17 @@ export class TripPlannerForm extends React.Component {
         mapshareID: this.props.user.profile.mapshare_ID,
         startDate: this.state.departTime,
         endDate: this.state.returnTime,
-        onSuccess: (json) =>
-          this.setState({ inReachData: parseInReachData(json) }),
-        onFailure: () => console.log("No inreach data loaded"),
+        onSuccess: (parsedData) =>
+          this.setState({ inReachData: parsedData, garminStatus: con.GARMIN_OK }),
+        onFailure: (err) => {
+          console.warn("Garmin error: ", err)
+          this.setState({garminStatus: con.GARMIN_NOT_OK})
+        },
       });
+    } else if (this.props.user.profile && !this.props.user.profile.mapshare_ID) {
+      this.setState({garminStatus: con.GARMIN_NOT_CONNECTED_TO_PROFILE})
+    } else {
+      this.setState({garminStatus: con.GARMIN_NOT_OK})
     }
   }
 
@@ -85,6 +98,17 @@ export class TripPlannerForm extends React.Component {
       return;
     }
     this.setState({ contacts: [...this.state.contacts, contactToAdd] });
+  }
+
+  loadGoogleServices(){
+    console.log("Attempting to load gMaps")
+    window.onGoogleServicesLoaded = this.onGoogleServicesLoaded
+    importGoogleLibraries("onGoogleServicesLoaded")
+    
+  }
+
+  onGoogleServicesLoaded(){
+    this.setState({showMap: true})
   }
 
   returnInputsToWrapper() {
@@ -260,13 +284,16 @@ export class TripPlannerForm extends React.Component {
                 <button
                   className="btn text-left text-light btn-info btn-block my-2"
                   onClick={() => {
-                    this.setState({ showMap: true });
+                    this.loadGoogleServices();
                   }}
                 >
                   + Add a map
                 </button>
               )}
             </div>
+          </div>
+          <div>
+            <GarminStatusIndicator status={this.state.garminStatus}/>
           </div>
           <div className="row">
             <div className="col">
@@ -350,7 +377,7 @@ function generateInitialFormValues(trip, user) {
       points: points,
       showOverdue: !!trip.overdue,
       contacts: getContactDetailsFromProfile(trip.contacts, user),
-      showMap: points.length > 0 || paths.length > 0,
+      garminStatus: con.GARMIN_STATUS_UNKNOWN,
     };
   } else {
     return {
@@ -364,7 +391,7 @@ function generateInitialFormValues(trip, user) {
       points: [],
       showOverdue: false,
       contacts: [],
-      showMap: false,
+      garminStatus: con.GARMIN_STATUS_UNKNOWN,
     };
   }
 }

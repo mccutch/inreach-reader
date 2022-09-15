@@ -19,7 +19,13 @@ function importGoogleLibraries(callbackFunctionName) {
   script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places,geometry&callback=${callbackFunctionName}`;
   script.defer = true;
   script.async = true;
-  document.head.appendChild(script);
+  console.warn("About to try")
+  try{
+    document.head.appendChild(script);
+    console.warn("tried")
+  } catch(err){
+    console.warn("Welp", err)
+  }
 }
 
 // Set map and autocomplete biasing based on user location

@@ -16,7 +16,6 @@ function initialiseGoogleMap({
   boundaryPoints,
 }) {
   console.log(`Initialising Google Maps.`);
-  console.log(id);
   try {
     if (!window.google) {
       console.log("window.google not defined")
