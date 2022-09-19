@@ -103,11 +103,12 @@ export class TripPlannerForm extends React.Component {
   loadGoogleServices(){
     console.log("Attempting to load gMaps")
     window.onGoogleServicesLoaded = this.onGoogleServicesLoaded
-    importGoogleLibraries("onGoogleServicesLoaded")
+    importGoogleLibraries({callbackFunctionName:"onGoogleServicesLoaded", callbackFunc:this.onGoogleServicesLoaded})
     
   }
 
   onGoogleServicesLoaded(){
+    console.log("Google services loaded")
     this.setState({showMap: true})
   }
 

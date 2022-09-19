@@ -10,8 +10,10 @@ function googleLibrariesAreImported(){
 }
 
 // Add script to index.html to import google libraries
-function importGoogleLibraries(callbackFunctionName) {
+function importGoogleLibraries({callbackFunctionName, callbackFunc}) {
   if (googleLibrariesAreImported()){
+    console.log("Google libraries already imported.")
+    callbackFunc()
     return
   }
   var script = document.createElement("script");
