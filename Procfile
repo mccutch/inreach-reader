@@ -1,1 +1,2 @@
-web: python manage.py migrate && gunicorn inreach_reader.wsgi
+release: python manage.py migrate
+web: gunicorn backend.wsgi --log-file -
