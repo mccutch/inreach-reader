@@ -24,6 +24,13 @@ TripViewer - View emergency contacts
 
 UserView - Make username case insensitive
 
+Graceful failure of gMaps
+- Default to basic html view of points
+- Add unsuccessful callback to script generated in importGoogleLibraries()
+
+Graceful failure of Garmin
+- Always display status
+
 
 
 
