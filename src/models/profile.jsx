@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { GoogleAutocomplete } from "../components/googleAutocomplete.jsx";
+import { AutocompleteInput } from "../components/google/AutocompleteInput.jsx";
 import { apiFetch, truncate } from "../helperFunctions.js";
 import { LoadingScreen } from "../views/loading.jsx";
 import { EditContact, ViewContact } from "./contacts.jsx";
@@ -207,10 +207,10 @@ export class ProfileEdit extends React.Component {
         willUpdateProfile = true;
       }
     }
-    if (this.state.locationData) {
+    if (typeof this.state.locationData !== "undefined") {
       let data = this.state.locationData;
-      profileData["loc_lat"] = parseFloat(data.lat).toFixed(POSITION_DECIMALS);
-      profileData["loc_lng"] = parseFloat(data.lng).toFixed(POSITION_DECIMALS);
+      profileData["loc_lat"] = data ? parseFloat(data.lat).toFixed(POSITION_DECIMALS) : null;
+      profileData["loc_lng"] = data ? parseFloat(data.lng).toFixed(POSITION_DECIMALS) : null;
       willUpdateProfile = true;
     }
 
@@ -290,7 +290,7 @@ export class ProfileEdit extends React.Component {
           onChange={this.handleChange}
         />
         <br />
-        <GoogleAutocomplete
+        <AutocompleteInput
           id="locationAutocomplete"
           name="location"
           placeholder="Location"

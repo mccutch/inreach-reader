@@ -4,8 +4,10 @@ import * as urls from "../urls";
 import { today} from "./dateFunctions";
 import { TimeInputButton } from './tripPlannerFormElements'
 import { StandardModal } from "./reactComponents";
+import * as con from "../constants";
+import { matchPath } from "react-router-dom";
 
-export function parseInReachData(apiData) {
+function parseInReachData(apiData) {
   if (!apiData.is_valid || !apiData.placemarks) {
     return null;
   }
@@ -203,11 +205,12 @@ export function getKMLData({
     method: "GET",
     onSuccess: (json) => {
       if (json.is_valid) {
-        onSuccess(json);
+        onSuccess(parseInReachData(json));
       } else {
         onFailure(json);
       }
     },
+    onFailure:onFailure,
   });
 }
 
@@ -269,4 +272,24 @@ export class KMLDemo extends React.Component {
       </div>
     );
   }
+}
+
+function mapGarminStatusToMessage(status){
+  if(status===con.GARMIN_NOT_OK){
+    return "Not ok. Who the fuck knows why."
+  }else if(status===con.GARMIN_OK){
+    return "A-OK"
+  }else if(status===con.GARMIN_NOT_CONNECTED_TO_PROFILE){
+    return "Not connected to profile"
+  }else {
+    return "Unknown"
+  }
+}
+
+export function GarminStatusIndicator({status}) {
+  return(
+    <div>
+      <p>Garmin status: {mapGarminStatusToMessage(status)}</p>
+    </div>
+  )
 }

@@ -1,23 +1,5 @@
 import { refreshToken } from "./authentication/myJWT.js";
-//import {} from './constants.js';
 import * as urls from "./urls.js";
-
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
-
-//----------------------------------------------------------------------------------------------------------------------------
-/*
-getAttribute(objectList, id, attribute)
-
-convertCurrency({convertFrom, convertTo, amount, onSuccess, onFailure})
-
-
-
-*/
-//----------------------------------------------------------------------------------------------------------------------------
-/*export function navigate(path){
-  let history = useHistory()
-  history.push(path)
-}*/
 
 export function sortByKey({ list, key, ascending = true }) {
   return list.sort(function (a, b) {
@@ -26,20 +8,6 @@ export function sortByKey({ list, key, ascending = true }) {
     let dir = ascending ? 1 : -1;
     return x < y ? -dir : x > y ? dir : 0;
   });
-}
-
-export function importGoogleLibraries(callback) {
-  if (window.google) return;
-  let existing = document.getElementById("googleMapImports");
-  if (existing) return;
-
-  console.log("Generating Google API script.");
-  var script = document.createElement("script");
-  script.id = "googleMapImports";
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places,geometry&callback=${callback}`;
-  script.defer = true;
-  script.async = true;
-  document.head.appendChild(script);
 }
 
 export function displayHrs(decimalHrs) {

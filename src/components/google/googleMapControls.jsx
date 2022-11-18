@@ -1,8 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import * as urls from "../urls.js";
-
-const SEARCH_BAR_ID = "gMapSearchBar";
+import * as urls from "../../urls.js";
+import {
+  LOCKED,
+  NEW_PATH,
+  EDIT_POINTS,
+  TOGGLE_LOCK,
+} from "./mapModeDefinitions";
 
 function MapControlButton({ isActive, onClick, icon, size }) {
   let activeStyle = "btn-warning";
@@ -27,27 +31,19 @@ function MapControls({ mode, changeMode, undo }) {
   try {
     return (
       <div className="form-row p-2">
-        <div className="col-md">
-          <input
-            type="search"
-            id={SEARCH_BAR_ID}
-            placeholder="Search"
-            className="form-control my-2"
-          />
-        </div>
         <div className="col">
           <div className="row">
             <div className="col">
               <MapControlButton
-                isActive={mode === "newPath"}
-                onClick={() => changeMode("newPath")}
+                isActive={mode === NEW_PATH}
+                onClick={() => changeMode(NEW_PATH)}
                 icon={urls.ADD_NEW_ICON}
               />
             </div>
             <div className="col">
               <MapControlButton
-                isActive={mode === "editPoints"}
-                onClick={() => changeMode("editPoints")}
+                isActive={mode === EDIT_POINTS}
+                onClick={() => changeMode(EDIT_POINTS)}
                 icon={urls.WAYPOINT_ICON}
               />
             </div>
@@ -60,8 +56,8 @@ function MapControls({ mode, changeMode, undo }) {
             </div>
             <div className="col">
               <MapControlButton
-                isActive={mode === "locked"}
-                onClick={() => changeMode("toggleLock")}
+                isActive={mode === LOCKED}
+                onClick={() => changeMode(TOGGLE_LOCK)}
                 icon={urls.LOCK_ICON}
               />
             </div>
@@ -80,4 +76,4 @@ MapControls.propTypes = {
   undo: PropTypes.func,
 };
 
-export { MapControls, SEARCH_BAR_ID };
+export { MapControls };
