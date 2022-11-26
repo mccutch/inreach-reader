@@ -6,12 +6,12 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "*"
-djangorestframework = "*"
-whitenoise = "*"
-gunicorn = "*"
+django = "==3.0.7"
+djangorestframework = "==3.11.0"
+whitenoise = "==5.1.0"
+gunicorn = "==20.0.4"
 django-heroku = "*"
-django-environ = "*"
+django-environ = "==0.4.5"
 google-api-python-client = "*"
 google-auth = "*"
 google-auth-httplib2 = "*"
@@ -19,6 +19,11 @@ google-auth-oauthlib = "*"
 djangorestframework-simplejwt = "*"
 fastkml = "*"
 lxml = "*"
+asgiref = "==3.2.7"
+dj-database-url = "==0.5.0"
+psycopg2 = "==2.8.5"
+pytz = "==2020.1"
+sqlparse = "==0.3.1"
 
 [requires]
 python_version = "3.7"
