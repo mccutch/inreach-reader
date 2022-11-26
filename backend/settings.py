@@ -111,8 +111,19 @@ try:
     print("IMPORTING LOCAL SETTINGS, DEBUG=TRUE")
 except Exception as e:
     print(e)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('PGDATABASE'),
+            'USER': env('PGUSER'),
+            'PASSWORD': env('PGPASSWORD'),
+            'HOST': env('PGHOST'),
+            'PORT': env('PGPORT'),
+        }
+    }
     DEBUG = False
-    print("UNABLE TO LOAD LOCAL SETTINGS")
+
+    print("UNABLE TO LOAD LOCAL SETTINGS - USING PROD SETTINGS")
 
 
 # Password validation
