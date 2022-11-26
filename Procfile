@@ -1,2 +1,2 @@
-install: pip install -r requirements.txt
-release: python manage.py migrate && gunicorn backend.wsgi
+web: python manage.py migrate
+release: gunicorn backend.wsgi
