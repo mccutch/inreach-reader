@@ -96,34 +96,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 if env('IS_PRODUCTION')=="False":
     print("must be dev")
-    DATABASES = {
-        'default': {
-            #'ENGINE': 'django.db.backends.sqlite3',
-            #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env('DB_NAME'),
-            'USER': env('DB_USER'),
-            'PASSWORD': env('DB_PW'),
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
     DEBUG = True
-    print("IMPORTING LOCAL SETTINGS, DEBUG=TRUE")
 else:
     print("must be prod")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': env('PGDATABASE'),
-            'USER': env('PGUSER'),
-            'PASSWORD': env('PGPASSWORD'),
-            'HOST': env('PGHOST'),
-            'PORT': env('PGPORT'),
-        }
-    }
     DEBUG = False
-    print("USING PROD SETTINGS")
+
+DATABASES = {
+    'default': {
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PW'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+    }
+}
+
 
     
 
