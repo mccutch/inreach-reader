@@ -114,7 +114,7 @@ DATABASES = {
     }
 }
 
-
+print("Database is configured.")
     
 
 
@@ -136,6 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+print("Auth is configured.")
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -182,3 +183,5 @@ REST_FRAMEWORK = {
     #    'rest_framework.authentication.SessionAuthentication',
    # ]
 }
+
+print("Settings are configured.")
