@@ -48,19 +48,19 @@ Users can set:
 Deploy to Railway from GitHub and create a PostgresQL database.
 
 Set the following environment variables:
-DB_NAME=railway
-DB_USER=postgres
-DB_PW=<database_password>
-DB_HOST=<database_host>
-DB_PORT=<database_port>
-REACT_APP_GOOGLE_API_KEY=<google_API_key>
-REACT_APP_DEMO_USERNAME=<demo_email_address>
-REACT_APP_DEMOUSER_PW=<demo_password>
-DATABASE_URL=<postgres_db_url>
-NIXPACKS_NODE_VERSION=14
-DJ_KEY=<django_secret_key>
-IS_PRODUCTION=True
-NIXPACKS_PYTHON_VERSION=3.7
+- DB_NAME=railway
+- DB_USER=postgres
+-DB_PW=<database_password>
+- DB_HOST=<database_host>
+- DB_PORT=<database_port>
+- REACT_APP_GOOGLE_API_KEY=<google_API_key>
+- REACT_APP_DEMO_USERNAME=<demo_email_address>
+- REACT_APP_DEMOUSER_PW=<demo_password>
+- DATABASE_URL=<postgres_db_url>
+- NIXPACKS_NODE_VERSION=14
+- DJ_KEY=<django_secret_key>
+- IS_PRODUCTION=True
+- NIXPACKS_PYTHON_VERSION=3.7
 
 
 Set Nixpacks build command: yarn run build && python manage.py migrate
