@@ -3,6 +3,8 @@ Don't forget to leave a note on the fridge.
 
 Create a shareable trip plan that will receive updates through the Garmin inReach API.
 
+[Watch it flail here!] (https://homesoon.app/#/)
+
 ### Trip Planner
 User can create and edit trips, containing inputs for departure, return and overdue times. If an overdue time is given, instructions are given for what actions an emergency contact should take. Google Maps API is used to add planned waypoints and routes to a map. If the user connects their account to a publicly visible Garmin inReach, any tracking points and messages that are sent during the trip are added to the map.
 
